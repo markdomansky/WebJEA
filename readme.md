@@ -86,7 +86,7 @@ Install-Package WebJEAConfig
 #Config.Json location and other inputs will depend on your specific configuration.
 Import-Module WebJEAConfig
 Open-WebJEAConfig "c:\webjea\config.json" 
-Add-WebJEACommand ?????????
+New-WebJEACommand -CommandId 'id' -DisplayName 'DisplayName' -Script 'script.ps1' -PermittedGroups @('*')
 Save-WebJEAConfig
 ```
 

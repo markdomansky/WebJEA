@@ -1,0 +1,66 @@
+﻿<svg version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+  viewBox="0 0 144 17" enable-background="new 0 0 0 0" xml:space="preserve">
+  <rect fill="#007bff" stroke="none" x="2" y="4" width="18" height="9">
+    <animate
+      attributeName="opacity"
+      dur="1.5s"
+      values=".3;.65;.65;.65;.65;.65;.65;.65"
+      calcMode="discrete"
+      repeatCount="indefinite"
+      begin="0"/>    
+  </rect>
+  <rect fill="#007bff" stroke="none" x="22" y="4" width="18" height="9">
+    <animate
+      attributeName="opacity"
+      dur="1.5s"
+      values=".65;.3;.65;.65;.65;.65;.65;.65"
+      calcMode="discrete"
+      repeatCount="indefinite"
+      begin="0"/>    
+  </rect>
+  <rect fill="#007bff" stroke="none" x="42" y="4" width="18" height="9">
+    <animate
+      attributeName="opacity"
+      dur="1.5s"
+      values=".65;.65;.3;.65;.65;.65;.65;.65"
+      calcMode="discrete"
+      repeatCount="indefinite"
+      begin="0"/>    
+  </rect>
+  <rect fill="#007bff" stroke="none" x="62" y="4" width="18" height="9">
+    <animate
+      attributeName="opacity"
+      dur="1.5s"
+      values=".65;.65;.65;.3;.65;.65;.65;.65"
+      calcMode="discrete"
+      repeatCount="indefinite"
+      begin="0"/>    
+  </rect>
+  <rect fill="#007bff" stroke="none" x="82" y="4" width="18" height="9">
+    <animate
+      attributeName="opacity"
+      dur="1.5s"
+      values=".65;.65;.65;.65;.3;.65;.65;.65"
+      calcMode="discrete"
+      repeatCount="indefinite"
+      begin="0"/>    
+  </rect>
+  <rect fill="#007bff" stroke="none" x="102" y="4" width="18" height="9">
+    <animate
+      attributeName="opacity"
+      dur="1.5s"
+      values=".65;.65;.65;.65;.65;.3;.65;.65"
+      calcMode="discrete"
+      repeatCount="indefinite"
+      begin="0"/>    
+  </rect>
+  <rect fill="#007bff" stroke="none" x="122" y="4" width="18" height="9">
+    <animate
+      attributeName="opacity"
+      dur="1.5s"
+      values=".65;.65;.65;.65;.65;.65;.3;.65"
+      calcMode="discrete"
+      repeatCount="indefinite"
+      begin="0"/>    
+  </rect>
+</svg>

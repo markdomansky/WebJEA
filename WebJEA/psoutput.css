@@ -1,0 +1,56 @@
+﻿/*These are special tags you might want to use in your PS output using the [[span]] or create your own*/
+.psbold {
+    font-weight: bold;
+}
+.psred {
+    color: red;
+}
+.psblue {
+    color: blue;
+}
+.psvariable {
+    font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
+    font-style: italic;
+}
+.pshighlight {
+    background-color: yellow;
+}
+
+
+.pslink {
+    /*This tag is always added to formatted links.  changing this affects all links output from PS.*/
+    color: blue;
+}
+.psoutput {
+    /*Default Output span (includes Write-Output, Write-Host, Write-Information).  By default, we don't do any special formatting.*/
+
+}
+.psverbose {
+    /*VERBOSE span*/
+    color: darkcyan;
+}
+.pserror {
+    /*ERROR span*/
+    color: red;
+}
+.psdebug {
+    /*DEBUG span*/
+    color: #888;
+    font-weight:bold;
+}
+.pswarning {
+    /*WARNING span*/
+    color: darkgoldenrod;
+}
+.psouter {
+    /*This the outer panel that contains the div.  It's where we color the background*/
+    background-color: #ccc;
+    padding: 8px;
+}
+.ps {
+    /*This contains all the spans and the actual output.  It's where we manage the font itself.*/
+    font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+    white-space: pre-wrap;
+    
+}
+

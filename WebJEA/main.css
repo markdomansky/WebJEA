@@ -1,0 +1,132 @@
+﻿#output {
+    font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+    color: #111111;
+    background-color: #dddddd;
+
+}
+
+
+/*
+ * Base structure
+ */
+
+/*
+ * Global add-ons
+ */
+
+.sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+
+
+/*
+ * Main content
+ */
+
+.container-fluid {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+/*.main {
+  padding: 20px;
+}
+@media (min-width: 768px) {
+  .main {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+.main .page-header {
+  margin-top: 0;
+}*/
+
+
+/*
+ * Placeholder dashboard ideas
+ */
+
+/*.placeholders {
+  margin-bottom: 30px;
+  text-align: center;
+}
+.placeholders h4 {
+  margin-bottom: 0;
+}
+.placeholder {
+  margin-bottom: 20px;
+}
+.placeholder img {
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.page-header > h1 {display: inline-block;}
+.page-header > a {
+    vertical-align: text-bottom; 
+
+}*/
+
+
+#footer {
+    font-size: smaller;
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    /*width: 100%;*/
+    /*height: 24px;*/
+    /*padding-left: 10px;*/
+    line-height: 24px;
+    margin-top: 35px;
+
+}
+.footer a {
+    line-height: 24px;
+}
+
+.card { 
+    /*forces the pre to bottom margins, also affects the inpub field, but not that bad.*/
+    margin-top: 12px;
+    margin-right: 12px;
+}
+
+#btnMore {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border-color: #edf0f2;
+    background-color: #edf0f2;
+}
+.reqopt {
+    font-size: x-small;
+    font-weight: 700;
+    color: #959595;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-left: 1em;
+}
+
+.help-message {
+    margin-left: 5px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #737373;
+    /*font-size: 12px;*/
+}
+.help-block {
+    /*font-size: 12px;*/
+}
+.badge {
+    font-size: 16px;
+}
+
+#imgLoader {
+    display: none;
+}
+#imgLoaderSVG {
+    background-image: url(loader.svg);
+    margin-left: 12px;
+    width: 144px;
+    height: 17px;
+    display: inline-block;
+    vertical-align: middle;
+}

@@ -101,3 +101,5 @@ Save-WebJEAConfig
 Copyright, 2018, Mark Domansky.  All rights not granted explicitly are reserved.
 This code is released under the GPL v3 license.
 
+See the [License](LICENSE) and [Attributions](LICENSE-attributions) for details.
+

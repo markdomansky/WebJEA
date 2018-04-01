@@ -1,0 +1,446 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props" Condition="Exists('packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>
+    </SchemaVersion>
+    <ProjectGuid>{0327F3B9-9BEA-4F00-86A5-C7355A1FC5D0}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>WebJEA</RootNamespace>
+    <AssemblyName>WebJEA</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <MyType>Custom</MyType>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+    <AssemblyVersion>0.9.95.18091</AssemblyVersion>
+    <TypeScriptToolsVersion>2.7</TypeScriptToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>WebJEA.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <FilesToIncludeForPublish>AllFilesInTheProject</FilesToIncludeForPublish>
+    <PublishDatabases>false</PublishDatabases>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>false</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>WebJEA.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PublishDatabases>false</PublishDatabases>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>packages\AWSSDK.Core.3.3.21.14\lib\net45\AWSSDK.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="AWSSDK.SQS, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.SQS.3.3.3.2\lib\net45\AWSSDK.SQS.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>packages\NLog.4.4.13\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.Web.4.5.1\lib\net35\NLog.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Management.Automation\v4.0_3.0.0.0__31bf3856ad364e35\System.Management.Automation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="scripts\index.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="Newtonsoft.Json" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Media" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Collections.Specialized" />
+    <Import Include="System.Configuration" />
+    <Import Include="System.Text" />
+    <Import Include="System.Text.RegularExpressions" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.Caching" />
+    <Import Include="System.Web.SessionState" />
+    <Import Include="System.Web.Security" />
+    <Import Include="System.Web.Profile" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+    <Import Include="System.Web.UI.WebControls.WebParts" />
+    <Import Include="System.Web.UI.HtmlControls" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="content\bootstrap-grid.css" />
+    <Content Include="content\bootstrap-grid.min.css" />
+    <Content Include="content\bootstrap-reboot.css" />
+    <Content Include="content\bootstrap-reboot.min.css" />
+    <Content Include="content\bootstrap.css" />
+    <Content Include="content\bootstrap.min.css" />
+    <Content Include="content\ie10-viewport-bug-workaround.css" />
+    <Content Include="content\jquery-ui-timepicker-addon.css" />
+    <Content Include="content\jquery-ui-timepicker-addon.min.css" />
+    <Content Include="content\ps.png" />
+    <Content Include="content\themes\base\accordion.css" />
+    <Content Include="content\themes\base\all.css" />
+    <Content Include="content\themes\base\autocomplete.css" />
+    <Content Include="content\themes\base\base.css" />
+    <Content Include="content\themes\base\button.css" />
+    <Content Include="content\themes\base\core.css" />
+    <Content Include="content\themes\base\datepicker.css" />
+    <Content Include="content\themes\base\dialog.css" />
+    <Content Include="content\themes\base\draggable.css" />
+    <Content Include="content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_444444_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_555555_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_777620_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_777777_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="content\themes\base\jquery-ui.css" />
+    <Content Include="content\themes\base\jquery-ui.min.css" />
+    <Content Include="content\themes\base\menu.css" />
+    <Content Include="content\themes\base\progressbar.css" />
+    <Content Include="content\themes\base\resizable.css" />
+    <Content Include="content\themes\base\selectable.css" />
+    <Content Include="content\themes\base\selectmenu.css" />
+    <Content Include="content\themes\base\slider.css" />
+    <Content Include="content\themes\base\sortable.css" />
+    <Content Include="content\themes\base\spinner.css" />
+    <Content Include="content\themes\base\tabs.css" />
+    <Content Include="content\themes\base\theme.css" />
+    <Content Include="content\themes\base\tooltip.css" />
+    <Content Include="default.aspx" />
+    <Content Include="error.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="psoutput.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="main.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\bootstrap.min.css.map" />
+    <Content Include="content\bootstrap.css.map" />
+    <Content Include="content\bootstrap-reboot.min.css.map" />
+    <Content Include="content\bootstrap-reboot.css.map" />
+    <Content Include="content\bootstrap-grid.min.css.map" />
+    <Content Include="content\bootstrap-grid.css.map" />
+    <None Include="My Project\PublishProfiles\Mgmt1.pubxml" />
+    <Content Include="scripts\bootstrap.bundle.js" />
+    <Content Include="scripts\bootstrap.bundle.min.js" />
+    <Content Include="scripts\bootstrap.js" />
+    <Content Include="scripts\bootstrap.min.js" />
+    <Content Include="scripts\esm\popper-utils.js" />
+    <Content Include="scripts\esm\popper-utils.min.js" />
+    <Content Include="scripts\esm\popper.js" />
+    <Content Include="scripts\esm\popper.min.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-addon-i18n.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-addon-i18n.min.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-af.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-am.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-bg.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-ca.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-cs.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-da.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-de.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-el.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-es.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-et.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-eu.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-fa.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-fi.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-fr.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-gl.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-he.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-hr.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-hu.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-id.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-it.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-ja.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-ko.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-lt.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-lv.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-mk.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-nl.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-no.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-pl.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-pt-BR.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-pt.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-ro.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-ru.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-sk.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-sl.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-sq.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-sr-RS.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-sr-YU.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-sv.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-th.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-tr.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-uk.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-vi.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-zh-CN.js" />
+    <Content Include="scripts\i18n\jquery-ui-timepicker-zh-TW.js" />
+    <Content Include="scripts\ie10-viewport-bug-workaround.js" />
+    <None Include="My Project\PublishProfiles\Release.pubxml" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="scripts\esm\popper.min.js.map" />
+    <Content Include="scripts\esm\popper.js.map" />
+    <Content Include="scripts\esm\popper-utils.min.js.map" />
+    <Content Include="scripts\esm\popper-utils.js.map" />
+    <Content Include="scripts\bootstrap.min.js.map" />
+    <Content Include="scripts\bootstrap.js.map" />
+    <Content Include="scripts\bootstrap.bundle.min.js.map" />
+    <Content Include="scripts\bootstrap.bundle.js.map" />
+    <None Include="scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="scripts\jquery-3.3.1.js" />
+    <Content Include="scripts\jquery-3.3.1.min.js" />
+    <Content Include="scripts\jquery-3.3.1.slim.js" />
+    <Content Include="scripts\jquery-3.3.1.slim.min.js" />
+    <Content Include="scripts\jquery-ui-1.12.1.js" />
+    <Content Include="scripts\jquery-ui-1.12.1.min.js" />
+    <Content Include="scripts\jquery-ui-sliderAccess.js" />
+    <Content Include="scripts\jquery-ui-timepicker-addon.js" />
+    <Content Include="scripts\jquery-ui-timepicker-addon.min.js" />
+    <Content Include="scripts\popper-utils.js" />
+    <Content Include="scripts\popper-utils.min.js" />
+    <Content Include="scripts\popper.js" />
+    <Content Include="scripts\popper.min.js" />
+    <Content Include="scripts\umd\popper-utils.js" />
+    <Content Include="scripts\umd\popper-utils.min.js" />
+    <Content Include="scripts\umd\popper.js" />
+    <Content Include="scripts\umd\popper.min.js" />
+    <Content Include="sidebar.css" />
+    <Content Include="startup.js" />
+    <Content Include="loader.svg" />
+    <Content Include="validation.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="error.aspx.designer.vb">
+      <DependentUpon>error.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="error.aspx.vb">
+      <DependentUpon>error.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global.asax.vb">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Global.vb" />
+    <Compile Include="GroupFinder.vb" />
+    <Compile Include="Helpers.vb" />
+    <Compile Include="MenuItem.vb" />
+    <Compile Include="PSCmd.vb" />
+    <Compile Include="PSEngine.vb" />
+    <Compile Include="Config.vb" />
+    <Compile Include="default.aspx.designer.vb">
+      <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="default.aspx.vb">
+      <DependentUpon>default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\MyExtensions\MyWebExtension.vb">
+      <VBMyExtensionTemplateID>Microsoft.VisualBasic.Web.MyExtension</VBMyExtensionTemplateID>
+      <VBMyExtensionTemplateVersion>1.0.0.0</VBMyExtensionTemplateVersion>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="PSScriptParser.vb" />
+    <Compile Include="PSCmdParam.vb" />
+    <Compile Include="PSCmdParamVal.vb" />
+    <Compile Include="PSWebHelper.vb" />
+    <Compile Include="UserInfo.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <Content Include="packages.config" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\jquery-3.3.1.slim.min.map" />
+    <Content Include="scripts\jquery-3.3.1.min.map" />
+    <Content Include="scripts\umd\popper.min.js.map" />
+    <Content Include="scripts\umd\popper.js.map" />
+    <Content Include="scripts\umd\popper-utils.min.js.map" />
+    <Content Include="scripts\umd\popper-utils.js.map" />
+    <Content Include="scripts\README.md" />
+    <Content Include="scripts\popper.min.js.map" />
+    <Content Include="scripts\popper.js.map" />
+    <Content Include="scripts\popper-utils.min.js.map" />
+    <Content Include="scripts\popper-utils.js.map" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>23811</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:23811/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>https://mgmt1.domain1.local/webjea</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

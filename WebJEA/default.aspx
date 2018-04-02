@@ -42,7 +42,7 @@
                                 <LayoutTemplate>
                                     <ul id="menu-content" class="menu-content collapse out">
                                         <asp:PlaceHolder ID="itemPlaceholder" runat="server" />
-                                        <li id="footer" class="menulink footer">Powered by <a href="http://webjea.com" target="_blank">WebJEA</a>.</li>
+                                        <li id="footer" class="menulink footer">Powered by <a href="http://webjea.com" target="_blank">WebJEA</a> <asp:Literal runat="server" ID="lblVersion"></asp:Literal>.</li>
                                     </ul>
                                 </LayoutTemplate>
                                 <ItemTemplate>

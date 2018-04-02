@@ -2,11 +2,6 @@
     Inherits System.Web.UI.Page
     Dim cmdid As String
 
-    'TODO: 2- hide onload if Not included
-    'TODO: 2- collapse output on page load
-    'TODO: 2- collapse input And onload on submit
-    'TODO: 2- show progress indicator on submit, disable butto
-    'TODO: 3- fixup sagewolf.com
     'TODO: 7- Add ParameterSet support
 
 
@@ -70,6 +65,9 @@
         lvMenu.DataSource = cfg.GetMenuDataTable(uinfo, cmdid)
         lvMenu.DataBind()
 
+        'add version to display
+        Dim lblVersion As Literal = lvMenu.FindControl("lblVersion")
+        lblVersion.Text = System.Reflection.Assembly.GetExecutingAssembly.GetName().Version.ToString(3)
 
         'if the user has access to the requested command, build the display, otherwise display nothing
         Dim cmd As PSCmd = cfg.GetCommand(uinfo, cmdid)

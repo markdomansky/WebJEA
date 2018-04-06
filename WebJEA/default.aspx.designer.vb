@@ -41,6 +41,15 @@ Partial Public Class _default
     Protected WithEvents lvMenu As Global.System.Web.UI.WebControls.ListView
     
     '''<summary>
+    '''lblVersion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblVersion As Global.System.Web.UI.WebControls.Literal
+    
+    '''<summary>
     '''divCmdBody control.
     '''</summary>
     '''<remarks>

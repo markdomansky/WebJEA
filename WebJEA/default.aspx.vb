@@ -67,7 +67,11 @@
 
         'add version to display
         Dim lblVersion As Literal = lvMenu.FindControl("lblVersion")
+#If DEBUG Then
+        lblVersion.Text = "DEBUG"
+#Else
         lblVersion.Text = System.Reflection.Assembly.GetExecutingAssembly.GetName().Version.ToString(3)
+#End If
 
         'if the user has access to the requested command, build the display, otherwise display nothing
         Dim cmd As PSCmd = cfg.GetCommand(uinfo, cmdid)

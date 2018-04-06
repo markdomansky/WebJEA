@@ -38,18 +38,20 @@
                         <div type="button" class="navbar-toggler toggle-btn " data-toggle="collapse" data-target="#menu-content" aria-label="Toggle Menu"><div class="hamburger">&nbsp;</div></div>
 
                         <div id="menu-list" class="menu-list ">
-                            <asp:ListView ID="lvMenu" runat="server" class="">
-                                <LayoutTemplate>
-                                    <ul id="menu-content" class="menu-content collapse out">
-                                        <asp:PlaceHolder ID="itemPlaceholder" runat="server" />
-                                        <li id="footer" class="menulink footer">Powered by <a href="http://webjea.com" target="_blank">WebJEA</a> <asp:Literal runat="server" ID="lblVersion"></asp:Literal>.</li>
-                                    </ul>
-                                </LayoutTemplate>
-                                <ItemTemplate>
-                                    <li class="menulink <%#Eval("CSS") %>"><a href="<%#Eval("Uri") %>"><%#Eval("DisplayName") %></a></li>
-                                </ItemTemplate>
-                            </asp:ListView>
-                            <%--<footer class="footer">Powered by <a href="http://webjea.com" target="_blank">WebJEA</a>.</footer>--%>
+                            <div id="menu-content" class="menu-content collapse out" >
+                                <asp:ListView ID="lvMenu" runat="server" class="">
+                                    <LayoutTemplate>
+                                        <ul ">
+                                            <asp:PlaceHolder ID="itemPlaceholder" runat="server" />
+<%--                                            <li id="footer" class="menulink footer">Powered by <a href="http://webjea.com" target="_blank">WebJEA</a> <asp:Literal runat="server" ID="lblVersion"></asp:Literal>.</li>--%>
+                                        </ul>
+                                    </LayoutTemplate>
+                                    <ItemTemplate>
+                                        <li class="menulink <%#Eval("CSS") %>"><a href="<%#Eval("Uri") %>"><%#Eval("DisplayName") %></a></li>
+                                    </ItemTemplate>
+                                </asp:ListView>
+                                <div id="footer" class="footer">Powered by <a href="http://webjea.com" target="_blank">WebJEA</a><asp:Literal runat="server" ID="lblVersion"></asp:Literal>.</div>
+                            </div>
                         </div>
                     </div>
                 </div>

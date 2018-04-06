@@ -193,8 +193,10 @@
 
         'if there's a default value display it
         If param.IsMultiValued Then
-            Dim defval As List(Of String) = param.DefaultValue
-            objControl.Text = String.Join(vbCrLf, defval)
+            If Not (param.DefaultValue Is Nothing) Then
+                Dim defval As List(Of String) = param.DefaultValue
+                objControl.Text = String.Join(vbCrLf, defval)
+            End If
         Else
             'If Not String.IsNullOrEmpty(param.DefaultValue) Then
             '    'objControl.Attributes.Add("value", param.DefaultValue)

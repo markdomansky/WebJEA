@@ -48,7 +48,7 @@ The DSC configuration included allows quick deployment and should be suitable in
 
 ## Limitations
 
-There are some limitations with WebJEA.  All of these are considered areas for future improvement so please give your feedback via [Issues](./issues).
+There are some limitations with WebJEA.  All of these are considered areas for future improvement so please give your feedback via [Issues](https://github.com/markdomansky/WebJEA/issues).
 
 * Scripts run with limited feedback.  There is a "spinner", but nothing gets fed back to the client until the script is finished.
 * Write-Progress is ignored for the same reason.
@@ -59,7 +59,7 @@ There are some limitations with WebJEA.  All of these are considered areas for f
 
 ## Installation
 
-A DSC push configuration template is provided to get you going quickly.  Check the [Documentation](./wiki) for more information.
+A DSC push configuration template is provided to get you going quickly.  Check the [Documentation](https://github.com/markdomansky/WebJEA/wiki) for more information.
 
 Installation Steps:
 1. Build a server, get a certificate, create a managed service account.

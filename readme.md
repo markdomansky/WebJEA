@@ -63,7 +63,7 @@ A DSC push configuration template is provided to get you going quickly.  Check t
 
 Installation Steps:
 1. Build a server, get a certificate, create a managed service account.
-2. Download the and extract the latest release.
+2. Go to [Releases](https://github.com/markdomansky/WebJEA/releases), download and extract the latest release.
 3. Modify the DSCDeploy.ps1 with the machine name, certificate thumbprint, MSA username, and customize deployment folder, etc.
 4. execute DSCDeploy.ps1 configuration.  This will download and install the necessary DSC modules, the latest package, then start installation.
 5. Reboot should not be needed, but is recommended following first deployment.
@@ -77,7 +77,7 @@ WebJEAConfig is a PowerShell Gallery Package to modify your WebJEA Configuration
 #### Installation
 
 ```powershell
-Install-Package WebJEAConfig
+Install-Module WebJEAConfig
 ```
 
 #### Adding a script

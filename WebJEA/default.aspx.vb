@@ -2,7 +2,7 @@
     Inherits System.Web.UI.Page
     Dim cmdid As String
 
-    'TODO: 7- Add ParameterSet support
+    'TODO: 7- Add ParameterSet support?
 
 
     'advanced functions should be able to retrieve the get-help and parameter data, then permit overriding
@@ -16,6 +16,9 @@
         dlog = NLog.LogManager.GetCurrentClassLogger()
         dlog.Trace("Page: Start")
 
+        objTelemetry.Add("sessionid", StringHash256(Session.SessionID)) 'to correlate one user's activities
+        objTelemetry.Add("requestid", StringHash256(Guid.NewGuid().ToString())) 'to correlate multiple telemetry from the same page request
+
         uinfo = New UserInfo
 
         Dim psweb = New PSWebHelper
@@ -26,13 +29,15 @@
         Dim configstr As String = GetFileContent(WebJEA.My.Settings(configid))
         Try
             cfg = JsonConvert.DeserializeObject(Of WebJEA.Config)(configstr)
+            objTelemetry.Add("CommandCount", cfg.Commands.Count)
+            objTelemetry.Add("PermGlobalCount", cfg.PermittedGroups.Count)
         Catch
             Throw New Exception("Could not read config file")
         End Try
 
         'TODO: 9 - Improve JSON read process.  The current system is a hack, but it does work.
 
-        'TODO: 5 - eventually, use a cached config, and then check for changes, and reload if appropriate
+        'TODO: 5 - consider, using cached config, and then check for changes, and reload if appropriate
 
         'parse group info
         Try
@@ -42,6 +47,7 @@
         End Try
 
         dlog.Trace("IsGlobalUser: " & cfg.IsGlobalUser(uinfo))
+        objTelemetry.Add("IsGlobalUser", cfg.IsGlobalUser(uinfo))
 
         'determine which cmds the user has access to
         Dim menuitems As List(Of MenuItem) = cfg.GetMenu(uinfo)
@@ -56,7 +62,6 @@
             cmdid = cfg.DefaultCommandId
         End If
         cfg.Init(cmdid) 'json's deserialize doesn't can't call new with parameters, so we do all the stuff we should do during the deserialize process.
-
 
         'build display page
         lblTitle.Text = cfg.Title
@@ -76,9 +81,15 @@
         Dim cmd As PSCmd = cfg.GetCommand(uinfo, cmdid)
 
         If cmd Is Nothing Then
+            objTelemetry.AddIDs(uinfo.DomainSID, uinfo.DomainDNSRoot, cmdid, uinfo.UserName, Permitted:=False)
+
             divCmdBody.InnerText = "You do not have access to this command."
             dlog.Error("User " & uinfo.UserName & " requested cmdid " & cmdid & " that does not exist (or they don't have access to)")
         Else
+            objTelemetry.AddIDs(uinfo.DomainSID, uinfo.DomainDNSRoot, cmd.ID, uinfo.UserName)
+            objTelemetry.Add("PermCount", cmd.PermittedGroups.Count)
+            objTelemetry.Add("ParamCount", cmd.Parameters.Count)
+
             'build display
             lblCmdTitle.Text = cmd.DisplayName
             If cmd.Synopsis <> "" Then
@@ -105,7 +116,7 @@
                 ps.Script = cmd.OnloadScript
                 ps.LogParameters = cmd.LogParameters
                 ps.Run()
-                If cfg.SendTelemetry Then SendUsage(uinfo.DomainSID, uinfo.DomainDNSRoot, cmd.ID, uinfo.UserName, cmd.Parameters.Count, True, ps.Runtime)
+                objTelemetry.AddRuntime(ps.Runtime, isOnload:=True)
 
                 consoleOnload.InnerHtml = psweb.ConvertToHTML(ps.getOutputData)
                 ps = Nothing
@@ -159,9 +170,10 @@
         ps.Script = cmd.Script
         ps.LogParameters = cmd.LogParameters
         ps.Parameters = psweb.getParameters(cmd, Page)
+        objTelemetry.Add("ParamUsed", ps.Parameters.Count)
 
         ps.Run()
-        If cfg.SendTelemetry Then SendUsage(uinfo.DomainSID, uinfo.DomainDNSRoot, cmd.ID, uinfo.UserName, cmd.Parameters.Count, False, ps.Runtime)
+        objTelemetry.AddRuntime(ps.Runtime)
 
         consoleOutput.Text = psweb.ConvertToHTML(ps.getOutputData)
         ps = Nothing
@@ -183,5 +195,13 @@
 
     End Function
 
+    Private Sub _default_Init(sender As Object, e As EventArgs) Handles Me.Init
+        ViewStateUserKey = Session.SessionID
+    End Sub
 
+    Private Sub _default_LoadComplete(sender As Object, e As EventArgs) Handles Me.LoadComplete
+        If cfg.SendTelemetry Then
+            objTelemetry.SendTelemetry()
+        End If
+    End Sub
 End Class

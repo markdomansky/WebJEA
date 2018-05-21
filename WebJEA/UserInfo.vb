@@ -52,7 +52,7 @@ Public Class UserInfo
 
         Try
             Dim regpath As String = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography"
-            Dim readValue = My.Computer.Registry.GetValue(regpath, "MachineGuid", "-")
+            Dim readValue = My.Computer.Registry.GetValue(regpath, "MachineGuid", "-") 'i think this always fails for permissions
             prvDomainSID = readValue
             prvDomainDNSRoot = Environment.MachineName
         Catch

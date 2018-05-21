@@ -11,6 +11,9 @@ Public Class Global_asax
 
     Sub Session_Start(ByVal sender As Object, ByVal e As EventArgs)
         ' Fires when the session is started
+        Session("init") = 0 'forces session to start, so session id is maintained.
+        Session("sessionid") = Session.SessionID
+
     End Sub
 
     Sub Application_BeginRequest(ByVal sender As Object, ByVal e As EventArgs)

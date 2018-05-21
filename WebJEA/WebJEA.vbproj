@@ -27,8 +27,9 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
-    <AssemblyVersion>0.9.121.18096</AssemblyVersion>
-    <TypeScriptToolsVersion>2.7</TypeScriptToolsVersion>
+    <AssemblyVersion>0.9.125.18132</AssemblyVersion>
+    <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,6 +46,19 @@
     <FilesToIncludeForPublish>AllFilesInTheProject</FilesToIncludeForPublish>
     <PublishDatabases>false</PublishDatabases>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TypeScriptTarget>ES2017</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -88,6 +102,7 @@
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Management.Automation\v4.0_3.0.0.0__31bf3856ad364e35\System.Management.Automation.dll</HintPath>
@@ -117,6 +132,8 @@
     <Import Include="System.Data" />
     <Import Include="System.Linq" />
     <Import Include="System.Media" />
+    <Import Include="System.Threading" />
+    <Import Include="System.Threading.Tasks" />
     <Import Include="System.Xml.Linq" />
     <Import Include="System.Diagnostics" />
     <Import Include="System.Collections.Specialized" />
@@ -342,6 +359,7 @@
     <Compile Include="PSCmdParam.vb" />
     <Compile Include="PSCmdParamVal.vb" />
     <Compile Include="PSWebHelper.vb" />
+    <Compile Include="Telemetry.vb" />
     <Compile Include="UserInfo.vb" />
   </ItemGroup>
   <ItemGroup>

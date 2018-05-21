@@ -146,7 +146,7 @@
 
     Public Function GetCommand(uinfo As UserInfo, ID As String) As PSCmd
 
-        Dim foundCmd As PSCmd
+        Dim foundCmd As PSCmd = Nothing
 
         For Each Command As PSCmd In Commands
             If Command.ID = ID Then
@@ -154,8 +154,10 @@
             End If
         Next
 
-        If (IsGlobalUser(uinfo) Or foundCmd.IsCommandAvailable(uinfo)) Then
-            Return foundCmd
+        If (foundCmd IsNot Nothing) Then
+            If (IsGlobalUser(uinfo) Or foundCmd.IsCommandAvailable(uinfo)) Then
+                Return foundCmd
+            End If
         End If
 
         'no match

@@ -4,6 +4,7 @@
     Public grpfinder As New GroupFinder
     Public uinfo As UserInfo
     Public cfg As WebJEA.Config
+    Public objTelemetry As New Telemetry
 
     Public Enum globalKeys
         aws_enabled
@@ -17,7 +18,7 @@
         {globalKeys.aws_key, "AKIAJ6X6FWQ3UWAOQL7Q"},
         {globalKeys.aws_keysec, "o2xPU115uqFZA6OotH9IWfWXGATU17wtm7vQRev6"},
         {globalKeys.aws_serviceUrl, "https://sqs.us-west-2.amazonaws.com"},
-        {globalKeys.aws_queueUrl, "https://sqs.us-west-2.amazonaws.com/777088161147/webjea-usage"}}
+        {globalKeys.aws_queueUrl, "https://sqs.us-west-2.amazonaws.com/777088161147/webjea-telemetry"}}
 
 
 End Module

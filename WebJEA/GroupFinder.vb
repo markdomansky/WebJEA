@@ -33,7 +33,7 @@ Public Class GroupFinder
         '#End If
 
         'create a context for the domain/machine in the group
-        Dim pc As PrincipalContext
+        Dim pc As PrincipalContext = Nothing
         If prvPC.ContainsKey(groupcontext) Then 'sid already found in cache
             dlog.Trace("GroupFinder: GetSID: Found cached Context: " & groupcontext)
             pc = prvPC(groupcontext)

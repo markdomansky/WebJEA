@@ -103,22 +103,35 @@ Public Class PSScriptParser
 
         Dim startIDX As Integer = prvScript.IndexOf("<#")
         Dim endIDX As Integer = prvScript.IndexOf(vbLf & "#>")
-        Dim dividerIDX As Integer
-        Dim dividerIDX2 As Integer
+        'Dim dividerIDX As Integer
+        'Dim dividerIDX2 As Integer
+        Dim commentBlock As String
 
-        dividerIDX = prvScript.IndexOf(vbLf & ".", startIDX)
-        While Not (dividerIDX = -1 Or dividerIDX2 >= endIDX)
-            'find the next entry in the comment block, or if non exists (or > then endidx), set to endidx
-            dividerIDX2 = prvScript.IndexOf(vbLf & ".", dividerIDX + 1)
-            If dividerIDX2 = -1 Or dividerIDX2 > endIDX Then
-                dividerIDX2 = endIDX
-            End If
+        If (startIDX = -1 Or endIDX = -1) Then
+            'comment block isn't valid, can't do anything with it.
+            Return
+        End If
 
-            Dim section As String = prvScript.Substring(dividerIDX + 1, dividerIDX2 - dividerIDX) 'the +1 and -2 account for the vblf
-            ParseCommentBlockSection(section)
+        commentBlock = prvScript.Substring(startIDX, endIDX - startIDX)
+        Dim cbSet As String() = Regex.Split(commentBlock, "(?=\n\.)")
 
-            dividerIDX = dividerIDX2
-        End While
+        For Each cbItem In cbSet
+            ParseCommentBlockSection(cbItem.Trim())
+        Next
+
+        'dividerIDX = prvScript.IndexOf(vbLf & ".", startIDX)
+        'While Not (dividerIDX = -1 Or dividerIDX2 >= endIDX)
+        '    'find the next entry in the comment block, or if non exists (or > then endidx), set to endidx
+        '    dividerIDX2 = prvScript.IndexOf(vbLf & ".", dividerIDX + 1)
+        '    If dividerIDX2 = -1 Or dividerIDX2 > endIDX Then
+        '        dividerIDX2 = endIDX
+        '    End If
+
+        '    Dim section As String = prvScript.Substring(dividerIDX + 1, dividerIDX2 - dividerIDX) 'the +1 and -2 account for the vblf
+        '    ParseCommentBlockSection(section)
+
+        '    dividerIDX = dividerIDX2
+        'End While
 
         'copy Parameter help to psparams
 
@@ -171,7 +184,12 @@ Public Class PSScriptParser
         Dim commentIDX As Integer = prvScript.IndexOf("<#")
         If commentIDX > -1 Then
             'found a comment block that MIGHT have 'param' in it
-            IDX = AdvIndexOf(prvScript, New List(Of String)({"#>"}), commentIDX)
+
+            IDX = prvScript.IndexOf("#>", commentIDX)
+            If IDX = -1 Then
+                dlog.Error("ScriptParser: Did not find end of comment block")
+            End If
+            IDX += 2 'skip the #>
             dlog.Trace("ScriptParsers: ParseParameters: Found Comment Block " & commentIDX.ToString & " to " & IDX.ToString)
         End If
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WebJEA", "WebJEA.vbproj", "{0327F3B9-9BEA-4F00-86A5-C7355A1FC5D0}"
 EndProject
@@ -20,5 +20,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		BuildVersion_UseGlobalSettings = True
+		BuildVersion_StartDate = 2000/1/1
+		SolutionGuid = {6AC2BC8A-23E5-4208-A7BD-C7BBA12AE5E9}
 	EndGlobalSection
 EndGlobal

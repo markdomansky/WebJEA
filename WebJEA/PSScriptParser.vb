@@ -148,6 +148,8 @@ Public Class PSScriptParser
         Section = Section.Trim 'trim leading and trailing spaces, cr,lf, etc
 
         Dim sectionarr() As String = Section.Split(vbLf.ToCharArray, 2)
+        If (sectionarr.Count) <> 2 Then Return 'this isn't a valid section, so skip it
+
         Dim header As String = sectionarr(0).Trim
         Dim comment As String = sectionarr(1).Trim
 

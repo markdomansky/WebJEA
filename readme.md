@@ -2,6 +2,9 @@
 
 WebJEA allows you to dynamically build web forms for any PowerShell script.  WebJEA automatically parses the script at page load for description, parameters and validation, then dynamically builds a form to take input and display formatted output.  You define access groups via AD and the scripts run within the AppPool user context.
 
+_WebJEA does not require JEA endpoints but can work with them.  With WebJEA, any PS script you write can be exposed to a controlled set of users via a web interface._
+
+
 ## Goals
 
 The main goals for WebJEA:

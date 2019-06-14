@@ -85,9 +85,9 @@ Install-Module WebJEAConfig
 ```powershell
 #Config.Json location and other inputs will depend on your specific configuration.
 Import-Module WebJEAConfig
-Open-WebJEAConfig "c:\webjea\config.json" 
+Open-WebJEAFile -Path "c:\webjea\config.json" 
 New-WebJEACommand -CommandId 'id' -DisplayName 'DisplayName' -Script 'script.ps1' -PermittedGroups @('*')
-Save-WebJEAConfig
+Save-WebJEAFile
 ```
 
 ## Security Considerations

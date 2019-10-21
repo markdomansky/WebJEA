@@ -96,7 +96,7 @@
     </form>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="scripts/jquery-3.3.1.min.js"></script>
+    <script src="scripts/jquery-3.4.1.min.js"></script>
     <script src="scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="scripts/jquery-ui-sliderAccess.js"></script>
     <script src="scripts/jquery-ui-timepicker-addon.min.js"></script>

@@ -35,18 +35,24 @@ Class Telemetry
     Public Sub AddIDs(DomainSid As String, DomainDNSRoot As String, ScriptID As String, UserID As String, Optional Permitted As Boolean = True)
 
         Dim oid As String = StringHash256(DomainSid & ";" & DomainDNSRoot.ToUpper())
+#If DEBUG Then
+        Add("orgid", "DEV")
+#Else
         Add("orgid", oid)
+#End If
         Add("scriptid", StringHash256(oid & ";" & ScriptID.ToUpper()))
         Add("userid", StringHash256(oid & ";" & UserID.ToUpper()))
         Add("permitted", Permitted)
 
     End Sub
 
-    Public Sub AddRuntime(SecondsRuntime As Single, Optional isOnload As Boolean = False)
+    Public Sub AddIsOnload(state As Boolean)
+        Add("IsOnload", state)
+    End Sub
 
-        Dim RuntimeName = "runtimesec"
-        If isOnload Then RuntimeName = "runtimesecOnload"
-        Add(RuntimeName, (Math.Ceiling(SecondsRuntime * 10D) / 10D).ToString()) 'round up to 1 decimal
+    Public Sub AddRuntime(SecondsRuntime As Single)
+
+        Add("runtimesec", (Math.Ceiling(SecondsRuntime * 10D) / 10D).ToString()) 'round up to 1 decimal
 
     End Sub
 
@@ -102,11 +108,11 @@ Class Telemetry
 
         Dim wints As DateTime = DateTime.UtcNow
         Dim ts As Integer = (wints - New DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds
-        Dim version As String = "2" 'version of string format
+        Dim version As String = "3" 'version of string format
 
         Add("wints", wints.ToString("yyyy-MM-dd hh:mm:ss"))
         Add("unixts", ts)
-        Add("version", version)
+        Add("msgversion", version)
 
     End Sub
 

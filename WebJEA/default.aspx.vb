@@ -73,6 +73,8 @@
         'add version to display
         Try
             lblVersion.Text = " v" + System.Reflection.Assembly.GetExecutingAssembly.GetName().Version.ToString(3)
+            objTelemetry.Add("appedition", "CE")
+            objTelemetry.Add("appversion", System.Reflection.Assembly.GetExecutingAssembly.GetName().Version.ToString(3))
         Catch ex As Exception
         End Try
 
@@ -116,7 +118,8 @@
                 ps.Script = cmd.OnloadScript
                 ps.LogParameters = cmd.LogParameters
                 ps.Run()
-                objTelemetry.AddRuntime(ps.Runtime, isOnload:=True)
+                objTelemetry.AddRuntime(ps.Runtime)
+                objTelemetry.AddIsOnload(True)
 
                 consoleOnload.InnerHtml = psweb.ConvertToHTML(ps.getOutputData)
                 ps = Nothing
@@ -174,6 +177,7 @@
 
         ps.Run()
         objTelemetry.AddRuntime(ps.Runtime)
+        objTelemetry.AddIsOnload(False)
 
         consoleOutput.Text = psweb.ConvertToHTML(ps.getOutputData)
         ps = Nothing

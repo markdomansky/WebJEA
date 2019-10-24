@@ -99,6 +99,10 @@ Save-WebJEAFile
 * Don't configure the MSA as a local administrator on the server.  It is not necessary to run.  However, it does need to be a local user and will automatically grant itself this permission during the DSC execution.
 * Ideally, you should grant the MSA account only the minimum, precise permissions needed to perform the tasks in your scripts.  <br>_For example, if you want to create a Help Desk unlock tool, you don't grant the MSA domain admin or even account operator.  Create a custom permission in AD that allows the MSA to unlock user accounts._
 
+## In-place Upgrades
+
+In-place upgrades are very straightforward.  You can use DSC, or just drop the .\Site files in place.  Be careful not to overwrite the existing config files (nlog.config and web.config).  It should take effect immediately without an iisreset.
+
 ## License
 
 Copyright, 2018, Mark Domansky.  All rights not granted explicitly are reserved.

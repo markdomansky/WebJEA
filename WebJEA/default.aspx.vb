@@ -115,13 +115,16 @@
                 panelOnload.Attributes("class") = panelOnload.Attributes("class") & " collapse"
             Else 'run the script and display it
                 Dim ps As New PSEngine
+                Dim pswebonload As New PSWebHelper
                 ps.Script = cmd.OnloadScript
                 ps.LogParameters = cmd.LogParameters
+                'pass in parameters to onload script
+                ps.Parameters = pswebonload.getParameters(cmd, Page)
                 ps.Run()
                 objTelemetry.AddRuntime(ps.Runtime)
                 objTelemetry.AddIsOnload(True)
 
-                consoleOnload.InnerHtml = psweb.ConvertToHTML(ps.getOutputData)
+                consoleOnload.InnerHtml = pswebonload.ConvertToHTML(ps.getOutputData)
                 ps = Nothing
 
             End If

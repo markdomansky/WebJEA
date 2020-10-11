@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\Microsoft.Net.Compilers.3.3.1\build\Microsoft.Net.Compilers.props" Condition="Exists('packages\Microsoft.Net.Compilers.3.3.1\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="packages\Microsoft.Net.Compilers.2.10.0\build\Microsoft.Net.Compilers.props" Condition="Exists('packages\Microsoft.Net.Compilers.2.10.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
-  <Import Project="..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -27,7 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
-    <AssemblyVersion>0.9.125.18132</AssemblyVersion>
+    <AssemblyVersion>1.1.157.7589</AssemblyVersion>
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
     <Use64BitIISExpress />
   </PropertyGroup>
@@ -85,20 +84,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
-      <HintPath>packages\AWSSDK.Core.3.3.103.52\lib\net45\AWSSDK.Core.dll</HintPath>
+      <HintPath>packages\AWSSDK.Core.3.5.1.24\lib\net45\AWSSDK.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="AWSSDK.SQS, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
-      <HintPath>packages\AWSSDK.SQS.3.3.102.19\lib\net45\AWSSDK.SQS.dll</HintPath>
+      <HintPath>packages\AWSSDK.SQS.3.5.0.26\lib\net45\AWSSDK.SQS.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>packages\NLog.4.6.7\lib\net45\NLog.dll</HintPath>
+      <HintPath>packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NLog.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>packages\NLog.Web.4.9.0\lib\net35\NLog.Web.dll</HintPath>
+      <HintPath>packages\NLog.Web.4.9.3\lib\net35\NLog.Web.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -164,10 +168,8 @@
     <Content Include="content\bootstrap-reboot.min.css" />
     <Content Include="content\bootstrap.css" />
     <Content Include="content\bootstrap.min.css" />
-    <Content Include="content\ie10-viewport-bug-workaround.css" />
     <Content Include="content\jquery-ui-timepicker-addon.css" />
     <Content Include="content\jquery-ui-timepicker-addon.min.css" />
-    <Content Include="content\ps.png" />
     <Content Include="content\themes\base\accordion.css" />
     <Content Include="content\themes\base\all.css" />
     <Content Include="content\themes\base\autocomplete.css" />
@@ -224,6 +226,7 @@
     <Content Include="content\bootstrap-reboot.css.map" />
     <Content Include="content\bootstrap-grid.min.css.map" />
     <Content Include="content\bootstrap-grid.css.map" />
+    <None Include="My Project\PublishProfiles\FolderProfile.pubxml" />
     <None Include="My Project\PublishProfiles\Mgmt1.pubxml" />
     <Content Include="scripts\bootstrap.bundle.js" />
     <Content Include="scripts\bootstrap.bundle.min.js" />
@@ -279,7 +282,6 @@
     <Content Include="scripts\i18n\jquery-ui-timepicker-vi.js" />
     <Content Include="scripts\i18n\jquery-ui-timepicker-zh-CN.js" />
     <Content Include="scripts\i18n\jquery-ui-timepicker-zh-TW.js" />
-    <Content Include="scripts\ie10-viewport-bug-workaround.js" />
     <None Include="My Project\PublishProfiles\Release.pubxml" />
     <Content Include="scripts\bootstrap.min.js.map" />
     <Content Include="scripts\bootstrap.js.map" />
@@ -292,11 +294,6 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="scripts\jquery-3.4.1.intellisense.js" />
-    <Content Include="scripts\jquery-3.4.1.js" />
-    <Content Include="scripts\jquery-3.4.1.min.js" />
-    <Content Include="scripts\jquery-3.4.1.slim.js" />
-    <Content Include="scripts\jquery-3.4.1.slim.min.js" />
     <Content Include="scripts\jquery-ui-1.12.1.js" />
     <Content Include="scripts\jquery-ui-1.12.1.min.js" />
     <Content Include="scripts\jquery-ui-sliderAccess.js" />
@@ -392,8 +389,6 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="scripts\jquery-3.4.1.slim.min.map" />
-    <Content Include="scripts\jquery-3.4.1.min.map" />
     <Content Include="scripts\umd\popper.min.js.map" />
     <Content Include="scripts\umd\popper.js.map" />
     <Content Include="scripts\umd\popper-utils.min.js.map" />
@@ -454,6 +449,9 @@
     <PlatformTarget>x64</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
@@ -481,11 +479,7 @@
     </PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props'))" />
-    <Error Condition="!Exists('packages\Microsoft.Net.Compilers.3.3.1\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Net.Compilers.3.3.1\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.Net.Compilers.2.10.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Net.Compilers.2.10.0\build\Microsoft.Net.Compilers.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

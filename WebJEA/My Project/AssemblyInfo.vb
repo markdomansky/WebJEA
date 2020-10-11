@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 <Assembly: AssemblyTitle("WebJEA")>
-<Assembly: AssemblyDescription("www.webjea.com")>
+<Assembly: AssemblyDescription("webjea.com")>
 <Assembly: AssemblyCompany("Mark Domansky")>
 <Assembly: AssemblyProduct("WebJEA")>
-<Assembly: AssemblyCopyright("Copyright © Mark Domansky, 2017")>
+<Assembly: AssemblyCopyright("Copyright © Mark Domansky, 2020")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
@@ -30,5 +30,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("0.9.150.19126")>
-<Assembly: AssemblyFileVersion("0.9.150.19126")>
+<Assembly: AssemblyVersion("1.1.157.7589")>
+<Assembly: AssemblyFileVersion("1.1.157.7589")>

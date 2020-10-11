@@ -13,7 +13,7 @@
 
     <link href="content/bootstrap.min.css" rel="stylesheet" />
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="content/ie10-viewport-bug-workaround.css" rel="stylesheet" />
+    <%--<link href="content/ie10-viewport-bug-workaround.css" rel="stylesheet" />--%>
 
     <link href="content/themes/base/jquery-ui.css" rel="stylesheet" />
     <link href="content/jquery-ui-timepicker-addon.css" rel="stylesheet" />
@@ -96,7 +96,7 @@
     </form>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="scripts/jquery-3.4.1.min.js"></script>
+    <script src="scripts/jquery-3.5.1.min.js"></script>
     <script src="scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="scripts/jquery-ui-sliderAccess.js"></script>
     <script src="scripts/jquery-ui-timepicker-addon.min.js"></script>
@@ -104,7 +104,7 @@
     <script src="scripts/popper.min.js"></script>
     <script src="scripts/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="scripts/ie10-viewport-bug-workaround.js"></script>
+    <%--<script src="scripts/ie10-viewport-bug-workaround.js"></script>--%>
 
     <!-- webjea startup -->
     <script src="startup.js"></script>

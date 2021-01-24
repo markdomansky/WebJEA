@@ -72,6 +72,7 @@ Public Class GroupFinder
                 dlog.Trace("GroupFinder: GetSID: Found Group SID: " & groupname & ": " & grp.Sid.ToString)
                 Return grp.Sid.ToString
             Catch ex As Exception
+                dlog.Error("GroupFinder: GetSID: Error Trying as Group.")
             End Try
 
             Try
@@ -79,10 +80,11 @@ Public Class GroupFinder
                 dlog.Trace("GroupFinder: GetSID: Found User SID: " & groupname & ": " & usr.Sid.ToString)
                 Return usr.Sid.ToString
             Catch ex As Exception
+                dlog.Error("GroupFinder: GetSID: Error Trying as User.")
             End Try
         End If
 
-
+        dlog.Error("GroupFinder: GetSID: No SID Matched.")
         Return ""
 
     End Function

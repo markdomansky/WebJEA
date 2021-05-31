@@ -65,7 +65,7 @@
                     </div>
                     <div id="Synopsis" class="description">
                         <asp:Label ID="lblCmdSynopsis" runat="server" Text="lblCmdSynopsis"></asp:Label>
-                        <a runat="server" href="#collapseDescription" class="btn btn-sm btn-light" data-toggle="collapse" aria-expanded="false" aria-controls="collapseDescription" id="btnMore">more</a></div>
+                        <a runat="server" class="btn btn-sm btn-light" data-target="#collapseDescription" data-toggle="collapse" aria-expanded="false" aria-controls="collapseDescription" id="btnMore">more</a></div>
                     <div id="collapseDescription" class="collapse">
                         <div class="well">
                             <asp:Label ID="lblCmdDescription" runat="server" Text="lblCmdDescription"></asp:Label></div>
@@ -96,7 +96,7 @@
     </form>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="scripts/jquery-3.5.1.min.js"></script>
+    <script src="scripts/jquery-3.6.0.min.js"></script>
     <script src="scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="scripts/jquery-ui-sliderAccess.js"></script>
     <script src="scripts/jquery-ui-timepicker-addon.min.js"></script>

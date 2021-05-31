@@ -56,7 +56,7 @@ Namespace My
         
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("C:\prj\WebJEA CE\WebJEATest\configlocal.json")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("C:\prj\WebJEATest\configlocal.json")>  _
         Public ReadOnly Property configfile() As String
             Get
                 Return CType(Me("configfile"),String)

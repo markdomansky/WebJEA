@@ -28,6 +28,9 @@ Public Class GroupFinder
             groupname = input
         End If
 
+        If groupcontext = "." Then 'context doesn't seem to reliably support ".", so we convert to machinename for clarity.
+            groupcontext = System.Environment.MachineName
+        End If
         '#If DEBUG Then
         '        Return "*"
         '#End If
@@ -44,18 +47,21 @@ Public Class GroupFinder
                 Try
                     pc = New PrincipalContext(ContextType.Domain)
                 Catch ex As Exception
+                    dlog.Trace("GroupFinder: GetSID: Failed to resolve as Default Domain Context ()")
                 End Try
             Else
                 Try
                     pc = New PrincipalContext(ContextType.Domain, groupcontext)
                     dlog.Trace("GroupFinder: GetSID: Adding Domain Context: " & groupcontext)
                 Catch ex As Exception
+                    dlog.Trace("GroupFinder: GetSID: Failed to resolve as Domain Context (" & groupcontext & ")")
                 End Try
                 If pc Is Nothing Then
                     Try
                         pc = New PrincipalContext(ContextType.Machine, groupcontext)
                         dlog.Trace("GroupFinder: GetSID: Adding Machine Context: " & groupcontext)
                     Catch ex As Exception
+                        dlog.Trace("GroupFinder: GetSID: Failed to resolve as Machine Context (" & groupcontext & ")")
                     End Try
                 End If
 
@@ -72,7 +78,7 @@ Public Class GroupFinder
                 dlog.Trace("GroupFinder: GetSID: Found Group SID: " & groupname & ": " & grp.Sid.ToString)
                 Return grp.Sid.ToString
             Catch ex As Exception
-                dlog.Error("GroupFinder: GetSID: Error Trying as Group.")
+                dlog.Error("GroupFinder: GetSID: Error Trying as Group. (" & groupname & ")")
             End Try
 
             Try
@@ -80,7 +86,7 @@ Public Class GroupFinder
                 dlog.Trace("GroupFinder: GetSID: Found User SID: " & groupname & ": " & usr.Sid.ToString)
                 Return usr.Sid.ToString
             Catch ex As Exception
-                dlog.Error("GroupFinder: GetSID: Error Trying as User.")
+                dlog.Error("GroupFinder: GetSID: Error Trying as User. (" & groupname & ")")
             End Try
         End If
 

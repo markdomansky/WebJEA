@@ -26,7 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
-    <AssemblyVersion>1.1.159.7692</AssemblyVersion>
+    <AssemblyVersion>1.1.163.21152</AssemblyVersion>
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
     <Use64BitIISExpress />
   </PropertyGroup>
@@ -162,55 +162,153 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="content\bootstrap-grid.css" />
-    <Content Include="content\bootstrap-grid.min.css" />
-    <Content Include="content\bootstrap-reboot.css" />
-    <Content Include="content\bootstrap-reboot.min.css" />
-    <Content Include="content\bootstrap.css" />
-    <Content Include="content\bootstrap.min.css" />
-    <Content Include="content\jquery-ui-timepicker-addon.css" />
-    <Content Include="content\jquery-ui-timepicker-addon.min.css" />
-    <Content Include="content\themes\base\accordion.css" />
-    <Content Include="content\themes\base\all.css" />
-    <Content Include="content\themes\base\autocomplete.css" />
-    <Content Include="content\themes\base\base.css" />
-    <Content Include="content\themes\base\button.css" />
-    <Content Include="content\themes\base\core.css" />
-    <Content Include="content\themes\base\datepicker.css" />
-    <Content Include="content\themes\base\dialog.css" />
-    <Content Include="content\themes\base\draggable.css" />
-    <Content Include="content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
-    <Content Include="content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
-    <Content Include="content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
-    <Content Include="content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
-    <Content Include="content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
-    <Content Include="content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
-    <Content Include="content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
-    <Content Include="content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
-    <Content Include="content\themes\base\images\ui-icons_222222_256x240.png" />
-    <Content Include="content\themes\base\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="content\themes\base\images\ui-icons_444444_256x240.png" />
-    <Content Include="content\themes\base\images\ui-icons_454545_256x240.png" />
-    <Content Include="content\themes\base\images\ui-icons_555555_256x240.png" />
-    <Content Include="content\themes\base\images\ui-icons_777620_256x240.png" />
-    <Content Include="content\themes\base\images\ui-icons_777777_256x240.png" />
-    <Content Include="content\themes\base\images\ui-icons_888888_256x240.png" />
-    <Content Include="content\themes\base\images\ui-icons_cc0000_256x240.png" />
-    <Content Include="content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
-    <Content Include="content\themes\base\images\ui-icons_ffffff_256x240.png" />
-    <Content Include="content\themes\base\jquery-ui.css" />
-    <Content Include="content\themes\base\jquery-ui.min.css" />
-    <Content Include="content\themes\base\menu.css" />
-    <Content Include="content\themes\base\progressbar.css" />
-    <Content Include="content\themes\base\resizable.css" />
-    <Content Include="content\themes\base\selectable.css" />
-    <Content Include="content\themes\base\selectmenu.css" />
-    <Content Include="content\themes\base\slider.css" />
-    <Content Include="content\themes\base\sortable.css" />
-    <Content Include="content\themes\base\spinner.css" />
-    <Content Include="content\themes\base\tabs.css" />
-    <Content Include="content\themes\base\theme.css" />
-    <Content Include="content\themes\base\tooltip.css" />
+    <Content Include="content\bootstrap-grid.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\bootstrap-grid.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\bootstrap-reboot.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\bootstrap-reboot.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\bootstrap.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\bootstrap.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\jquery-ui-timepicker-addon.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\jquery-ui-timepicker-addon.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\accordion.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\all.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\autocomplete.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\base.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\button.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\core.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\datepicker.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\dialog.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\draggable.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-bg_glass_75_dadada_1x400.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-icons_222222_256x240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-icons_2e83ff_256x240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-icons_444444_256x240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-icons_454545_256x240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-icons_555555_256x240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-icons_777620_256x240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-icons_777777_256x240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-icons_888888_256x240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-icons_cc0000_256x240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-icons_cd0a0a_256x240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\images\ui-icons_ffffff_256x240.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\jquery-ui.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\jquery-ui.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\menu.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\progressbar.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\resizable.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\selectable.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\selectmenu.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\slider.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\sortable.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\spinner.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\tabs.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\theme.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\themes\base\tooltip.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="default.aspx" />
     <Content Include="error.aspx" />
     <Content Include="Global.asax" />
@@ -220,22 +318,50 @@
     <Content Include="main.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="content\bootstrap.min.css.map" />
-    <Content Include="content\bootstrap.css.map" />
-    <Content Include="content\bootstrap-reboot.min.css.map" />
-    <Content Include="content\bootstrap-reboot.css.map" />
-    <Content Include="content\bootstrap-grid.min.css.map" />
-    <Content Include="content\bootstrap-grid.css.map" />
-    <None Include="My Project\PublishProfiles\FolderProfile.pubxml" />
-    <None Include="My Project\PublishProfiles\Mgmt1.pubxml" />
+    <Content Include="libman.json" />
+    <Content Include="content\bootstrap.min.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\bootstrap.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\bootstrap-reboot.min.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\bootstrap-reboot.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\bootstrap-grid.min.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="content\bootstrap-grid.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="scripts\bootstrap.bundle.js" />
     <Content Include="scripts\bootstrap.bundle.min.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />
-    <Content Include="scripts\esm\popper-utils.js" />
-    <Content Include="scripts\esm\popper-utils.min.js" />
-    <Content Include="scripts\esm\popper.js" />
-    <Content Include="scripts\esm\popper.min.js" />
+    <Content Include="scripts\esm\popper-utils.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\esm\popper-utils.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\esm\popper.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\esm\popper.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="My Project\PublishProfiles\Web19.pubxml" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="scripts\bootstrap.min.js.map" />
+    <Content Include="scripts\bootstrap.js.map" />
+    <Content Include="scripts\bootstrap.bundle.min.js.map" />
+    <Content Include="scripts\bootstrap.bundle.js.map" />
+    <None Include="scripts\jquery-3.6.0.intellisense.js" />
     <Content Include="scripts\i18n\jquery-ui-timepicker-addon-i18n.js" />
     <Content Include="scripts\i18n\jquery-ui-timepicker-addon-i18n.min.js" />
     <Content Include="scripts\i18n\jquery-ui-timepicker-af.js" />
@@ -282,11 +408,6 @@
     <Content Include="scripts\i18n\jquery-ui-timepicker-vi.js" />
     <Content Include="scripts\i18n\jquery-ui-timepicker-zh-CN.js" />
     <Content Include="scripts\i18n\jquery-ui-timepicker-zh-TW.js" />
-    <None Include="My Project\PublishProfiles\Release.pubxml" />
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="scripts\jquery-3.6.0.intellisense.js" />
     <Content Include="scripts\jquery-3.6.0.js" />
     <Content Include="scripts\jquery-3.6.0.min.js" />
     <Content Include="scripts\jquery-3.6.0.slim.js" />
@@ -296,77 +417,219 @@
     <Content Include="scripts\jquery-ui-sliderAccess.js" />
     <Content Include="scripts\jquery-ui-timepicker-addon.js" />
     <Content Include="scripts\jquery-ui-timepicker-addon.min.js" />
-    <Content Include="scripts\popper-utils.js" />
-    <Content Include="scripts\popper-utils.min.js" />
-    <Content Include="scripts\popper.js" />
-    <Content Include="scripts\popper.min.js" />
-    <Content Include="scripts\src\index.js" />
-    <Content Include="scripts\src\methods\defaults.js" />
-    <Content Include="scripts\src\methods\destroy.js" />
-    <Content Include="scripts\src\methods\disableEventListeners.js" />
-    <Content Include="scripts\src\methods\enableEventListeners.js" />
-    <Content Include="scripts\src\methods\placements.js" />
-    <Content Include="scripts\src\methods\update.js" />
-    <Content Include="scripts\src\modifiers\applyStyle.js" />
-    <Content Include="scripts\src\modifiers\arrow.js" />
-    <Content Include="scripts\src\modifiers\computeStyle.js" />
-    <Content Include="scripts\src\modifiers\flip.js" />
-    <Content Include="scripts\src\modifiers\hide.js" />
-    <Content Include="scripts\src\modifiers\index.js" />
-    <Content Include="scripts\src\modifiers\inner.js" />
-    <Content Include="scripts\src\modifiers\keepTogether.js" />
-    <Content Include="scripts\src\modifiers\offset.js" />
-    <Content Include="scripts\src\modifiers\preventOverflow.js" />
-    <Content Include="scripts\src\modifiers\shift.js" />
-    <Content Include="scripts\src\utils\clockwise.js" />
-    <Content Include="scripts\src\utils\computeAutoPlacement.js" />
-    <Content Include="scripts\src\utils\debounce.js" />
-    <Content Include="scripts\src\utils\find.js" />
-    <Content Include="scripts\src\utils\findCommonOffsetParent.js" />
-    <Content Include="scripts\src\utils\findIndex.js" />
-    <Content Include="scripts\src\utils\getBordersSize.js" />
-    <Content Include="scripts\src\utils\getBoundaries.js" />
-    <Content Include="scripts\src\utils\getBoundingClientRect.js" />
-    <Content Include="scripts\src\utils\getClientRect.js" />
-    <Content Include="scripts\src\utils\getFixedPositionOffsetParent.js" />
-    <Content Include="scripts\src\utils\getOffsetParent.js" />
-    <Content Include="scripts\src\utils\getOffsetRect.js" />
-    <Content Include="scripts\src\utils\getOffsetRectRelativeToArbitraryNode.js" />
-    <Content Include="scripts\src\utils\getOppositePlacement.js" />
-    <Content Include="scripts\src\utils\getOppositeVariation.js" />
-    <Content Include="scripts\src\utils\getOuterSizes.js" />
-    <Content Include="scripts\src\utils\getParentNode.js" />
-    <Content Include="scripts\src\utils\getPopperOffsets.js" />
-    <Content Include="scripts\src\utils\getReferenceNode.js" />
-    <Content Include="scripts\src\utils\getReferenceOffsets.js" />
-    <Content Include="scripts\src\utils\getRoot.js" />
-    <Content Include="scripts\src\utils\getRoundedOffsets.js" />
-    <Content Include="scripts\src\utils\getScroll.js" />
-    <Content Include="scripts\src\utils\getScrollParent.js" />
-    <Content Include="scripts\src\utils\getStyleComputedProperty.js" />
-    <Content Include="scripts\src\utils\getSupportedPropertyName.js" />
-    <Content Include="scripts\src\utils\getViewportOffsetRectRelativeToArtbitraryNode.js" />
-    <Content Include="scripts\src\utils\getWindow.js" />
-    <Content Include="scripts\src\utils\getWindowSizes.js" />
-    <Content Include="scripts\src\utils\includeScroll.js" />
-    <Content Include="scripts\src\utils\index.js" />
-    <Content Include="scripts\src\utils\isBrowser.js" />
-    <Content Include="scripts\src\utils\isFixed.js" />
-    <Content Include="scripts\src\utils\isFunction.js" />
-    <Content Include="scripts\src\utils\isIE.js" />
-    <Content Include="scripts\src\utils\isModifierEnabled.js" />
-    <Content Include="scripts\src\utils\isModifierRequired.js" />
-    <Content Include="scripts\src\utils\isNumeric.js" />
-    <Content Include="scripts\src\utils\isOffsetContainer.js" />
-    <Content Include="scripts\src\utils\removeEventListeners.js" />
-    <Content Include="scripts\src\utils\runModifiers.js" />
-    <Content Include="scripts\src\utils\setAttributes.js" />
-    <Content Include="scripts\src\utils\setStyles.js" />
-    <Content Include="scripts\src\utils\setupEventListeners.js" />
-    <Content Include="scripts\umd\popper-utils.js" />
-    <Content Include="scripts\umd\popper-utils.min.js" />
-    <Content Include="scripts\umd\popper.js" />
-    <Content Include="scripts\umd\popper.min.js" />
+    <Content Include="scripts\popper-utils.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\popper-utils.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\popper.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\popper.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\index.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\methods\defaults.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\methods\destroy.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\methods\disableEventListeners.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\methods\enableEventListeners.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\methods\placements.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\methods\update.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\modifiers\applyStyle.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\modifiers\arrow.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\modifiers\computeStyle.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\modifiers\flip.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\modifiers\hide.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\modifiers\index.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\modifiers\inner.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\modifiers\keepTogether.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\modifiers\offset.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\modifiers\preventOverflow.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\modifiers\shift.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\clockwise.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\computeAutoPlacement.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\debounce.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\find.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\findCommonOffsetParent.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\findIndex.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getBordersSize.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getBoundaries.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getBoundingClientRect.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getClientRect.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getFixedPositionOffsetParent.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getOffsetParent.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getOffsetRect.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getOffsetRectRelativeToArbitraryNode.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getOppositePlacement.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getOppositeVariation.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getOuterSizes.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getParentNode.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getPopperOffsets.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getReferenceNode.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getReferenceOffsets.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getRoot.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getRoundedOffsets.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getScroll.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getScrollParent.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getStyleComputedProperty.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getSupportedPropertyName.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getViewportOffsetRectRelativeToArtbitraryNode.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getWindow.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\getWindowSizes.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\includeScroll.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\index.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\isBrowser.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\isFixed.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\isFunction.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\isIE.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\isModifierEnabled.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\isModifierRequired.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\isNumeric.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\isOffsetContainer.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\removeEventListeners.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\runModifiers.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\setAttributes.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\setStyles.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\src\utils\setupEventListeners.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\umd\popper-utils.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\umd\popper-utils.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\umd\popper.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\umd\popper.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="sidebar.css" />
     <Content Include="startup.js" />
     <Content Include="loader.svg" />
@@ -450,25 +713,51 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="scripts\umd\popper.min.js.map" />
-    <Content Include="scripts\umd\popper.js.map" />
-    <Content Include="scripts\umd\popper.js.flow" />
-    <Content Include="scripts\umd\popper-utils.min.js.map" />
-    <Content Include="scripts\umd\popper-utils.js.map" />
-    <Content Include="scripts\README.md" />
-    <Content Include="scripts\popper.min.js.map" />
-    <Content Include="scripts\popper.js.map" />
-    <Content Include="scripts\popper-utils.min.js.map" />
-    <Content Include="scripts\popper-utils.js.map" />
-    <Content Include="scripts\index.js.flow" />
-    <Content Include="scripts\esm\popper.min.js.map" />
-    <Content Include="scripts\esm\popper.js.map" />
-    <Content Include="scripts\esm\popper-utils.min.js.map" />
-    <Content Include="scripts\esm\popper-utils.js.map" />
-    <Content Include="scripts\bootstrap.min.js.map" />
-    <Content Include="scripts\bootstrap.js.map" />
-    <Content Include="scripts\bootstrap.bundle.min.js.map" />
-    <Content Include="scripts\bootstrap.bundle.js.map" />
+    <Content Include="scripts\umd\popper.min.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\umd\popper.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\umd\popper.js.flow">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\umd\popper-utils.min.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\umd\popper-utils.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\README.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\popper.min.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\popper.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\popper-utils.min.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\popper-utils.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\index.js.flow">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\esm\popper.min.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\esm\popper.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\esm\popper-utils.min.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scripts\esm\popper-utils.js.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="scripts\jquery-3.6.0.slim.min.map" />
     <Content Include="scripts\jquery-3.6.0.min.map" />
     <None Include="Web.Debug.config">
@@ -482,8 +771,11 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="scripts\index.d.ts" />
+    <TypeScriptCompile Include="scripts\index.d.ts">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </TypeScriptCompile>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -533,18 +825,18 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>23811</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:23811/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>https://mgmt1.domain1.local/webjea</CustomServerUrl>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>https://web19.domain1.local</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_StartDate="2000/1/1" />
+      <UserProperties BuildVersion_StartDate="2000/1/1" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>

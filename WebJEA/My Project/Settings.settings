@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="configfile" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">C:\prj\WebJEATest\configlocal.json</Value>
+      <Value Profile="(Default)">C:\prj\WebJEATest\configlocal1.json</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -11,7 +11,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("webjea.com")>
 <Assembly: AssemblyCompany("Mark Domansky")>
 <Assembly: AssemblyProduct("WebJEA")>
-<Assembly: AssemblyCopyright("Copyright © Mark Domansky, 2020")>
+<Assembly: AssemblyCopyright("Copyright © Mark Domansky, 2021")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
@@ -30,5 +30,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.1.159.7692")>
-<Assembly: AssemblyFileVersion("1.1.159.7692")>
+<Assembly: AssemblyVersion("1.1.163.21152")>
+<Assembly: AssemblyFileVersion("1.1.163.21152")>

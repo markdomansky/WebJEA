@@ -72,9 +72,9 @@
 
         'add version to display
         Try
-            lblVersion.Text = " v" + System.Reflection.Assembly.GetExecutingAssembly.GetName().Version.ToString(3)
+            lblVersion.Text = " v" + System.Reflection.Assembly.GetExecutingAssembly.GetName().Version.ToString(4)
             objTelemetry.Add("appedition", "CE")
-            objTelemetry.Add("appversion", System.Reflection.Assembly.GetExecutingAssembly.GetName().Version.ToString(3))
+            objTelemetry.Add("appversion", System.Reflection.Assembly.GetExecutingAssembly.GetName().Version.ToString(4))
         Catch ex As Exception
         End Try
 

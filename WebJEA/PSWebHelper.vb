@@ -534,6 +534,7 @@
             If valobj.Type = PSCmdParamVal.ValType.Mandatory And param.ParamType <> PSCmdParam.ParameterType.PSBoolean Then
                 Dim valctrl As New RequiredFieldValidator()
                 valctrl.ErrorMessage = "Required Field"
+                valctrl.CssClass = "valmsg"
                 valctrl.SetFocusOnError = True
                 valctrl.ControlToValidate = param.FieldName
                 retctrls.Add(valctrl)
@@ -544,6 +545,7 @@
                 Dim valctrl As New CustomValidator
                 valctrl.ClientValidationFunction = "validateMandatoryCheckbox"
                 valctrl.ErrorMessage = "You must check the box for " & param.Name & "."
+                valctrl.CssClass = "valmsg"
                 'valctrl.EnableClientScript = True
                 valctrl.SetFocusOnError = True
                 'you can't point a customvalidator directly at a checkbox, the checkbox can't be validated.
@@ -555,6 +557,7 @@
                 Dim valctrl As New RegularExpressionValidator()
                 valctrl.ValidationExpression = "[\S\s]{" & valobj.LowerLimit & "," & valobj.UpperLimit & "}"
                 valctrl.ErrorMessage = "Not in allowed length (" & valobj.LowerLimit & "-" & valobj.UpperLimit & ")"
+                valctrl.CssClass = "valmsg"
                 valctrl.SetFocusOnError = True
                 valctrl.ControlToValidate = param.FieldName
                 retctrls.Add(valctrl)
@@ -562,6 +565,7 @@
                 Dim valctrl As New RegularExpressionValidator()
                 valctrl.ValidationExpression = valobj.Pattern
                 valctrl.ErrorMessage = "Did not match pattern: " & valobj.Pattern
+                valctrl.CssClass = "valmsg"
                 valctrl.SetFocusOnError = True
                 valctrl.ControlToValidate = param.FieldName
                 retctrls.Add(valctrl)
@@ -570,6 +574,7 @@
                 valctrl.MinimumValue = valobj.LowerLimit
                 valctrl.MaximumValue = valobj.UpperLimit
                 valctrl.ErrorMessage = "Not in allowed range (" & valobj.LowerLimit & "-" & valobj.UpperLimit & ")"
+                valctrl.CssClass = "valmsg"
                 If param.ParamType = PSCmdParam.ParameterType.PSInt Then
                     valctrl.Type = ValidationDataType.Integer
                 ElseIf param.ParamType = PSCmdParam.ParameterType.PSFloat Then 'single/double
@@ -584,6 +589,7 @@
                 Dim valctrl As New CustomValidator
                 valctrl.ClientValidationFunction = "validateCollection"
                 valctrl.ErrorMessage = "Number of selected items not in allowed range (" & valobj.LowerLimit & "-" & valobj.UpperLimit & ")"
+                valctrl.CssClass = "valmsg"
                 valctrl.Attributes("data-min") = valobj.LowerLimit
                 valctrl.Attributes("data-max") = valobj.UpperLimit
                 'valctrl.EnableClientScript=true

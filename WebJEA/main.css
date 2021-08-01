@@ -121,6 +121,10 @@ body {
     font-size: 16px;
 }
 
+.valmsg {
+    color: red;
+}
+
 #imgLoader {
     display: none;
 }

@@ -57,7 +57,7 @@ Public Class PSCmdParamVal
     End Sub
 
     Private Sub ParseRange(strInput As String)
-        Dim pattern As String = "^VALIDATE.+\((?<lowerlimit>\d+),(?<upperlimit>\d+)\)$"
+        Dim pattern As String = "^VALIDATE.+\(\s{0,5}(?<lowerlimit>\d+)\s{0,5},\s{0,5}(?<upperlimit>\d+)\s{0,5}\)$"
         Dim rgx As New Regex(pattern, RegexOptions.IgnoreCase)
         Dim names() As String = rgx.GetGroupNames()
 

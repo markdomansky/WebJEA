@@ -61,7 +61,7 @@
             Dim tagOpen As Integer = IDX
             Dim tagSplit1 As Integer = output.IndexOf("|", tagOpen)
             Dim tagSplit2 As Integer = output.IndexOf("|", tagSplit1 + 1)
-            Dim tagClose As Integer = output.IndexOf("]]", tagSplit2)
+            Dim tagClose As Integer = output.LastIndexOf("]]", output.Length)
 
             If tagSplit1 = -1 Then Return output 'bad format
             If tagSplit2 = -1 Then Return output

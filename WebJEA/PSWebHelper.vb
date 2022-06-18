@@ -1,4 +1,5 @@
 ﻿Public Class PSWebHelper
+    Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
 
 #Region "Output Formatting"
@@ -612,7 +613,7 @@
 
 #Region "Get Inputs"
 
-    Public Function getParameters(cmd As PSCmd, page As Page) As Dictionary(Of String, Object)
+    Public Function getParameters(cmd As PSCmd, page As Page, ByRef uinfo As UserInfo) As Dictionary(Of String, Object)
         Dim params As New Dictionary(Of String, Object)
 
         If Not (cmd.Parameters Is Nothing) Then
@@ -620,7 +621,7 @@
                 Dim ctrl As WebControl = CType(page.FindControl(param.FieldName), WebControl)
 
                 If (param.Name.ToUpper().StartsWith("WEBJEA")) Then
-                    getParameterInternal(param, page, params)
+                    GetParameterInternal(param, page, params, uinfo)
                 ElseIf (param.IsSelect) Then 'array
                     GetParameterSelect(param, page, params)
                 ElseIf param.ParamType = PSCmdParam.ParameterType.PSBoolean Then
@@ -644,7 +645,7 @@
 
         Return params
     End Function
-    Private Sub GetParameterInternal(param As PSCmdParam, page As Page, ByRef params As Dictionary(Of String, Object))
+    Private Sub GetParameterInternal(param As PSCmdParam, page As Page, ByRef params As Dictionary(Of String, Object), ByRef uinfo As UserInfo)
         'These are special parameters that are not presented to the user, but are handled internally.
         If param.Name.ToUpper() = "WEBJEAUSERNAME" Then
             params.Add(param.Name, uinfo.UserName)

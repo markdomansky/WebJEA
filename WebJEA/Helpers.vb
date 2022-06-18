@@ -1,7 +1,6 @@
 ﻿Imports Microsoft.VisualBasic
 Imports Microsoft.VisualBasic.Devices
 
-
 Module Helpers
     Public Function CoalesceString(ByVal ParamArray arguments As String()) As String
         Dim argument As String
@@ -17,13 +16,16 @@ Module Helpers
 
     Public Function GetFileContent(filename As String) As String
         'Just a convenience wrapper for reading a file
-        dlog.Trace("GetFileContent: " & filename)
         If IO.File.Exists(filename) Then
-            Dim fileobj As New System.IO.StreamReader(filename)
+            Dim fsobj As System.IO.FileStream
+            fsobj = New System.IO.FileStream(filename, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.ReadWrite)
+            Dim streamobj As New IO.StreamReader(fsobj)
 
-            Dim contentstr As String = fileobj.ReadToEnd
-            fileobj.Close()
-            fileobj = Nothing
+            Dim contentstr As String = streamobj.ReadToEnd()
+            streamobj.Close()
+            streamobj = Nothing
+            fsobj.Close()
+            fsobj = Nothing
             Return contentstr
         End If
 

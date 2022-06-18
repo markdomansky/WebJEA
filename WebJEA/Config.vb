@@ -1,4 +1,5 @@
 ﻿Public Class Config
+    Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
     Public Title As String
     Public LogParameters As Boolean = True
@@ -19,7 +20,7 @@
 
     End Sub
 
-    Public Sub InitGroups()
+    Public Sub InitGroups(grpfinder As GroupFinder)
 
         'resolve groups to SIDs that will always have access
         For Each group As String In PermittedGroups
@@ -32,7 +33,7 @@
         'just init the one command we're going to use
         For Each cmd As PSCmd In Commands
             'init all group data
-            cmd.InitGroups()
+            cmd.InitGroups(grpfinder)
         Next
 
     End Sub
@@ -65,8 +66,8 @@
         Dim globaluser As Boolean = IsGlobalUser(uinfo)
         dlog.Trace("GetMenu: IsGlobalUser: " & globaluser.ToString())
 
+        dlog.Trace("Building Menu")
         For Each cmd As PSCmd In Commands
-            dlog.Trace("Building Menu ")
             If cmd.IsCommandAvailable(uinfo) Or globaluser Then
                 menuitems.Add(cmd.GetMenuItem)
             End If

@@ -4,6 +4,7 @@ Imports System.Web.Services.Protocols
 Imports System.ComponentModel
 
 Public Class PSScriptParser
+    Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
     Private prvScript As String 'the content of the script
     Private prvScriptPath As String

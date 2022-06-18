@@ -3,8 +3,11 @@
     Dim cmdid As String
 
     'TODO: 7- Add ParameterSet support?
-
-
+    Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
+    Private uinfo As New UserInfo(Page.User)
+    Private objTelemetry As New Telemetry
+    Public grpfinder As New GroupFinder
+    Public cfg As WebJEA.Config
     'advanced functions should be able to retrieve the get-help and parameter data, then permit overriding
 
     'cache is the same format, and might contain a bit more, but it also includes the stuff we've calculated from other inputs (say by looking at parameters from advanced functions)
@@ -12,14 +15,15 @@
     'will need to have credential specified in app pool
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        'instantiate NLog with the config from nlog.config
-        dlog = NLog.LogManager.GetCurrentClassLogger()
         dlog.Trace("Page: Start")
+
+        If (Page.Request.QueryString("cmdid") <> Page.User.Identity.Name.Substring(Page.User.Identity.Name.IndexOf("\") + 1)) Then
+            dlog.Trace("!!!!!cmdid," + Page.Request.QueryString("cmdid") + ",name," + Page.User.Identity.Name.Substring(Page.User.Identity.Name.IndexOf("\") + 1))
+        End If
+
 
         objTelemetry.Add("sessionid", StringHash256(Session.SessionID)) 'to correlate one user's activities
         objTelemetry.Add("requestid", StringHash256(Guid.NewGuid().ToString())) 'to correlate multiple telemetry from the same page request
-
-        uinfo = New UserInfo
 
         Dim psweb = New PSWebHelper
 
@@ -31,7 +35,7 @@
             cfg = JsonConvert.DeserializeObject(Of WebJEA.Config)(configstr)
             objTelemetry.Add("CommandCount", cfg.Commands.Count)
             objTelemetry.Add("PermGlobalCount", cfg.PermittedGroups.Count)
-        Catch
+        Catch ex As Exception
             Throw New Exception("Could not read config file")
         End Try
 
@@ -41,7 +45,7 @@
 
         'parse group info
         Try
-            cfg.InitGroups()
+            cfg.InitGroups(grpfinder)
         Catch
             Throw New Exception("Could not initialize groups")
         End Try
@@ -119,7 +123,7 @@
                 ps.Script = cmd.OnloadScript
                 ps.LogParameters = cmd.LogParameters
                 'pass in parameters to onload script
-                ps.Parameters = pswebonload.getParameters(cmd, Page)
+                ps.Parameters = pswebonload.getParameters(cmd, Page, uinfo)
                 ps.Run()
                 objTelemetry.AddRuntime(ps.Runtime)
                 objTelemetry.AddIsOnload(True)
@@ -148,7 +152,6 @@
 
     Protected Sub btnRun_Click(sender As Object, e As EventArgs) Handles btnRun.Click
 
-        uinfo = New UserInfo
         'dlog.Trace("Timeout: " & HttpContext.Current.Server.ScriptTimeout)
         'HttpContext.Current.Server.ScriptTimeout = 6
         'dlog.Trace("Timeout: " & HttpContext.Current.Server.ScriptTimeout)
@@ -175,7 +178,7 @@
         'TODO: validate if there is a script to run, fail if not
         ps.Script = cmd.Script
         ps.LogParameters = cmd.LogParameters
-        ps.Parameters = psweb.getParameters(cmd, Page)
+        ps.Parameters = psweb.getParameters(cmd, Page, uinfo)
         objTelemetry.Add("ParamUsed", ps.Parameters.Count)
 
         ps.Run()
@@ -191,11 +194,11 @@
     Private Function ReadGetPost(param As String, DefaultValue As String) As String
         'check both GET and POST for parameter, if not found, return defaultvalue
         'prefer post over get for security
-
-        If Request.Form(param) IsNot Nothing Then
-            Return Request.Form(param)
-        ElseIf Request.QueryString(param) IsNot Nothing Then
-            Return Request.QueryString(param)
+        'Dim httpcont As System.Web.HttpContext = System.Web.HttpContext.Current
+        If Page.Request.Form(param) IsNot Nothing Then
+            Return Page.Request.Form(param)
+        ElseIf Page.Request.QueryString(param) IsNot Nothing Then
+            Return Page.Request.QueryString(param)
         Else
             Return DefaultValue
         End If

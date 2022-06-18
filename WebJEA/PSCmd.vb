@@ -1,6 +1,7 @@
 ﻿Imports System.DirectoryServices.AccountManagement
 
 Public Class PSCmd
+    Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
     Public DisplayName As String
     Public LogParameters As TriState = TriState.UseDefault
@@ -51,7 +52,7 @@ Public Class PSCmd
     End Function
 
 
-    Public Sub InitGroups()
+    Public Sub InitGroups(grpfinder As GroupFinder)
         'resolve groups to SIDs
         For Each group As String In PermittedGroups
             Dim grpsid As String = grpfinder.GetSID(group)

@@ -1,6 +1,7 @@
 ﻿Imports System.DirectoryServices.AccountManagement
 
 Public Class GroupFinder
+    Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
     Private prvPC As New Dictionary(Of String, PrincipalContext)
 
@@ -75,18 +76,22 @@ Public Class GroupFinder
         If Not IsNothing(pc) Then
             Try
                 Dim grp As GroupPrincipal = GroupPrincipal.FindByIdentity(pc, groupname)
-                dlog.Trace("GroupFinder: GetSID: Found Group SID: " & groupname & ": " & grp.Sid.ToString)
-                Return grp.Sid.ToString
+                If (grp IsNot Nothing) Then
+                    dlog.Trace("GroupFinder: GetSID: Found Group SID: " & groupname & ": " & grp.Sid.ToString)
+                    Return grp.Sid.ToString
+                End If
             Catch ex As Exception
-                dlog.Error("GroupFinder: GetSID: Error Trying as Group. (" & groupname & ")")
+                'dlog.Error("GroupFinder: GetSID: Error Trying as Group. (" & groupname & ")")
             End Try
 
             Try
                 Dim usr As UserPrincipal = UserPrincipal.FindByIdentity(pc, groupname)
-                dlog.Trace("GroupFinder: GetSID: Found User SID: " & groupname & ": " & usr.Sid.ToString)
-                Return usr.Sid.ToString
+                If (usr IsNot Nothing) Then
+                    dlog.Trace("GroupFinder: GetSID: Found User SID: " & groupname & ": " & usr.Sid.ToString)
+                    Return usr.Sid.ToString
+                End If
             Catch ex As Exception
-                dlog.Error("GroupFinder: GetSID: Error Trying as User. (" & groupname & ")")
+                'dlog.Error("GroupFinder: GetSID: Error Trying as User. (" & groupname & ")")
             End Try
         End If
 

@@ -1,10 +1,5 @@
 ﻿Module modGlobal
 
-    Public dlog As NLog.Logger
-    Public grpfinder As New GroupFinder
-    Public uinfo As UserInfo
-    Public cfg As WebJEA.Config
-    Public objTelemetry As New Telemetry
 
     Public Enum globalKeys
         aws_enabled

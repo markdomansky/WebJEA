@@ -4,6 +4,7 @@ Imports System.DirectoryServices.ActiveDirectory
 Imports System.Security.Principal
 
 Public Class UserInfo
+    Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
     Private prvPrincipal As System.Security.Principal.IPrincipal
 
     'Private Declare Auto Function TranslateName Lib "secur32" (accountName As String, nameFormat As EXTENDED_NAME_FORMAT, desiredFormat As EXTENDED_NAME_FORMAT, ByVal translatedName As System.Text.StringBuilder, ByRef userNameSize As Integer) As Byte
@@ -26,9 +27,9 @@ Public Class UserInfo
     Private prvDomainSID As String = "-"
     Private prvDomainDNSRoot As String = "-"
 
-    Sub New()
+    Sub New(curuser As System.Security.Principal.IPrincipal)
 
-        prvPrincipal = System.Web.HttpContext.Current.User
+        prvPrincipal = curuser
         Dim WinID As System.Security.Principal.WindowsIdentity = prvPrincipal.Identity
         'get username from page request
         dlog.Trace("UserInfo: User: " & WinID.Name)

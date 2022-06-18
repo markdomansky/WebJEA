@@ -4,6 +4,7 @@ Imports System.Web.Services.Protocols
 Imports System.ComponentModel
 
 Public Class PSCmdParam
+    Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
     Public Enum ParameterType
         PSString

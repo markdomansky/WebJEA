@@ -1,5 +1,7 @@
 ﻿Imports System.Management.Automation
 Public Class PSEngine
+    Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
+
     Private ps As PowerShell
 
     Public LogParameters As Boolean = True

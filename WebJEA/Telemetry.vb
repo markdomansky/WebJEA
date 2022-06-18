@@ -4,6 +4,7 @@ Imports System.Threading.Tasks
 Imports System.Web.Script.Serialization
 
 Class Telemetry
+    Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
     Private Metrics As New Dictionary(Of String, Object)
 

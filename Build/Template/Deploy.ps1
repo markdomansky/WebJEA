@@ -1,4 +1,35 @@
-﻿$ErrorActionPreference = "Stop"
+param ([switch]$fast)
+$ErrorActionPreference = "Stop"
+
+$MyData = @{
+    AllNodes = @(
+        @{
+            NodeName = '*'
+            WebAppPoolName = 'WebJEA'
+            AppPoolUserName = 'domain1\gmsa2$'
+            AppPoolPassword = "" #no credential data is actually password because we're using gMSAs
+            #if you use a non-msa, use another method to set the apppool identity
+            WebJEAIISURI = 'WebJEA'
+            WebJEAIISFolder = 'C:\inetpub\wwwroot\webjea'
+            WebJEASourceFolder = 'C:\source'
+            WebJEAScriptsFolder = 'C:\scripts'
+            WebJEAConfigPath = 'C:\scripts\config.json' #must be in webjeascriptsfolder
+            WebJEALogPath = 'c:\scripts'
+            WebJEA_Nlog_LogFile = "c:\scripts\webjea.log"
+            WebJEA_Nlog_UsageFile = "c:\scripts\webjea-usage.log"
+        },
+        @{
+            NodeName = 'WEB1'
+            Role = 'WebJEAServer'
+            MachineFQDN = 'web1.domain1.local'
+            CertThumbprint = '50495F09B2DC05DB9BB47D834623D38508A50524'
+        }
+    )
+}
+
+
+
+
 Configuration WebJEADeployment {
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
@@ -86,45 +117,6 @@ Configuration WebJEADeployment {
         }
 
 
-        #add redirect
-        #Package UrlRewrite {
-		#    #Install URL Rewrite module for IIS
-		#   DependsOn = "[WindowsFeature]WF_Web-WebServer"
-		#    Ensure = "Present"
-		#    Name = "IIS URL Rewrite Module 2"
-		#    Path = "https://download.microsoft.com/download/C/9/E/C9E8180D-4E51-40A6-A9BF-776990D8BCA9/rewrite_amd64.msi"
-		#    Arguments = "/quiet"
-		#    ProductId = "08F0318A-D113-4CF0-993E-50F191D397AD"
-		#}
-
-        #Script ReWriteRule {
-        #    #Adds rewrite allowedServerVariables to applicationHost.config
-        #    DependsOn = "[Package]UrlRewrite"
-        #    SetScript = {
-        #        $current = Get-WebConfiguration /system.webServer/rewrite/allowedServerVariables | select -ExpandProperty collection | ?{$_.ElementTagName -eq "add"} | select -ExpandProperty name
-        #        $expected = @("HTTPS", "HTTP_X_FORWARDED_FOR", "HTTP_X_FORWARDED_PROTO", "REMOTE_ADDR")
-        #        $missing = $expected | where {$current -notcontains $_}
-        #        try {
-        #            Start-WebCommitDelay
-        #            $missing | %{ Add-WebConfiguration /system.webServer/rewrite/allowedServerVariables -atIndex 0 -value @{name="$_"} -Verbose }
-        #            Stop-WebCommitDelay -Commit $true
-        #        } catch [System.Exception] {
-        #            $_ | Out-String
-        #        }
-        #    }
-        #    TestScript = {
-        #        $current = Get-WebConfiguration /system.webServer/rewrite/allowedServerVariables | select -ExpandProperty collection | select -ExpandProperty name
-        #        $expected = @("HTTPS", "HTTP_X_FORWARDED_FOR", "HTTP_X_FORWARDED_PROTO", "REMOTE_ADDR")
-        #        $result = -not @($expected| where {$current -notcontains $_}| select -first 1).Count
-        #        return $result
-        #    }
-        #    GetScript = {
-        #        $allowedServerVariables = Get-WebConfiguration /system.webServer/rewrite/allowedServerVariables | select -ExpandProperty collection
-        #        return $allowedServerVariables
-        #    }
-        #}
-
-
 
 
         #configure SSL
@@ -192,47 +184,6 @@ Configuration WebJEADeployment {
             DependsOn=@('[File]WebJEA_WebContent')
         }
 
-        # if ($node.WebJEARemoteErrors) {
-        #     #remote errors on
-        #     XMLConfigFile "CustomErrors" {
-        #         Ensure = 'Present'
-        #         ConfigPath = "$($node.WebJEAIISFolder)\web.config"
-        #         XPath = "/configuration/system.web/customErrors"
-        #         isAttribute = $True
-        #         Name = "mode"
-        #         Value = "Off"
-        #         DependsOn=@('[File]WebJEA_WebContent','[xWebsite]DefaultWeb')
-        #     }
-        #     XMLConfigFile "CustomErrorsRedirect" {
-        #         Ensure = 'Absent'
-        #         ConfigPath = "$($node.WebJEAIISFolder)\web.config"
-        #         XPath = "/configuration/system.web/customErrors"
-        #         isAttribute = $True
-        #         Name = "defaultRedirect"
-        #         DependsOn=@('[File]WebJEA_WebContent','[xWebsite]DefaultWeb')
-        #     }
-        # } else {
-        #     #remote errors off
-        #     XMLConfigFile "CustomErrors" {
-        #         Ensure = 'Present'
-        #         ConfigPath = "$($node.WebJEAIISFolder)\web.config"
-        #         XPath = "/configuration/system.web/customErrors"
-        #         isAttribute = $True
-        #         Name = "mode"
-        #         Value = "RemoteOnly"
-        #         DependsOn=@('[File]WebJEA_WebContent','[xWebsite]DefaultWeb')
-        #     }
-        #     XMLConfigFile "CustomErrorsRedirect" {
-        #         Ensure = 'Absent'
-        #         ConfigPath = "$($node.WebJEAIISFolder)\web.config"
-        #         XPath = "/configuration/system.web/customErrors"
-        #         isAttribute = $True
-        #         Name = "defaultRedirect"
-        #         value = "error.aspx"
-        #         DependsOn=@('[File]WebJEA_WebContent','[xWebsite]DefaultWeb')
-        #     }
-        # }
-
         #assign permissions to scripts folder?
 
         #Configure Default Web Site to support SSL
@@ -273,3 +224,35 @@ Configuration WebJEADeployment {
 
 }
 
+
+
+if (-not $fast) {
+    #install necessary powershell modules
+    write-host "Configuring Package Provider"
+    install-packageprovider -name nuget -minimumversion 2.8.5.201 -force
+    write-host "Trusting PSGallery"
+    set-psrepository -Name psgallery -InstallationPolicy trusted
+    #####install-module WebAdministrationDSC
+    write-host "Installing DSC Modules"
+    install-module xwebadministration
+    install-module xXMLConfigFile
+    install-module cUserRightsAssignment
+}
+
+#create the group MSA account
+#add-kdsrootkey -effectivetime ((get-date).addhours(-10))
+#new-ADServiceAccount -name gmsa1 -dnshostname (get-addomaincontroller).hostname -principalsallowedtoretrievemanagedpassword mgmt1
+#install-adserviceaccount gmsa1
+#add-adgroupmember -identity "domain1\domain admins" -members (get-adserviceaccount gmsa1).distinguishedname
+#at a later time, grant gmsa1 the permissions you want.
+
+#cd wsman::localhost\client
+#Set-Item TrustedHosts * -confirm:$false -force
+#restart-service winrm
+
+
+write-host "Building Configuration"
+WebJEADeployment -ConfigurationData $MyData -verbose -OutputPath .\WebJEADeployment
+
+write-host "Starting DSC"
+Start-DscConfiguration -ComputerName $env:computername -Path .\WebJEADeployment -verbose -Wait -force

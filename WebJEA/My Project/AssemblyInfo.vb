@@ -1,4 +1,4 @@
-Imports System
+﻿Imports System
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
@@ -11,7 +11,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("webjea.com")>
 <Assembly: AssemblyCompany("Mark Domansky")>
 <Assembly: AssemblyProduct("WebJEA")>
-<Assembly: AssemblyCopyright("Copyright © Mark Domansky, 2021")>
+<Assembly: AssemblyCopyright("Copyright Â© Mark Domansky, 2021")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
@@ -30,4 +30,4 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 
 ' <Assembly: AssemblyFileVersion("1.1.0.0")>
-<Assembly: AssemblyVersion("1.1.21213.21284")>
+<Assembly: AssemblyVersion("1.1.22170.37840")>

@@ -55,48 +55,19 @@
         Return output
     End Function
 
-    Private Function EncodeOutputTags(input As String) As String
-        Dim output As String = input
-        Dim IDX As Integer = output.IndexOf("[[")
-        While IDX > -1
-            Dim tagOpen As Integer = IDX
-            Dim tagSplit1 As Integer = output.IndexOf("|", tagOpen)
-            Dim tagSplit2 As Integer = output.IndexOf("|", tagSplit1 + 1)
-            Dim tagClose As Integer = output.LastIndexOf("]]", output.Length)
+    Private Function EncodeOutputTags(ByVal input As String) As String
+        Dim rexopt As RegexOptions = RegexOptions.IgnoreCase + RegexOptions.Multiline
+        Const rexA As String = "\[\[a\|(.+?)\|(.+)\]\]"
+        Const repA As String = "<a href='$1'>$2</a>"
+        Const rexSpan As String = "\[\[span\|(.+?)\|(.+)\]\]"
+        Const repSpan As String = "<span Class='$1'>$2</span>"
+        Const rexImg As String = "\[\[img\|(.*?)\|(.+)\]\]"
+        Const repImg As String = "<img class='$1' src='$2' />"
+        input = Regex.Replace(input, rexA, repA, rexopt)
+        input = Regex.Replace(input, rexSpan, repSpan, rexopt)
+        input = Regex.Replace(input, rexImg, repImg, rexopt)
 
-            If tagSplit1 = -1 Then Return output 'bad format
-            If tagSplit2 = -1 Then Return output
-            If tagClose = -1 Then Return output
-
-            Dim tagType As String = output.Substring(tagOpen + 2, tagSplit1 - tagOpen - 2)
-            Dim tagContent1 As String = output.Substring(tagSplit1 + 1, tagSplit2 - tagSplit1 - 1)
-            Dim tagContent2 As String = output.Substring(tagSplit2 + 1, tagClose - tagSplit2 - 1)
-            Dim tagFull As String = output.Substring(tagOpen, tagClose - tagOpen + 2)
-
-            Dim tag As String = output.Substring(tagOpen, tagSplit1 - tagOpen + 1)
-            If tag.ToLower = "[[a|" Then
-                'link
-                tagContent1 = HttpContext.Current.Server.HtmlDecode(tagContent1)
-                Dim tagOutput = "<a class='pslink' href='" & tagContent1 & "'>" & tagContent2 & "</a>"
-                output = output.Replace(tagFull, tagOutput)
-
-            ElseIf tag.ToLower = "[[span|" Then
-                'span
-                Dim tagOutput = "<span class='" & tagContent1 & "'>" & tagContent2 & "</span>"
-                output = output.Replace(tagFull, tagOutput)
-
-            ElseIf tag.ToLower = "[[img|" Then
-                'span
-                tagContent2 = HttpContext.Current.Server.HtmlDecode(tagContent2)
-                Dim tagOutput = "<img class='" & tagContent1 & "' src='" & tagContent2 & "' />"
-                output = output.Replace(tagFull, tagOutput)
-
-            End If
-
-            IDX = output.IndexOf("[[", IDX + 1)
-        End While
-
-        Return output
+        Return input
     End Function
 
 

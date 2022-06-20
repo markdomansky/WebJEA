@@ -291,3 +291,4 @@ __pycache__/
 /WebJEA/content
 /Build/temp
 /Build/Package
+/Build/publish.json

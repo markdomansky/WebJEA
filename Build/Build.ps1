@@ -1,3 +1,3 @@
 $ErrorActionPreference = 'Stop'
 
-Invoke-psake -buildfile build.psake.ps1
+Invoke-psake -buildfile $psscriptroot\build.psake.ps1

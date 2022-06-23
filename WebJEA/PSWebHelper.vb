@@ -57,15 +57,23 @@
 
     Private Function EncodeOutputTags(ByVal input As String) As String
         Dim rexopt As RegexOptions = RegexOptions.IgnoreCase + RegexOptions.Multiline
-        Const rexA As String = "\[\[a\|(.+?)\|(.+)\]\]"
+        Const rexA As String = "\[\[a\|(.+?)\|(.+?)\]\]"
         Const repA As String = "<a href='$1'>$2</a>"
-        Const rexSpan As String = "\[\[span\|(.+?)\|(.+)\]\]"
+        Dim rgxA As New Regex(rexA, rexopt)
+        Const rexSpan As String = "\[\[span\|(.+?)\|(.+?)\]\]"
         Const repSpan As String = "<span Class='$1'>$2</span>"
-        Const rexImg As String = "\[\[img\|(.*?)\|(.+)\]\]"
+        Dim rgxSpan As New Regex(rexSpan, rexopt)
+        Const rexImg As String = "\[\[img\|(.*?)\|(.+?)\]\]"
         Const repImg As String = "<img class='$1' src='$2' />"
-        input = Regex.Replace(input, rexA, repA, rexopt)
-        input = Regex.Replace(input, rexSpan, repSpan, rexopt)
-        input = Regex.Replace(input, rexImg, repImg, rexopt)
+        Dim rgxImg As New Regex(rexImg, rexopt)
+
+        Dim idx As Int32 = input.LastIndexOf("[[")
+        While idx > -1
+            input = rgxA.Replace(input, repA, 1, idx)
+            input = rgxSpan.Replace(input, repSpan, 1, idx)
+            input = rgxImg.Replace(input, repImg, 1, idx)
+            idx = input.LastIndexOf("[[")
+        End While
 
         Return input
     End Function

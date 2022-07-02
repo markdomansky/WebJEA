@@ -72,7 +72,7 @@
             input = rgxA.Replace(input, repA, 1, idx)
             input = rgxSpan.Replace(input, repSpan, 1, idx)
             input = rgxImg.Replace(input, repImg, 1, idx)
-            idx = input.LastIndexOf("[[")
+            idx = input.LastIndexOf("[[", idx - 1)
         End While
 
         Return input

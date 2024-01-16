@@ -1,7 +1,7 @@
 Task Init {
     $script:buildpath = $PSScriptRoot
     write-host "BuildPath: $script:buildpath"
-    $script:buildbin = 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\amd64\msbuild.exe'
+    $script:buildbin = 'C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\msbuild.exe'
     write-host "BuildBin: $script:buildbin"
     $script:publishtemp = "$script:buildpath\Release"
     write-host "PublishTemp: $script:publishtemp"

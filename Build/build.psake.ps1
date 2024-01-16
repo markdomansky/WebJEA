@@ -15,7 +15,7 @@ Task Init {
     write-host "PackagePath: $script:packagepath"
     $script:assemblyFile = "$script:solutionpath\My Project\AssemblyInfo.vb"
     write-host "AssemblyFile: $script:assemblyFile"
-    # $script:projpath = "C:\prj\webjea ce\WebJEA\WebJEA\WebJEA.vbproj"
+    # $script:projpath = "D:\Dev\VB\WebJEA\WebJEA\WebJEA.vbproj"
     $script:dllfile = "$script:binpath\bin\webjea.dll"
     write-host "DllFile: $script:dllfile"
     # $script:projxml = [xml](gc $script:projpath -raw)

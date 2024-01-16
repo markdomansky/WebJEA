@@ -1,4 +1,20 @@
 ﻿/*These are special tags you might want to use in your PS output using the [[span]] or create your own*/
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #000000;
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    font-weight: bold;
+}	   
+
+
 .psbold {
     font-weight: bold;
 }
@@ -10,7 +26,8 @@
 }
 .psvariable {
     font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
-    font-style: italic;
+    /*font-style: italic;*/
+	font-weight: bold;
 }
 .pshighlight {
     background-color: yellow;
@@ -41,6 +58,7 @@
 .pswarning {
     /*WARNING span*/
     color: darkgoldenrod;
+	font-weight: bold;
 }
 .psouter {
     /*This the outer panel that contains the div.  It's where we color the background*/

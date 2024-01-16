@@ -67,11 +67,34 @@
         Const repImg As String = "<img class='$1' src='$2' />"
         Dim rgxImg As New Regex(rexImg, rexopt)
 
+        Const rexBold As String = "\[\[b\|(.+?)\]\]"
+        Const repBold As String = "<b>$1</b>"
+        Dim rgxBold As New Regex(rexBold, rexopt)
+        Const rexTable As String = "\[\[table\|(.+?)\]\]"
+        Const repTable As String = "<table>$1</table>"
+        Dim rgxTable As New Regex(rexTable, rexopt)
+        Const rexTd As String = "\[\[td\|(.+?)\]\]"
+        Const repTd As String = "<td>$1</td>"
+        Dim rgxTd As New Regex(rexTd, rexopt)
+        Const rexTr As String = "\[\[tr\|(.+?)\]\]"
+        Const repTr As String = "<tr>$1</tr>"
+        Dim rgxTr As New Regex(rexTd, rexopt)
+        Const rexTh As String = "\[\[th\|(.+?)\]\]"
+        Const repTh As String = "<th>$1</th>"
+        Dim rgxTh As New Regex(rexTh, rexopt)
+
         Dim idx As Int32 = input.LastIndexOf("[[")
         While idx > -1
             input = rgxA.Replace(input, repA, 1, idx)
             input = rgxSpan.Replace(input, repSpan, 1, idx)
             input = rgxImg.Replace(input, repImg, 1, idx)
+
+            input = rgxBold.Replace(input, repImg, 1, idx)
+            input = rgxTable.Replace(input, repTable, 1, idx)
+            input = rgxTd.Replace(input, repTd, 1, idx)
+            input = rgxTr.Replace(input, repTr, 1, idx)
+            input = rgxTh.Replace(input, repTh, 1, idx)
+            
             If (idx > 0) Then
                 idx = input.LastIndexOf("[[", idx - 1)
             Else

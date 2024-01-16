@@ -70,15 +70,19 @@
         Const rexBold As String = "\[\[b\|(.+?)\]\]"
         Const repBold As String = "<b>$1</b>"
         Dim rgxBold As New Regex(rexBold, rexopt)
+
         Const rexTable As String = "\[\[table\|(.+?)\]\]"
         Const repTable As String = "<table>$1</table>"
         Dim rgxTable As New Regex(rexTable, rexopt)
+        
         Const rexTd As String = "\[\[td\|(.+?)\]\]"
         Const repTd As String = "<td>$1</td>"
         Dim rgxTd As New Regex(rexTd, rexopt)
+        
         Const rexTr As String = "\[\[tr\|(.+?)\]\]"
         Const repTr As String = "<tr>$1</tr>"
-        Dim rgxTr As New Regex(rexTd, rexopt)
+        Dim rgxTr As New Regex(rexTr, rexopt)
+        
         Const rexTh As String = "\[\[th\|(.+?)\]\]"
         Const repTh As String = "<th>$1</th>"
         Dim rgxTh As New Regex(rexTh, rexopt)
@@ -89,7 +93,7 @@
             input = rgxSpan.Replace(input, repSpan, 1, idx)
             input = rgxImg.Replace(input, repImg, 1, idx)
 
-            input = rgxBold.Replace(input, repImg, 1, idx)
+            input = rgxBold.Replace(input, repBold, 1, idx)
             input = rgxTable.Replace(input, repTable, 1, idx)
             input = rgxTd.Replace(input, repTd, 1, idx)
             input = rgxTr.Replace(input, repTr, 1, idx)

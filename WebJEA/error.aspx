@@ -9,7 +9,6 @@
 <body>
     <form id="form1" runat="server">
     <div>
-    
         There was an error.</div>
     </form>
 </body>

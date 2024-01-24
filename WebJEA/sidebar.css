@@ -134,6 +134,20 @@
     transition: all 1s ease;
 }
 
+.group-tier-1 {
+    /* Styles for the first group */
+}
+
+.group-tier-2 {
+    /* Styles for the second group */
+
+}
+
+.group-tier-3 {
+    /* Styles for the third group */
+
+}
+
 @media (max-width: 767px) {
     .nav-side-menu {
         position: relative;

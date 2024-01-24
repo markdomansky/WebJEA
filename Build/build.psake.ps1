@@ -1,7 +1,7 @@
 Task Init {
     $script:buildpath = $PSScriptRoot
     write-host "BuildPath: $script:buildpath"
-    $script:buildbin = 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\amd64\msbuild.exe'
+    $script:buildbin = 'C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\msbuild.exe'
     write-host "BuildBin: $script:buildbin"
     $script:publishtemp = "$script:buildpath\Release"
     write-host "PublishTemp: $script:publishtemp"
@@ -15,7 +15,7 @@ Task Init {
     write-host "PackagePath: $script:packagepath"
     $script:assemblyFile = "$script:solutionpath\My Project\AssemblyInfo.vb"
     write-host "AssemblyFile: $script:assemblyFile"
-    # $script:projpath = "C:\prj\webjea ce\WebJEA\WebJEA\WebJEA.vbproj"
+    # $script:projpath = "D:\Dev\VB\WebJEA\WebJEA\WebJEA.vbproj"
     $script:dllfile = "$script:binpath\bin\webjea.dll"
     write-host "DllFile: $script:dllfile"
     # $script:projxml = [xml](gc $script:projpath -raw)

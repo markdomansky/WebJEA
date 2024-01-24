@@ -28,6 +28,8 @@ The main goals for WebJEA:
   * Links: \[a|url|display\]
   * Images: \[img|cssclass|url\]
   * Spans: \[span|cssclasses|display\]
+  * Bold: \[b|content\]
+  * Tables: \[\[table| \[\[tr| \[\[th|Header\]\] \]\] \[\[tr| \[\[td|Content\]\] \]\] \]\]
   * Nesting is supported (e.g. a link can contain an image)
   * Add and modify css tags in psoutput.css to alter output.
 * Anonymous usage data is uploaded to AWS for statistical reporting.  This can be disabled.

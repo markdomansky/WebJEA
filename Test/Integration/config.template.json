@@ -1,0 +1,88 @@
+{
+    "_comment": "Configuration for WebJEA automated testing scripts. Copy to config.json and update values.",
+
+    "HyperV": {
+        "_comment": "Hyper-V host and VM configuration",
+        "DomainControllerVMName": "DC01",
+        "WebServerVMName": "WEB01",
+        "SnapshotName": "Clean-Baseline",
+        "HyperVHost": "localhost",
+        "_comment2": "Timeout in seconds for VM operations",
+        "VMOperationTimeout": 300,
+        "_comment3": "Delay in seconds between starting DC and web server",
+        "DCStartupDelay": 60
+    },
+
+    "Credentials": {
+        "_comment": "Credentials for PowerShell Direct and web authentication",
+        "Domain": "domain1",
+        "Username": "deployadmin",
+        "_comment2": "Password should be stored securely - consider using SecretManagement module",
+        "PasswordSecretName": "WebJEA-TestAdmin",
+        "_comment4": "Store passwords with PowerShell SecretManagement instead of plaintext.",
+        "_comment5": "Install SecretManagement modules: Install-Module Microsoft.PowerShell.SecretManagement, Microsoft.PowerShell.SecretStore -Force",
+        "_comment6": "Register a vault (example using SecretStore): Register-SecretVault -Name SecretStore -ModuleName Microsoft.PowerShell.SecretStore -DefaultVault",
+        "_comment7": "Add secret interactively: Read-Host -AsSecureString | Set-Secret -Name 'WebJEA-TestAdmin'",
+        "_comment8": "Or store credentials: $cred = Get-Credential; Set-Secret -Name 'WebJEA-TestAdmin' -Secret $cred",
+        "_comment3": "Alternative: path to XML credential file exported with Export-Clixml",
+        "CredentialFilePath": ""
+    },
+
+    "GitHub": {
+        "_comment": "GitHub repository for downloading releases",
+        "Owner": "markdomansky",
+        "Repository": "WebJEA",
+        "_comment2": "Leave empty for latest, or specify a tag like 'v1.2.0'",
+        "ReleaseTag": "",
+        "_comment3": "Asset name pattern to match in the release (supports wildcards)",
+        "AssetNamePattern": "WebJEA-*.zip"
+    },
+
+    "Deployment": {
+        "_comment": "Paths on the target VM for deployment",
+        "ExtractPath": "C:\\Deploy",
+        "SettingsFileName": "settings.conf",
+        "_comment2": "Path on the VM where settings.conf should be copied from (local to script runner)",
+        "LocalSettingsPath": ".\\settings.conf"
+    },
+
+    "WebServer": {
+        "_comment": "Web server configuration for integration tests",
+        "BaseUrl": "https://web1.domain1.local/WebJEA",
+        "FQDN": "web1.domain1.local",
+        "_comment2": "Set to true to ignore SSL certificate errors (self-signed certs)",
+        "IgnoreSslErrors": true,
+        "_comment3": "Timeout in seconds for web requests",
+        "RequestTimeout": 30
+    },
+
+    "IntegrationTests": {
+        "_comment": "Configuration for Pester integration tests",
+        "OutputPath": ".\\TestResults",
+        "OutputFormat": "NUnitXml",
+        "_comment2": "Tags to include or exclude from test runs",
+        "IncludeTags": [],
+        "ExcludeTags": ["Manual"],
+        "_comment3": "Maximum test execution time in minutes",
+        "TestTimeout": 30
+    },
+
+    "WindowsUpdate": {
+        "_comment": "Windows Update configuration for maintenance script",
+        "Enabled": true,
+        "_comment2": "Categories to include: Security, Critical, Definition, Feature, Update",
+        "Categories": ["Security", "Critical"],
+        "_comment3": "Whether to automatically reboot if required",
+        "AutoReboot": true,
+        "_comment4": "Maximum time in minutes to wait for updates to complete",
+        "Timeout": 120
+    },
+
+    "Logging": {
+        "_comment": "Logging configuration",
+        "LogPath": ".\\Logs",
+        "LogLevel": "Information",
+        "_comment2": "Number of days to retain log files",
+        "RetentionDays": 30
+    }
+}

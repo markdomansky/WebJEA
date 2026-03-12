@@ -289,6 +289,10 @@ __pycache__/
 /WebJEA/fonts
 /WebJEA/scripts
 /WebJEA/content
-/Build/temp
-/Build/Package
-/Build/publish.json
+
+#This stores a credential object that is used for testing. It contains a password, so we don't want it in source control.
+Test/Integration/cred.clixml
+#This is dev computer specific settings for the integration tests.  Use the template file and adjust to your needs.
+Test/Integration/settings.jsonc
+#This is dev computer specific settings for the integration tests.  Use the template file and adjust to your needs.
+Test/Integration/config.json

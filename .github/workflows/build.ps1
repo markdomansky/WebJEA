@@ -61,7 +61,6 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$VerbosePreference = 'Continue'
 $ProgressPreference = 'Continue'
 
 # Ensure psake is available
@@ -71,6 +70,8 @@ if (-not (Get-Module -ListAvailable -Name psake -verbose:$false))
     Install-Module -Name psake -Scope CurrentUser -Force -Verbose:$false
 }
 Import-Module psake -ErrorAction Stop -verbose:$false
+
+$VerbosePreference = 'Continue' #Despite verbose being set to false for Install-Module and Import-Module, we don't turn on verbose until after.
 
 #calculate the output path
 if (-not (Test-Path -Path $OutputPath -IsValid)) { throw "Invalid OutputPath: $OutputPath" }

@@ -1,4 +1,4 @@
-name: Build and Release WebJEA
+name: Build - Build and Release WebJEA
 
 on:
   push:
@@ -10,6 +10,7 @@ on:
     paths:
       - 'ReleaseFiles/**'
       - 'WebJEA/**'
+      - 'Test/forceactions.txt'
       - '.github/workflows/build-and-release.yml'
       - '.github/workflows/build.ps1'
       - '.github/workflows/build.psake.ps1'
@@ -19,6 +20,7 @@ on:
     paths:
       - 'ReleaseFiles/**'
       - 'WebJEA/**'
+      - 'Test/forceactions.txt'
       - '.github/workflows/build-and-release.yml'
       - '.github/workflows/build.ps1'
       - '.github/workflows/build.psake.ps1'
@@ -27,7 +29,7 @@ on:
       create_release:
         description: 'Create a release (even without a tag)'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 env:
@@ -71,6 +73,10 @@ jobs:
 
           Write-Host "Build completed with version: $version"
           Write-Host "Artifact name: $artifactName"
+        env:
+          AWS_KEY: ${{ secrets.AWS_KEY }}
+          AWS_KEYSEC: ${{ secrets.AWS_KEYSEC }}
+          AWS_QUEUE_URL: ${{ secrets.AWS_QUEUE_URL }}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4

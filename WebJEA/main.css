@@ -21,8 +21,13 @@ body {
   border-bottom: 1px solid #eee;
 }
 
+h1 {
+    font-size: 32px;
+}
 
-
+.WebJEALink {
+    color: #5D9EFD;
+}
 /*
  * Main content
  */
@@ -66,10 +71,9 @@ body {
 
 .page-header > h1 {display: inline-block;}
 .page-header > a {
-    vertical-align: text-bottom; 
+    vertical-align: text-bottom;
 
 }*/
-
 
 #footer {
     font-size: smaller;
@@ -85,8 +89,11 @@ body {
 .footer a {
     line-height: 24px;
 }
-
-.card { 
+.accordion-button:not(.collapsed), .accordion-button.collapsed {
+    color: black;
+    background-color: #eee;
+}
+.card {
     /*forces the pre to bottom margins, also affects the inpub field, but not that bad.*/
     margin-top: 12px;
     margin-right: 12px;
@@ -101,7 +108,8 @@ body {
 .reqopt {
     font-size: x-small;
     font-weight: 700;
-    color: #959595;
+    /*These are WCAG compliant for contrast with the default background*/
+    color: #666;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-left: 1em;
@@ -117,8 +125,23 @@ body {
 .help-block {
     /*font-size: 12px;*/
 }
-.badge {
+
+label.form-label {
     font-size: 16px;
+    font-weight: 700;
+}
+
+.form-control {
+    border-width: 1px;
+    border-color: #888 ;
+}
+
+input[type="checkbox"] {
+    margin: 5px;
+}
+
+.input {
+    border: 4px;
 }
 
 .valmsg {
@@ -129,7 +152,7 @@ body {
     display: none;
 }
 #imgLoaderSVG {
-    background-image: url(loader.svg);
+    background-image: url(images/loader.svg);
     margin-left: 12px;
     width: 144px;
     height: 17px;

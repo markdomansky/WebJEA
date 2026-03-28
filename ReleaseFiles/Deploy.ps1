@@ -155,33 +155,56 @@ begin
             }
         }
 
+        #IIS URL Rewrite module is required for HTTP-to-HTTPS and backward-compatibility rules
+        @{
+            Description = 'IIS URL Rewrite Module 2.1 is installed'
+            TestScript  = {
+                Import-Module WebAdministration -Verbose:$false
+                $null -ne (Get-WebGlobalModule -Name 'RewriteModule' -ErrorAction SilentlyContinue)
+            }
+            SetScript   = {
+                $msiUrl = 'https://download.microsoft.com/download/1/2/8/128E2E22-C1B9-44A4-BE2A-5859ED1D4592/rewrite_amd64_en-US.msi'
+                $msiPath = Join-Path $env:TEMP 'urlrewrite2.msi'
+                Write-Verbose "Downloading IIS URL Rewrite 2.1 from Microsoft..."
+                Invoke-WebRequest -Uri $msiUrl -OutFile $msiPath -UseBasicParsing
+                Start-Process -FilePath msiexec.exe -ArgumentList "/i `"$msiPath`" /quiet /norestart" -Wait
+                Remove-Item $msiPath -Force -ErrorAction SilentlyContinue
+            }
+        }
+
         #add site contents
         @{
             Description = "Site contents copied to $($settings.SitePath)"
-            Module      = 'PSDesiredStateConfiguration'
-            Resource    = 'file'
-            Property    = @{
-                Ensure          = 'Present'
-                SourcePath      = $settings.SourcePath + '\site'
-                DestinationPath = $settings.SitePath
-                Recurse         = $true
-                type            = 'Directory'
-                MatchSource     = $true #always copy files to ensure accurate
-                Checksum        = 'SHA-256'
+            TestScript  = { $false } # Always overwrite — no checksum comparison
+            SetScript   = {
+                $src = "$($settings.SourcePath)\site"
+                $dst = $settings.SitePath
+                # /E  - copy subdirectories including empty ones
+                # /IS - include same files (force-overwrites even when content matches)
+                # /IT - include tweaked files (same timestamp, different size)
+                $params = @($src,$dst,'/E', '/IS', '/IT', '/NJH', '/NJS', '/NFL', '/NDL')
+                write-verbose "robocopy.exe $($params -join ' ')"
+                if (-not (Test-Path $dst)) { New-Item -Path $dst -ItemType Directory -Force | Out-Null }
+                & robocopy.exe $params
+                if ($LASTEXITCODE -ge 8) { throw "robocopy failed with exit code $LASTEXITCODE" }
             }
         }
 
         #Copy the scripts to the server
         if ((Test-Path -Path $settings.ScriptsPath -PathType Container) -and
-            (Get-ChildItem -Path $settings.ScriptsPath -Recurse | Measure-Object).Count -gt 0)
+            (Get-ChildItem -Path $settings.ScriptsPath -Recurse | Measure-Object).Count -gt 1)
         {
-            Write-Verbose "Scripts folder '$($settings.ScriptsPath)' already exists and is not empty. Skipping copying starter scripts to avoid overwriting any customizations."
+            @{
+                Description = 'Starter scripts copied (skipped, files already exist)'
+                TestScript  = { $true }
+                SetScript   = { }
+            }
         }
         else
         {
             #add starter scripts
             @{
-                Description = 'Copying starter scripts'
+                Description = 'Starter scripts copied'
                 Module      = 'PSDesiredStateConfiguration'
                 Resource    = 'file'
                 Property    = @{
@@ -356,6 +379,161 @@ begin
                     # Assign the certificate to the new binding
                     $binding = Get-WebBinding -Name $settings.siteName -Protocol 'https' -Port 443
                     $binding.AddSslCertificate($settings.certThumbprint, 'MY')
+                }
+            }
+        }
+
+        #URL Rewrite rule: force HTTP traffic to HTTPS
+        if ($settings.RedirectPort80To443)
+        {
+            @{
+                Description = 'URL Rewrite rule node exists: HTTP to HTTPS Redirect'
+                TestScript  = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $rule = Get-WebConfigurationProperty -pspath "IIS:\Sites\$($settings.SiteName)" `
+                        -filter "system.webServer/rewrite/rules/rule[@name='HTTP to HTTPS Redirect']" `
+                        -name '.' -ErrorAction SilentlyContinue
+                    ($null -ne $rule) -and ($rule.stopProcessing -eq $true)
+                }
+                SetScript   = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $sitePath = "IIS:\Sites\$($settings.SiteName)"
+                    $ruleName = 'HTTP to HTTPS Redirect'
+                    Remove-WebConfigurationProperty -pspath $sitePath `
+                        -filter 'system.webServer/rewrite/rules' -name '.' `
+                        -AtElement @{ name = $ruleName } -ErrorAction SilentlyContinue
+                    Add-WebConfigurationProperty -pspath $sitePath `
+                        -filter 'system.webServer/rewrite/rules' -name '.' `
+                        -value @{ name = $ruleName; stopProcessing = $true }
+                }.GetNewClosure()
+            }
+            @{
+                Description = 'URL Rewrite rule match configured: HTTP to HTTPS Redirect'
+                TestScript  = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $match = Get-WebConfigurationProperty -pspath "IIS:\Sites\$($settings.SiteName)" `
+                        -filter "system.webServer/rewrite/rules/rule[@name='HTTP to HTTPS Redirect']/match" `
+                        -name '.' -ErrorAction SilentlyContinue
+                    $match.url -eq '(.*)'
+                }
+                SetScript   = {
+                    Import-Module WebAdministration -Verbose:$false
+                    Set-WebConfigurationProperty -pspath "IIS:\Sites\$($settings.SiteName)" `
+                        -filter "system.webServer/rewrite/rules/rule[@name='HTTP to HTTPS Redirect']/match" `
+                        -name 'url' -value '(.*)'
+                }
+            }
+            @{
+                Description = 'URL Rewrite rule HTTPS condition configured: HTTP to HTTPS Redirect'
+                TestScript  = {
+                    Import-Module WebAdministration -Verbose:$false
+                    # Avoid using {@input='{HTTPS}'} as an XPath predicate — the IIS config API
+                    # treats curly braces as .NET format specifiers and throws a FormatException.
+                    # Enumerate all conditions and match in PowerShell instead.
+                    $conds = @(Get-WebConfiguration -pspath "IIS:\Sites\$($settings.SiteName)" `
+                        -filter "system.webServer/rewrite/rules/rule[@name='HTTP to HTTPS Redirect']/conditions/add" `
+                        -ErrorAction SilentlyContinue)
+                    $cond = $conds | Where-Object { $_.input -eq '{HTTPS}' }
+                    ($null -ne $cond) -and ($cond.pattern -eq 'off') -and ($cond.ignoreCase -eq $true)
+                }
+                SetScript   = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $sitePath = "IIS:\Sites\$($settings.SiteName)"
+                    $ruleName = 'HTTP to HTTPS Redirect'
+                    # Clear all conditions then re-add — avoids the FormatException from {HTTPS} in XPath
+                    Clear-WebConfiguration -pspath $sitePath `
+                        -filter "system.webServer/rewrite/rules/rule[@name='$ruleName']/conditions" `
+                        -ErrorAction SilentlyContinue
+                    Add-WebConfigurationProperty -pspath $sitePath `
+                        -filter "system.webServer/rewrite/rules/rule[@name='$ruleName']/conditions" `
+                        -name '.' -value @{ input = '{HTTPS}'; pattern = 'off'; ignoreCase = $true }
+                }
+            }
+            @{
+                Description = 'URL Rewrite rule action configured: HTTP to HTTPS Redirect'
+                TestScript  = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $action = Get-WebConfigurationProperty -pspath "IIS:\Sites\$($settings.SiteName)" `
+                        -filter "system.webServer/rewrite/rules/rule[@name='HTTP to HTTPS Redirect']/action" `
+                        -name '.' -ErrorAction SilentlyContinue
+                    ($action.type            -eq 'Redirect') -and
+                    ($action.url             -eq 'https://{HTTP_HOST}/{R:1}') -and
+                    ($action.redirectType    -eq 'Permanent') -and
+                    ($action.appendQueryString -eq $true)
+                }
+                SetScript   = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $sitePath = "IIS:\Sites\$($settings.SiteName)"
+                    $filter   = "system.webServer/rewrite/rules/rule[@name='HTTP to HTTPS Redirect']/action"
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'type'              -value 'Redirect'
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'url'               -value 'https://{HTTP_HOST}/{R:1}'
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'redirectType'      -value 'Permanent'
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'appendQueryString' -value $true
+                }
+            }
+        }
+
+        #URL Rewrite rule: transparently rewrite /webjea/* to /* (server-side rewrite preserves POST body and query string)
+        if ($settings.EnableBackwardCompatibility)
+        {
+            @{
+                Description = 'URL Rewrite rule node exists: WebJEA Backward Compatibility'
+                TestScript  = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $rule = Get-WebConfigurationProperty -pspath "IIS:\Sites\$($settings.SiteName)" `
+                        -filter "system.webServer/rewrite/rules/rule[@name='WebJEA Backward Compatibility']" `
+                        -name '.' -ErrorAction SilentlyContinue
+                    ($null -ne $rule) -and ($rule.stopProcessing -eq $true)
+                }
+                SetScript   = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $sitePath = "IIS:\Sites\$($settings.SiteName)"
+                    $ruleName = 'WebJEA Backward Compatibility'
+                    Remove-WebConfigurationProperty -pspath $sitePath `
+                        -filter 'system.webServer/rewrite/rules' -name '.' `
+                        -AtElement @{ name = $ruleName } -ErrorAction SilentlyContinue
+                    Add-WebConfigurationProperty -pspath $sitePath `
+                        -filter 'system.webServer/rewrite/rules' -name '.' `
+                        -value @{ name = $ruleName; stopProcessing = $true }
+                }
+            }
+            @{
+                Description = 'URL Rewrite rule match configured: WebJEA Backward Compatibility'
+                TestScript  = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $match = Get-WebConfigurationProperty -pspath "IIS:\Sites\$($settings.SiteName)" `
+                        -filter "system.webServer/rewrite/rules/rule[@name='WebJEA Backward Compatibility']/match" `
+                        -name '.' -ErrorAction SilentlyContinue
+                    ($match.url -eq '^webjea/(.*)') -and ($match.ignoreCase -eq $true)
+                }
+                SetScript   = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $sitePath = "IIS:\Sites\$($settings.SiteName)"
+                    $filter   = "system.webServer/rewrite/rules/rule[@name='WebJEA Backward Compatibility']/match"
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'url'        -value '^webjea/(.*)'
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'ignoreCase' -value $true
+                }
+            }
+            @{
+                Description = 'URL Rewrite rule action configured: WebJEA Backward Compatibility'
+                TestScript  = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $action = Get-WebConfigurationProperty -pspath "IIS:\Sites\$($settings.SiteName)" `
+                        -filter "system.webServer/rewrite/rules/rule[@name='WebJEA Backward Compatibility']/action" `
+                        -name '.' -ErrorAction SilentlyContinue
+                    ($action.type             -eq 'Redirect') -and
+                    ($action.url              -eq '/{R:1}') -and
+                    ($action.redirectType     -eq 'Permanent') -and
+                    ($action.appendQueryString -eq $true)
+                }
+                SetScript   = {
+                    Import-Module WebAdministration -Verbose:$false
+                    $sitePath = "IIS:\Sites\$($settings.SiteName)"
+                    $filter   = "system.webServer/rewrite/rules/rule[@name='WebJEA Backward Compatibility']/action"
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'type'              -value 'Redirect'
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'url'               -value '/{R:1}'
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'redirectType'      -value 'Permanent'
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'appendQueryString' -value $true
                 }
             }
         }

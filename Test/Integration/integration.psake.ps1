@@ -107,10 +107,17 @@ Task StopVM_DC -Depends Init {
 
 Task StopVM_Web -Depends Init {
     Write-Log "Stopping Web Server VM '$script:webVMName' for snapshot maintenance..."
-    Stop-VM -Name $script:webVMName -Force -TurnOff
+    #request shutdown
+    Stop-VM -Name $script:webVMName -TurnOff
 
     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    while ((Get-VM -Name $script:webVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 120)
+    while ((Get-VM -Name $script:webVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 300)
+    {
+        Start-Sleep -Seconds 5
+    }
+    #force shutdown
+    Stop-VM -Name $script:webVMName -TurnOff -Force
+    while ((Get-VM -Name $script:webVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 450)
     {
         Start-Sleep -Seconds 5
     }
@@ -125,10 +132,17 @@ Task StopVM_Web -Depends Init {
 
 Task StopVM_Web2 -Depends Init {
     Write-Log "Stopping Web Server VM '$script:webVMName' for snapshot maintenance..."
-    Stop-VM -Name $script:webVMName -Force -TurnOff
+    #request shutdown
+    Stop-VM -Name $script:webVMName -TurnOff
 
     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    while ((Get-VM -Name $script:webVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 120)
+    while ((Get-VM -Name $script:webVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 300)
+    {
+        Start-Sleep -Seconds 5
+    }
+    #force shutdown
+    Stop-VM -Name $script:webVMName -TurnOff -Force
+    while ((Get-VM -Name $script:webVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 450)
     {
         Start-Sleep -Seconds 5
     }
@@ -146,7 +160,7 @@ Task StopVMs -Depends StopVM_Web, StopVM_DC {}
 # ---------------------------------------------------------------------------
 #  Deploy tasks
 # ---------------------------------------------------------------------------
-#FIXME Create a certificate on the remote server, update the settings file with the thumbprint
+#TODO Create a certificate on the remote server, update the settings file with the thumbprint
 
 Task CleanBuildOutput -Depends Init -PreCondition { -not $script:useGithubBuild } {
     if (-not (Test-Path $script:buildInfoFile)) { New-Item -Path $script:buildOutputDir -ItemType directory -Force | Out-Null }
@@ -389,7 +403,7 @@ Task ApplyUpdates_Web -Depends GetCredential, RevertSnapshot_Web, StartVM_Web -P
 
         if ($updateResult.RebootRequired -and $script:config.WindowsUpdate.AutoReboot)
         {
-            Write-Log 'Rebooting VM after updates...'
+            Write-Log 'Rebooting WebServer VM after updates...'
             Remove-PSSession -Session $session -ErrorAction SilentlyContinue
             $session = $null
 

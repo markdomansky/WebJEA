@@ -71,21 +71,20 @@ Class Telemetry
     End Sub
 
     Private Sub SubmitToAWSQueue(msg As String)
-        If globalSettings(globalKeys.aws_enabled) = False Then Return 'disable in code
+        If AwsSecrets.Enabled <> "True" Then Return
 
         Try
-            'Dim cred As Amazon.Runtime.AWSCredentials = New Amazon.Runtime.AnonymousAWSCredentials
             dlog.Info("Sending Telemetry: " + msg)
-            Dim cred As Amazon.Runtime.AWSCredentials = New Amazon.Runtime.BasicAWSCredentials(globalSettings(globalKeys.aws_key), globalSettings(globalKeys.aws_keysec))
+            Dim cred As Amazon.Runtime.AWSCredentials = New Amazon.Runtime.BasicAWSCredentials(AwsSecrets.Key, AwsSecrets.KeySec)
 
             Dim conf As New Amazon.SQS.AmazonSQSConfig
             conf.Timeout = New TimeSpan(0, 0, 5)
-            conf.ServiceURL = globalSettings(globalKeys.aws_serviceUrl)
+            conf.ServiceURL = New Uri(AwsSecrets.QueueUrl).GetLeftPart(UriPartial.Authority)
 
             Dim client As New Amazon.SQS.AmazonSQSClient(cred, conf)
 
             Dim req As New Amazon.SQS.Model.SendMessageRequest
-            req.QueueUrl = globalSettings(globalKeys.aws_queueUrl)
+            req.QueueUrl = AwsSecrets.QueueUrl
             req.MessageBody = msg
 
             Dim resp As Amazon.SQS.Model.SendMessageResponse = client.SendMessage(req)

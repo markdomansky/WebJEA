@@ -1,12 +1,14 @@
-﻿/*These are special tags you might want to use in your PS output using the [[span]] or create your own*/
+﻿/*These are WCAG compliant for contrast with the default .psoutput background*/
+
+/*These are special tags you might want to use in your PS output using the [[span]] or create your own*/
 .psbold {
     font-weight: bold;
 }
 .psred {
-    color: red;
+    color: #aa0000;
 }
 .psblue {
-    color: blue;
+    color: #0D4EAD;
 }
 .psvariable {
     font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
@@ -17,9 +19,10 @@
 }
 
 
-.pslink {
+.pslink, .ps a {
     /*This tag is always added to formatted links.  changing this affects all links output from PS.*/
-    color: blue;
+    /*Works for links at any depth within psoutput, with or without intermediate HTML tags*/
+    color: #0D4EAD;
 }
 .psoutput {
     /*Default Output span (includes Write-Output, Write-Host, Write-Information).  By default, we don't do any special formatting.*/
@@ -27,20 +30,20 @@
 }
 .psverbose {
     /*VERBOSE span*/
-    color: darkcyan;
+    color: #555700;
 }
 .pserror {
     /*ERROR span*/
-    color: red;
+    color: #aa0000;
 }
 .psdebug {
     /*DEBUG span*/
-    color: #888;
+    color: #555;
     font-weight:bold;
 }
 .pswarning {
     /*WARNING span*/
-    color: darkgoldenrod;
+    color: #78460B;
 }
 .psouter {
     /*This the outer panel that contains the div.  It's where we color the background*/

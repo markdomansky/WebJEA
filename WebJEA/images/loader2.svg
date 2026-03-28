@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" width="200" height="140">
+  <defs>
+    <linearGradient id="lineGrad1" gradientUnits="userSpaceOnUse"
+                    x1="-40" y1="0" x2="0" y2="0"
+                    spreadMethod="pad">
+      <stop offset="0" stop-color="#aaa"/>
+      <stop offset="1" stop-color="#333"/>
+      <animate attributeName="x1" from="-40" to="160" dur="1s" begin="sync.begin" fill="freeze"/>
+      <animate attributeName="x2" from="0" to="200" dur="1s" begin="sync.begin" fill="freeze"/>
+      <animate attributeName="x1" from="160" to="200" dur="0.2s" begin="sync.begin + 1s" fill="freeze"/>
+      <animate attributeName="x2" from="200" to="240" dur="0.2s" begin="sync.begin + 1s" fill="freeze"/>
+    </linearGradient>
+    <linearGradient id="lineGrad2" gradientUnits="userSpaceOnUse"
+                    x1="-40" y1="0" x2="0" y2="0"
+                    spreadMethod="pad">
+      <stop offset="0" stop-color="#aaa"/>
+      <stop offset="1" stop-color="#333"/>
+      <animate attributeName="x1" from="-40" to="110" dur="1s" begin="sync.begin + 1.15s" fill="freeze"/>
+      <animate attributeName="x2" from="0" to="150" dur="1s" begin="sync.begin + 1.15s" fill="freeze"/>
+      <animate attributeName="x1" from="110" to="150" dur="0.265s" begin="sync.begin + 2.15s" fill="freeze"/>
+      <animate attributeName="x2" from="150" to="190" dur="0.265s" begin="sync.begin + 2.15s" fill="freeze"/>
+    </linearGradient>
+    <!--
+      Reveal clip animations use values/keyTimes so the bar stays fully revealed
+      until the fade-out completes, then resets to hidden for the next loop.
+      Each animation lasts from its stagger offset to the end of the 10.5s cycle.
+    -->
+    <clipPath id="reveal1">
+      <rect x="0" y="0" width="0" height="20">
+        <animate attributeName="width" values="0;200;200" keyTimes="0;0.190;1"
+                 dur="5.25s" begin="sync.begin" fill="remove"/>
+      </rect>
+    </clipPath>
+    <clipPath id="reveal2">
+      <rect x="0" y="40" width="0" height="20">
+        <animate attributeName="width" values="0;150;150" keyTimes="0;0.244;1"
+                 dur="4.1s" begin="sync.begin + 1.15s" fill="remove"/>
+      </rect>
+    </clipPath>
+    <linearGradient id="lineGrad3" gradientUnits="userSpaceOnUse"
+                    x1="-40" y1="0" x2="0" y2="0"
+                    spreadMethod="pad">
+      <stop offset="0" stop-color="#aaa"/>
+      <stop offset="1" stop-color="#333"/>
+      <animate attributeName="x1" from="-40" to="145" dur="1s" begin="sync.begin + 2.3s" fill="freeze"/>
+      <animate attributeName="x2" from="0" to="185" dur="1s" begin="sync.begin + 2.3s" fill="freeze"/>
+      <animate attributeName="x1" from="145" to="185" dur="0.215s" begin="sync.begin + 3.3s" fill="freeze"/>
+      <animate attributeName="x2" from="185" to="225" dur="0.215s" begin="sync.begin + 3.3s" fill="freeze"/>
+    </linearGradient>
+    <linearGradient id="lineGrad4" gradientUnits="userSpaceOnUse"
+                    x1="-40" y1="0" x2="0" y2="0"
+                    spreadMethod="pad">
+      <stop offset="0" stop-color="#aaa"/>
+      <stop offset="1" stop-color="#333"/>
+      <animate attributeName="x1" from="-40" to="90" dur="1s" begin="sync.begin + 3.45s" fill="freeze"/>
+      <animate attributeName="x2" from="0" to="130" dur="1s" begin="sync.begin + 3.45s" fill="freeze"/>
+      <animate attributeName="x1" from="90" to="130" dur="0.31s" begin="sync.begin + 4.45s" fill="freeze"/>
+      <animate attributeName="x2" from="130" to="170" dur="0.31s" begin="sync.begin + 4.45s" fill="freeze"/>
+    </linearGradient>
+    <clipPath id="reveal3">
+      <rect x="0" y="80" width="0" height="20">
+        <animate attributeName="width" values="0;185;185" keyTimes="0;0.339;1"
+                 dur="2.95s" begin="sync.begin + 2.3s" fill="remove"/>
+      </rect>
+    </clipPath>
+    <clipPath id="reveal4">
+      <rect x="0" y="120" width="0" height="20">
+        <animate attributeName="width" values="0;130;130" keyTimes="0;0.556;1"
+                 dur="1.8s" begin="sync.begin + 3.45s" fill="remove"/>
+      </rect>
+    </clipPath>
+  </defs>
+  <!--
+    sync drives the loop: 5.25s cycle, fades out at ~4.85s, restarts immediately on end.
+    keyTimes: hold opacity=1 until 4.85s (0.924), fade to 0 by 5.15s (0.981), hold 0 briefly.
+  -->
+  <g>
+    <animate id="sync" attributeName="opacity"
+             values="1;1;0;0" keyTimes="0;0.924;0.981;1"
+             dur="5.25s" begin="0s; sync.end" fill="remove"/>
+    <rect x="0" y="0" width="200" height="20" rx="10" ry="10" fill="url(#lineGrad1)" clip-path="url(#reveal1)"/>
+    <rect x="0" y="40" width="150" height="20" rx="10" ry="10" fill="url(#lineGrad2)" clip-path="url(#reveal2)"/>
+    <rect x="0" y="80" width="185" height="20" rx="10" ry="10" fill="url(#lineGrad3)" clip-path="url(#reveal3)"/>
+    <rect x="0" y="120" width="130" height="20" rx="10" ry="10" fill="url(#lineGrad4)" clip-path="url(#reveal4)"/>
+  </g>
+</svg>

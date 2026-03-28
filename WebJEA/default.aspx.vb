@@ -39,6 +39,9 @@
             Throw New Exception("Could not read config file")
         End Try
 
+        'set html language from config
+        htmlRoot.Attributes("lang") = cfg.HtmlLanguage
+
         'TODO: 9 - Improve JSON read process.  The current system is a hack, but it does work.
 
         'TODO: 5 - consider, using cached config, and then check for changes, and reload if appropriate
@@ -97,16 +100,16 @@
             objTelemetry.Add("ParamCount", cmd.Parameters.Count)
 
             'build display
-            lblCmdTitle.Text = cmd.DisplayName
+            lblCmdTitle.InnerText = cmd.DisplayName
             If cmd.Synopsis <> "" Then
                 lblCmdSynopsis.Text = cmd.Synopsis
                 lblCmdDescription.Text = cmd.Description
             Else
                 lblCmdSynopsis.Text = cmd.Description
             End If
-            If cmd.Description = "" Or cmd.Synopsis = "" Then
-                btnMore.Visible = False
-            End If
+            'If cmd.Description = "" Or cmd.Synopsis = "" Then
+                'btnMore.Visible = False
+            'End If
 
             Dim pscontrols As List(Of HtmlControl) = psweb.NewControl(Page, cmd.Parameters)
 

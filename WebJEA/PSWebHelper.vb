@@ -455,7 +455,7 @@
 
         'text to display in the label
         Dim strLabel As String = param.Name
-        Dim objName As HtmlControl = NewControl("span", "badge", strLabel)
+        Dim objName As HtmlControl = NewControl("span", "form-label", strLabel) '"badge" class removed
 
         'generate the actual control
         Dim objControl As New CheckBox
@@ -492,7 +492,7 @@
     Private Function NewControlLabel(Text As String) As Label
         Dim objLabel As New Label
         objLabel.Text = Text
-        objLabel.CssClass = "badge"
+        objLabel.CssClass = "form-label"
 
         Return objLabel
     End Function

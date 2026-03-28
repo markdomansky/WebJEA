@@ -1,4 +1,4 @@
-﻿Imports System
+Imports System
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
@@ -11,7 +11,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("webjea.com")>
 <Assembly: AssemblyCompany("Mark Domansky")>
 <Assembly: AssemblyProduct("WebJEA")>
-<Assembly: AssemblyCopyright("Copyright Â© Mark Domansky, 2021")>
+<Assembly: AssemblyCopyright("Copyright ? Mark Domansky, 2026")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
@@ -28,6 +28,7 @@ Imports System.Runtime.InteropServices
 '
 ' You can specify all the values or you can default the Build and Revision Numbers
 ' by using the '*' as shown below:
+' Note: this value is overwritten by the BeforeBuild target in WebJEA.vbproj
+' Format: Year.Month.DayOfYear.HalfSecondsInDay
 
-' <Assembly: AssemblyFileVersion("1.1.0.0")>
-<Assembly: AssemblyVersion("1.1.22183.37606")>
+<Assembly: AssemblyVersion("2026.3.28.1605")>

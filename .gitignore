@@ -296,3 +296,6 @@ Test/Integration/cred.clixml
 Test/Integration/settings.jsonc
 #This is dev computer specific settings for the integration tests.  Use the template file and adjust to your needs.
 Test/Integration/config.json
+#AWS secrets - compiled into DLL. Copy AwsSecrets.template.vb to AwsSecrets.vb and fill in your values.
+WebJEA/AwsSecrets.vb
+Copilot-Processing.md

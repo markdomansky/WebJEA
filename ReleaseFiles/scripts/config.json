@@ -3,6 +3,7 @@
     "defaultcommandid": "overview",
     "basepath": "c:\\scripts",
     "LogParameters": true,
+    "HtmlLanguage": "en-US",
     "permittedgroups": [".\\Administrators"],
     "commands": [{
         "id": "overview",

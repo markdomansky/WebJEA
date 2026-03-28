@@ -2,21 +2,26 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" id="htmlRoot" runat="server">
 <head runat="server">
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="icon" href="favicon.ico" />
+    <!-- favicon info -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />
+    <link rel="manifest" href="/images/site.webmanifest" />
+
     <title>WebJEA</title>
 
     <link href="content/bootstrap.min.css" rel="stylesheet" />
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <%--<link href="content/ie10-viewport-bug-workaround.css" rel="stylesheet" />--%>
 
-    <link href="content/themes/base/jquery-ui.css" rel="stylesheet" />
-    <link href="content/jquery-ui-timepicker-addon.css" rel="stylesheet" />
+    <link href="content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
 
     <link href="sidebar.css" rel="stylesheet" />
     <%--<link href="loader.css" rel="stylesheet" />--%>
@@ -50,27 +55,32 @@
                                         <li class="menulink <%#Eval("CSS") %>"><a href="<%#Eval("Uri") %>"><%#Eval("DisplayName") %></a></li>
                                     </ItemTemplate>
                                 </asp:ListView>
-                                <div id="footer" class="footer">Powered by <a href="http://webjea.com" target="_blank">WebJEA</a><asp:Literal runat="server" ID="lblVersion"></asp:Literal>.</div>
+                                <div id="footer" class="footer">Powered by <a href="http://www.webjea.com" target="_blank" class="WebJEALink">WebJEA</a><asp:Literal runat="server" ID="lblVersion"></asp:Literal>.</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <%--col-sm-offset-1--%> 
-                <div class="col-md-9 main" runat="server" id="divCmdBody" clientmode="static">
+                <%--col-sm-offset-1--%>
+                <div class="col-md-9 main" role="main" runat="server" id="divCmdBody" clientmode="static">
                     <div class="page-header">
-                        <h3>
-                            <asp:Label ID="lblCmdTitle" runat="server" Text="lblCmdTitle"></asp:Label>
-                        </h3>
+                        <h1 id="lblCmdTitle" runat="server"></h1>
                     </div>
-                    <div id="Synopsis" class="description">
-                        <asp:Label ID="lblCmdSynopsis" runat="server" Text="lblCmdSynopsis"></asp:Label>
-                        <a runat="server" class="btn btn-sm btn-light" data-target="#collapseDescription" data-toggle="collapse" aria-expanded="false" aria-controls="collapseDescription" id="btnMore">more</a></div>
-                    <div id="collapseDescription" class="collapse">
-                        <div class="well">
-                            <asp:Label ID="lblCmdDescription" runat="server" Text="lblCmdDescription"></asp:Label></div>
+
+                    <div class="accordion" id="SynopsisAndDescription">
+                        <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                <asp:Label ID="lblCmdSynopsis" runat="server" Text="lblCmdSynopsis"></asp:Label>
+                            </button>
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                <asp:Label ID="lblCmdDescription" runat="server" Text="lblCmdDescription"></asp:Label>
+                            </div>
+                        </div>
                     </div>
-                    <div>&nbsp;</div>
+                    <%--<div>&nbsp;</div>--%>
                     <div id="panelOnload" class="" runat="server">
                         <div class="card psouter">
                             <div id="consoleOnload" runat="server" class="ps">consoleOnLoad</div>
@@ -89,15 +99,15 @@
                             <asp:Label ID="consoleOutput" runat="server" Text="consoleOutput" CssClass="ps"></asp:Label></div>
                     </div>
 
-                </div>
-            </div>
+        </div>
+        </div>
         </div>
 
     </form>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="scripts/jquery-3.6.0.min.js"></script>
-    <script src="scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="<%= ResolveUrl("~/scripts/jquery-" & ConfigurationManager.AppSettings("jQueryVersion") & ".min.js") %>"></script>
+    <script src="<%= ResolveUrl("~/scripts/jquery-ui-" & ConfigurationManager.AppSettings("jQueryUIVersion") & ".min.js") %>"></script>
     <script src="scripts/jquery-ui-sliderAccess.js"></script>
     <script src="scripts/jquery-ui-timepicker-addon.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->

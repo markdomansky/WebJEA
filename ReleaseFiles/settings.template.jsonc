@@ -34,7 +34,7 @@
     "CertThumbprint": "Add your Thumbprint here",
     //Redirect will only be configured if the certthumbprint is set and valid
     "RedirectPort80To443": true,
-    //Enable URL rewrite to redirect /WebJEA requests to the root path.
+    //Enable URL rewrite to redirect /WebJEA/* requests to the root path with a 301 permanent redirect.
     //If you aren"t migrating from a previous version, you don"t need this.
     "EnableBackwardCompatibility": true,
     //WebJEA creates a new site.  We recommend disabling the default website to avoid confusion and

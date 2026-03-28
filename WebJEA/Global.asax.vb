@@ -1,16 +1,17 @@
 ﻿Imports System.Web.SessionState
 Imports System.Web
-Imports System.Diagnostics
+Imports System.Diagnostics.Configuration
 
 Public Class Global_asax
     Inherits System.Web.HttpApplication
 
     Sub Application_Start(ByVal sender As Object, ByVal e As EventArgs)
         ' Fires when the application is started
+        Dim jqueryVersion As String = ConfigurationManager.AppSettings("JQueryVersion")
 
         ScriptManager.ScriptResourceMapping.AddDefinition("jquery", New ScriptResourceDefinition With {
-            .Path = "~/scripts/jquery-3.6.0.min.js",
-            .DebugPath = "~/scripts/jquery-3.6.0.js"
+            .Path = "~/scripts/jquery-" & jqueryVersion & ".min.js",
+            .DebugPath = "~/scripts/jquery-" & jqueryVersion & ".js"
         })
     End Sub
 

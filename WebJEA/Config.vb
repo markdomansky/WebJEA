@@ -8,6 +8,7 @@
     Private prvDefaultCommandId As String
     Public BasePath As String
     Public SendTelemetry As Boolean = True
+    Public HtmlLanguage As String = "en-US"
     Public PermittedGroups As New List(Of String)()
     Private prvGroupSIDs As New List(Of String)
 

@@ -14,7 +14,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>WebJEA</RootNamespace>
     <AssemblyName>WebJEA</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MyType>Custom</MyType>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
@@ -33,6 +33,7 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
+    <Deterministic>false</Deterministic>
     <OutputPath>bin\</OutputPath>
     <DocumentationFile>WebJEA.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
@@ -56,46 +57,76 @@
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
+    <Deterministic>false</Deterministic>
     <OutputPath>bin\</OutputPath>
     <DocumentationFile>WebJEA.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
-      <HintPath>packages\AWSSDK.Core.3.7.12.2\lib\net45\AWSSDK.Core.dll</HintPath>
+    <Reference Include="AWSSDK.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>packages\AWSSDK.Core.4.0.3.20\lib\net472\AWSSDK.Core.dll</HintPath>
     </Reference>
-    <Reference Include="AWSSDK.SQS, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
-      <HintPath>packages\AWSSDK.SQS.3.7.2.71\lib\net45\AWSSDK.SQS.dll</HintPath>
+    <Reference Include="AWSSDK.SQS, Version=4.0.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>packages\AWSSDK.SQS.4.0.2.18\lib\net472\AWSSDK.SQS.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.10.0.5\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>packages\NLog.4.7.15\lib\net45\NLog.dll</HintPath>
+    <Reference Include="NLog, Version=6.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>packages\NLog.6.1.1\lib\net46\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="NLog.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>packages\NLog.Web.4.15.0\lib\net35\NLog.Web.dll</HintPath>
+    <Reference Include="NLog.Web, Version=6.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>packages\NLog.Web.6.1.2\lib\net46\NLog.Web.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Pipelines, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Pipelines.10.0.5\lib\net462\System.IO.Pipelines.dll</HintPath>
+    </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Management.Automation\v4.0_3.0.0.0__31bf3856ad364e35\System.Management.Automation.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.Encodings.Web, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.Encodings.Web.10.0.5\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.Json.10.0.5\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Threading.Tasks.Extensions.4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Routing" />
@@ -137,13 +168,30 @@
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
+    <Content Include="Content\bootstrap-grid.rtl.css" />
+    <Content Include="Content\bootstrap-grid.rtl.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
     <Content Include="Content\bootstrap-reboot.min.css" />
+    <Content Include="Content\bootstrap-reboot.rtl.css" />
+    <Content Include="Content\bootstrap-reboot.rtl.min.css" />
+    <Content Include="Content\bootstrap-utilities.css" />
+    <Content Include="Content\bootstrap-utilities.min.css" />
+    <Content Include="Content\bootstrap-utilities.rtl.css" />
+    <Content Include="Content\bootstrap-utilities.rtl.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap.rtl.css" />
+    <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\jquery-ui-timepicker-addon.css" />
     <Content Include="Content\jquery-ui-timepicker-addon.min.css" />
-    <Content Include="Content\ps.png" />
+    <Content Include="images\android-chrome-192x192.png" />
+    <Content Include="images\android-chrome-512x512.png" />
+    <Content Include="images\apple-touch-icon.png" />
+    <Content Include="images\favicon-16x16.png" />
+    <Content Include="images\favicon-32x32.png" />
+    <Content Include="images\favicon.ico" />
+    <Content Include="images\logo.svg" />
+    <Content Include="images\ps.png" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -188,17 +236,13 @@
     <Content Include="default.aspx" />
     <Content Include="error.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="loader.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="main.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="psoutput.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="images\loader.svg" />
+    <Content Include="main.css" />
+    <Content Include="psoutput.css" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\bootstrap.esm.js" />
+    <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
@@ -256,28 +300,42 @@
     <Content Include="Scripts\esm\popper.js.map" />
     <Content Include="Scripts\esm\popper-utils.min.js.map" />
     <Content Include="Scripts\esm\popper-utils.js.map" />
+    <Content Include="images\site.webmanifest" />
+    <Content Include="Content\bootstrap.rtl.min.css.map" />
+    <Content Include="Content\bootstrap.rtl.css.map" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-utilities.rtl.min.css.map" />
+    <Content Include="Content\bootstrap-utilities.rtl.css.map" />
+    <Content Include="Content\bootstrap-utilities.min.css.map" />
+    <Content Include="Content\bootstrap-utilities.css.map" />
+    <Content Include="Content\bootstrap-reboot.rtl.min.css.map" />
+    <Content Include="Content\bootstrap-reboot.rtl.css.map" />
     <Content Include="Content\bootstrap-reboot.min.css.map" />
     <Content Include="Content\bootstrap-reboot.css.map" />
+    <Content Include="Content\bootstrap-grid.rtl.min.css.map" />
+    <Content Include="Content\bootstrap-grid.rtl.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
-    <Content Include="Scripts\bootstrap.min.js.map" />
-    <Content Include="Scripts\bootstrap.js.map" />
-    <Content Include="Scripts\bootstrap.bundle.min.js.map" />
-    <Content Include="Scripts\bootstrap.bundle.js.map" />
     <None Include="My Project\PublishProfiles\ReleaseBuild.pubxml" />
     <None Include="My Project\PublishProfiles\Web22Dbg.pubxml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Scripts\jquery-3.6.0.intellisense.js" />
-    <Content Include="Scripts\jquery-3.6.0.js" />
-    <Content Include="Scripts\jquery-3.6.0.min.js" />
-    <Content Include="Scripts\jquery-3.6.0.slim.js" />
-    <Content Include="Scripts\jquery-3.6.0.slim.min.js" />
-    <Content Include="Scripts\jquery-ui-1.13.1.js" />
-    <Content Include="Scripts\jquery-ui-1.13.1.min.js" />
+    <Content Include="Scripts\bootstrap.min.js.map" />
+    <Content Include="Scripts\bootstrap.js.map" />
+    <Content Include="Scripts\bootstrap.esm.min.js.map" />
+    <Content Include="Scripts\bootstrap.esm.js.map" />
+    <Content Include="Scripts\bootstrap.bundle.min.js.map" />
+    <Content Include="Scripts\bootstrap.bundle.js.map" />
+    <None Include="Scripts\jquery-3.7.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.7.1.js" />
+    <Content Include="Scripts\jquery-3.7.1.min.js" />
+    <Content Include="Scripts\jquery-3.7.1.slim.js" />
+    <Content Include="Scripts\jquery-3.7.1.slim.min.js" />
+    <Content Include="Scripts\jquery-ui-1-14.1.js" />
+    <Content Include="Scripts\jquery-ui-1.14.1.js" />
+    <Content Include="Scripts\jquery-ui-1.14.1.min.js" />
     <Content Include="Scripts\jquery-ui-sliderAccess.js" />
     <Content Include="Scripts\jquery-ui-timepicker-addon.js" />
     <Content Include="Scripts\jquery-ui-timepicker-addon.min.js" />
@@ -348,30 +406,20 @@
     <Content Include="Scripts\src\utils\setAttributes.js" />
     <Content Include="Scripts\src\utils\setStyles.js" />
     <Content Include="Scripts\src\utils\setupEventListeners.js" />
-    <Content Include="Scripts\umd\popper-utils.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scripts\umd\popper-utils.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scripts\umd\popper.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scripts\umd\popper.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sidebar.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="startup.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="validation.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Scripts\umd\popper-utils.js" />
+    <Content Include="Scripts\umd\popper-utils.min.js" />
+    <Content Include="Scripts\umd\popper.js" />
+    <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="sidebar.css" />
+    <Content Include="startup.js" />
+    <Content Include="validation.js" />
+    <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.7.1.min.map" />
     <None Include="Web.config" />
+    <None Include="AwsSecrets.template.vb" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AwsSecrets.vb" />
     <Compile Include="Config.vb" />
     <Compile Include="default.aspx.designer.vb">
       <DependentUpon>default.aspx</DependentUpon>
@@ -390,7 +438,6 @@
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Global.vb" />
     <Compile Include="GroupFinder.vb" />
     <Compile Include="Helpers.vb" />
     <Compile Include="MenuItem.vb" />
@@ -443,28 +490,16 @@
     </None>
     <None Include="NLog.config" />
     <None Include="packages.config" />
-    <Content Include="Scripts\umd\popper.min.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scripts\umd\popper.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scripts\umd\popper.js.flow">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scripts\umd\popper-utils.min.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scripts\umd\popper-utils.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Scripts\umd\popper.min.js.map" />
+    <Content Include="Scripts\umd\popper.js.map" />
+    <Content Include="Scripts\umd\popper.js.flow" />
+    <Content Include="Scripts\umd\popper-utils.min.js.map" />
+    <Content Include="Scripts\umd\popper-utils.js.map" />
     <Content Include="Scripts\README.md" />
     <Content Include="Scripts\popper.min.js.map" />
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Scripts\jquery-3.6.0.slim.min.map" />
-    <Content Include="Scripts\jquery-3.6.0.min.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -478,6 +513,7 @@
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -506,7 +542,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49851</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:49851/</IISUrl>
+          <IISUrl>http://localhost:44300/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>https://web22dbg.domain1.local</CustomServerUrl>
@@ -515,11 +551,17 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+  <!-- Stamp AssemblyVersion with FullYear.Month.DayOfMonth.HHMM (UTC) before each build -->
   <Target Name="BeforeBuild">
+    <Exec Command="powershell -NonInteractive -ExecutionPolicy Bypass -Command &quot;$d=(Get-Date).ToUniversalTime(); $v='{0}.{1}.{2}.{3}' -f $d.Year,$d.Month,$d.Day,($d.Hour*100+$d.Minute); $f='$(ProjectDir)My Project\AssemblyInfo.vb'; (Get-Content $f) -replace 'AssemblyVersion\(.*\)', ('AssemblyVersion(' + [char]34 + $v + [char]34 + ')') | Set-Content $f; Write-Host ('AssemblyVersion set to: '+$v)&quot;" />
   </Target>
-  <Target Name="AfterBuild">
+  <Import Project="packages\NLog.Schema.6.1.1\build\NLog.Schema.targets" Condition="Exists('packages\NLog.Schema.6.1.1\build\NLog.Schema.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\NLog.Schema.6.1.1\build\NLog.Schema.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\NLog.Schema.6.1.1\build\NLog.Schema.targets'))" />
+    <Error Condition="!Exists('packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets'))" />
   </Target>
-  -->
+  <Import Project="packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
 </Project>

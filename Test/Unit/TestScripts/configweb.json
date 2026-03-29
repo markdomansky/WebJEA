@@ -1,0 +1,83 @@
+﻿{
+    "Title": "WebJEA Demo",
+    "defaultcommandid": "t0",
+    "basepath": "C:\\prj\\webjea-dev\\test\\scripts",
+    "LogParameters": true,
+    "permittedgroups": ["*"],
+    "commands": [{
+            "id": "t0",
+            "displayname": "Overview",
+            "onloadscript": "t0-onload.ps1",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t1",
+            "script": "t1-getprocess.ps1",
+            "displayname": "T1-Get Process",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t2",
+            "script": "t2-noparam.ps1",
+            "displayname": "T2-NoParam",
+            "permittedgroups": ["domain1\\group3"]
+        },
+        {
+            "id": "t3",
+            "displayname": "T3-NoScript",
+            "permittedgroups": ["domain1\\group2"]
+        },
+        {
+            "id": "t4",
+            "displayname": "T4-Listbox",
+            "script": "t4-Listbox.ps1",
+            "permittedgroups": ["domain1\\group3"]
+        },
+        {
+            "id": "t5",
+            "displayname": "T5-Date",
+            "script": "t5-Date.ps1",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t6",
+            "displayname": "T6-Int",
+            "script": "t6-Int.ps1",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t7",
+            "onloadscript": "",
+            "script": "t7-parser.ps1",
+            "displayname": "T7-Parser",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "d1",
+            "displayname": "D1-Reset Password",
+            "script": "d1.ps1",
+            "permittedgroups": ["mgmt1\\administrator", "mgmt1\\Lgroup1"]
+        },
+        {
+            "id": "d2",
+            "onloadscript": "d2-onload.ps1",
+            "displayname": "D2-Anything you want in your PS1",
+            "script": "c:\\dropbox\\scripts\\vb.net\\webjea\\demo\\d2.ps1",
+            "permittedgroups": ["domain1\\group2"]
+        },
+        {
+            "id": "d3",
+            "script": "d3.ps1",
+            "displayname": "D3-More and More",
+            "permittedgroups": ["domain1\\group3"]
+        },
+        {
+            "id": "d4",
+            "onloadscript": "overview.ps1",
+            "script": "d4.ps1",
+            "displayname": "D4-Enchilada, Whole",
+            "permittedgroups": ["*", "domain1\\group3", "domain1\\domain admins"]
+        }
+
+    ]
+}

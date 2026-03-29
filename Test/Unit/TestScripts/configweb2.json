@@ -1,0 +1,69 @@
+﻿{
+    "Title": "WebJEA",
+    "defaultcommandid": "cmd1",
+    "basepath": "C:\\prj\\webjea-dev\\test\\scripts",
+    "LogParameters": true,
+    "permittedgroups": [".\\Administrators"],
+    "commands": [{
+            "id": "cmd1",
+            "displayname": "Overview",
+            "synopsis": "",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "cmd3a",
+            "script": "cmd3.ps1",
+            "displayname": "JEA Solution",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "cmd3",
+            "script": "c:\\dropbox\\scripts\\PowerShell\\WebJEADemo\\d4.ps1",
+            "displayname": "Robust Forms Generation",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "cmd4",
+            "script": "cmd4.ps1",
+            "displayname": "Easy Permissions Management",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "cmd5",
+            "script": "cmd5.ps1",
+            "displayname": "DSC Push Deploy",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "cmd6",
+            "script": "cmd6.ps1",
+            "displayname": "Secure Self Service",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "cmd7",
+            "script": "cmd7.ps1",
+            "displayname": "Reduce Permissions",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "cmd2",
+            "script": "cmd2.ps1",
+            "displayname": "Monitor Usage",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "cmd8",
+            "script": "cmd8.ps1",
+            "displayname": "Precise Control",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "cmd9",
+            "script": "cmd9.ps1",
+            "displayname": "Fast Install",
+            "permittedgroups": ["*"]
+        }
+
+    ]
+}

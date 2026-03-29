@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.4.11605.240 stable
+VisualStudioVersion = 18.4.11605.240
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WebJEA", "WebJEA.vbproj", "{B0AA4E7A-CBF8-4807-9CAD-15316F88F758}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WebJEA-UnitTests-VBNET", "..\Test\Unit\WebJEA-UnitTests-VBNET.vbproj", "{A99E6A2B-BBBF-2011-F3EE-A1FB8DE0BA41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{B0AA4E7A-CBF8-4807-9CAD-15316F88F758}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0AA4E7A-CBF8-4807-9CAD-15316F88F758}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0AA4E7A-CBF8-4807-9CAD-15316F88F758}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A99E6A2B-BBBF-2011-F3EE-A1FB8DE0BA41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A99E6A2B-BBBF-2011-F3EE-A1FB8DE0BA41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A99E6A2B-BBBF-2011-F3EE-A1FB8DE0BA41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A99E6A2B-BBBF-2011-F3EE-A1FB8DE0BA41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

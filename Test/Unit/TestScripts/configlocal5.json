@@ -1,0 +1,15 @@
+{
+    "Title": "WebJEA Demo",
+    "defaultcommandid": "overview",
+    "basepath": "C:\\prj\\webjea-dev\\test\\scripts",
+    "LogParameters": true,
+    "permittedgroups": ["domain1\\group1"],
+    "commands": [{
+        "id": "overview",
+        "displayname": "Overview",
+        "synopsis": "Congratulations, WebJEA is now working!  We've pre-loaded a demo script that will help you verify everything is working.  <br/><i>Tip: You can use the synopsis property of default command to display any text you want.  Including html.</i>",
+        "permittedgroups": ["domain1\\group2"],
+        "script": "t1-getprocess.ps1",
+        "onloadscript": "t1-getprocess.ps1"
+    }]
+}

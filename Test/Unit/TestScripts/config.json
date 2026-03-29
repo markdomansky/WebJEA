@@ -1,0 +1,262 @@
+{
+    "Title": "WebJEA Test",
+    "defaultcommandid": "t0",
+    "basepath": "C:\\prj\\webjea-dev\\test\\scripts",
+    "LogParameters": true,
+    "permittedgroups": ["Domain Admins"],
+    "commands": [{
+            "id": "overview",
+            "displayname": "Overview",
+            "synopsis": "Congratulations, WebJEA is now working!  We've pre-loaded a demo script that will help you verify everything is working.  <br/><i>Tip: You can use the synopsis property of default command to display any text you want.  Including html.</i>",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "permittedgroups": ["*"],
+            "script": "validate.ps1",
+            "onloadscript": "overview.ps1"
+        },
+        {
+            "id": "validate",
+            "displayname": "Validate",
+            "script": "validate.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "onloadscript": "validate-onload.ps1",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t0",
+            "displayname": "Overview1",
+            "synopsis": "<a href='?cmdid=t11&p1=abc&p2=123'>Test link</a><br/>This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. ",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "script": "t0-onload.ps1",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t1",
+            "script": "t1-getprocess.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "T1-Get Process",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t2",
+            "script": "t2-noparam.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "T2-NoParam",
+            "permittedgroups": [],
+            "hidden": true
+        },
+        {
+            "id": "t3",
+            "displayname": "T3-NoScript",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "permittedgroups": [],
+            "hidden": true
+        },
+        {
+            "id": "t4",
+            "displayname": "T4-Listbox",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "script": "t4-Listbox.ps1",
+            "permittedgroups": [],
+            "hidden": true
+        },
+        {
+            "id": "t5",
+            "displayname": "T5-Date",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "script": "t5-Date.ps1",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t6",
+            "displayname": "T6-Int",
+            "script": "t6-Int.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t7",
+            "onloadscript": "t0-onload.ps1",
+            "script": "t7-parser.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "T7-Parser",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t8",
+            "script": "t8-text.ps1",
+            "displayname": "T8-Text",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t9",
+            "script": "t9-multi.ps1",
+            "displayname": "T9-multi",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t10",
+            "onloadscript": "t10o.ps1",
+            "displayname": "T10-onload",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "t11",
+            "onloadscript": "t11o.ps1",
+            "displayname": "T11-onload",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "permittedgroups": [
+                "*"
+            ]
+        },
+        {
+            "id": "t12",
+            "onloadscript": "t12o.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "T12-onload",
+            "permittedgroups": [
+                "*"
+            ]
+        },
+        {
+            "id": "t13",
+            "script": "t13.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "T13",
+            "permittedgroups": [
+                "*"
+            ]
+        },
+        {
+            "id": "t14",
+            "script": "t14.ps1",
+            "displayname": "T14",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "permittedgroups": [
+                "*"
+            ]
+        },
+        {
+            "id": "t15",
+            "script": "t15.ps1",
+            "displayname": "T15",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "permittedgroups": [
+                "*"
+            ]
+        },
+        {
+            "id": "t-error",
+            "onloadscript": "t-error.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "T-Error",
+            "permittedgroups": [
+                "*"
+            ]
+        },
+        {
+            "id": "d1",
+            "displayname": "D1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "script": "c:\\dropbox\\scripts\\powershell\\webjeademo\\d1.ps1",
+            "permittedgroups": []
+        },
+        {
+            "id": "d2",
+            "onloadscript": "d2-onload.ps1",
+            "displayname": "D2",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "script": "c:\\dropbox\\scripts\\powershell\\webjeademo\\d2.ps1",
+            "permittedgroups": []
+        },
+        {
+            "id": "d3",
+            "script": "c:\\dropbox\\scripts\\powershell\\webjeademo\\d3.ps1",
+            "displayname": "D3",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "permittedgroups": []
+        },
+        {
+            "id": "d4",
+            "onloadscript": "c:\\dropbox\\scripts\\powershell\\webjeademo\\d4o.ps1",
+            "script": "c:\\dropbox\\scripts\\powershell\\webjeademo\\d4.ps1",
+            "displayname": "D4",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "permittedgroups": []
+        },
+        {
+            "id": "ttu-t0",
+            "onloadscript": "ttu-t0.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "ttu-t0-onload",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "ttu-t1",
+            "script": "ttu-t1.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "ttu-t1",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "ttu-t2",
+            "script": "ttu-t2.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "ttu-t2",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "ttu-t3",
+            "script": "ttu-t3.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "ttu-t3",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "ttu-t4",
+            "script": "ttu-t4.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "ttu-t4",
+            "permittedgroups": ["*"]
+        },
+        {
+            "id": "ttu-t5",
+            "script": "ttu-t5.ps1",
+            "ScriptMinutesSaved": 2,
+            "OnloadMinutesSaved": 1,
+            "displayname": "ttu-t5",
+            "permittedgroups": ["*"]
+        }
+
+    ]
+}

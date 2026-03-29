@@ -417,6 +417,7 @@
     <Content Include="Scripts\jquery-3.7.1.min.map" />
     <None Include="Web.config" />
     <None Include="AwsSecrets.template.vb" />
+    <Content Include="WebJEA-UnitTests-VBNET.vbproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AwsSecrets.vb" />

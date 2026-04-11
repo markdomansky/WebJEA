@@ -9,6 +9,10 @@
 
     Alternatively, use -UseGitHubBuild to download the latest release from GitHub instead.
 
+    Use -DoNotRunDeploy to stage the package on the VM (transfer and extract) without
+    executing Deploy.ps1. Useful for validating the staging pipeline or preparing a VM
+    for manual deployment.
+
 .PARAMETER ConfigPath
     Path to the configuration JSON file. Defaults to config.json in the script directory.
 
@@ -25,6 +29,12 @@
 
 .EXAMPLE
     .\Deploy-WebJEA.ps1 -ConfigPath .\custom-config.json
+
+.PARAMETER DoNotRunDeploy
+    Stage the package on the VM (transfer and extract) without executing Deploy.ps1.
+
+.EXAMPLE
+    .\Deploy-WebJEA.ps1 -DoNotRunDeploy
 
 .NOTES
     Requires Hyper-V PowerShell module and psake module.
@@ -44,7 +54,10 @@ param(
     [switch]$UseGitHubBuild,
 
     [Parameter()]
-    [switch]$SkipBuild
+    [switch]$SkipBuild,
+
+    [Parameter()]
+    [switch]$DoNotRunDeploy
 )
 
 $ErrorActionPreference = 'Stop'
@@ -63,6 +76,7 @@ $psakeParams = @{
         helpersPath    = Join-Path $PSScriptRoot 'Helpers'
         useGitHubBuild = [bool]$UseGitHubBuild
         skipBuild      = [bool]$SkipBuild
+        doNotRunDeploy = [bool]$DoNotRunDeploy
     }
     nologo     = $true
 }

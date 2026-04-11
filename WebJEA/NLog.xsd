@@ -1325,7 +1325,7 @@
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log events</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
@@ -2965,7 +2965,7 @@
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log events</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
@@ -4093,6 +4093,7 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
+          <xs:element name="expect100Continue" type="xs:boolean" minOccurs="0" maxOccurs="1" />
           <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
           <xs:element name="header" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
           <xs:element name="includeBOM" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
@@ -4110,6 +4111,11 @@
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
             <xs:documentation>Name of the target.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="expect100Continue" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to expect http 100-Continue behavior, where the client sends headers and expects a 100-Continue response from the server before sending the request body.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="encoding" type="xs:string">
@@ -4405,22 +4411,22 @@
         </xs:choice>
         <xs:attribute name="dottedRecursion" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to flatten nested object properties using dotted notation</xs:documentation>
+            <xs:documentation>Whether to flatten nested object properties using dotted notation (avoid nested JSON output)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log event (as JSON)</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="excludeEmptyProperties" type="xs:boolean">
@@ -4585,22 +4591,22 @@
         </xs:choice>
         <xs:attribute name="dottedRecursion" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to flatten nested object properties using dotted notation</xs:documentation>
+            <xs:documentation>Whether to flatten nested object properties using dotted notation (avoid nested JSON output)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log event (as JSON)</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="excludeEmptyProperties" type="xs:boolean">
@@ -4676,12 +4682,12 @@
         </xs:choice>
         <xs:attribute name="dottedRecursion" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to flatten nested object properties using dotted notation</xs:documentation>
+            <xs:documentation>Whether to flatten nested object properties using dotted notation (avoid nested JSON output)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="indentJson" type="xs:boolean">
@@ -4912,7 +4918,7 @@
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="excludeProperties" type="xs:string">
@@ -4962,7 +4968,7 @@
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log event (as XML)</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -5036,7 +5042,7 @@
     </xs:attribute>
     <xs:attribute name="includeScopeProperties" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+        <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -5101,7 +5107,7 @@
     </xs:attribute>
     <xs:attribute name="includeEventProperties" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Option to include all properties from the log event (as XML)</xs:documentation>
+        <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>

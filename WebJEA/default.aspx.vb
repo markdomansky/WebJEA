@@ -72,6 +72,7 @@
 
         'build display page
         lblTitle.Text = cfg.Title
+        lblTitleDesktop.Text = cfg.Title
 
         'build menu
         lvMenu.DataSource = cfg.GetMenuDataTable(uinfo, cmdid)
@@ -112,6 +113,11 @@
             'End If
 
             Dim pscontrols As List(Of HtmlControl) = psweb.NewControl(Page, cmd.Parameters)
+
+            'Add verbose control for global users (members of top-level permitted groups)
+            If cfg.IsGlobalUser(uinfo) Then
+                pscontrols.Add(psweb.NewVerboseControl(Page))
+            End If
 
             'psweb.AddControls(pscontrols, frmMain, btnRun)
             psweb.AddControls(pscontrols, frmMain, divParameters)
@@ -184,6 +190,15 @@
         ps.Parameters = psweb.getParameters(cmd, Page, uinfo)
         objTelemetry.Add("ParamUsed", ps.Parameters.Count)
 
+        'Enable verbose output if ShowVerbose is enabled, user is a global user, and has checked the verbose checkbox
+        If cfg.ShowVerbose AndAlso cfg.IsGlobalUser(uinfo) Then
+            ps.Verbose = psweb.GetVerboseParameter(Page)
+        End If
+
+        'Set WebJEA context for the PowerShell runspace
+        ps.WebJEAUserName = uinfo.UserName
+        ps.WebJEAHostName = Context.Request.UserHostName
+
         ps.Run()
         objTelemetry.AddRuntime(ps.Runtime)
         objTelemetry.AddIsOnload(False)
@@ -197,7 +212,7 @@
     Private Function ReadGetPost(param As String, DefaultValue As String) As String
         'check both GET and POST for parameter, if not found, return defaultvalue
         'prefer post over get for security
-        'Dim httpcont As System.Web.HttpContext = System.Web.HttpContext.Current
+        'Dim httpcont As System.Web.HttpContext = System.Web.Http.Context.Current
         If Page.Request.Form(param) IsNot Nothing Then
             Return Page.Request.Form(param)
         ElseIf Page.Request.QueryString(param) IsNot Nothing Then

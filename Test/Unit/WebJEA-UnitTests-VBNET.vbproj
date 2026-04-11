@@ -4,6 +4,7 @@
     <RootNamespace>WebJEA_UnitTests_VBNET</RootNamespace>
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <Configurations>Debug;Release;Debug-Remote</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

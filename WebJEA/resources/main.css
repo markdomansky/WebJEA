@@ -28,75 +28,13 @@ h1 {
 .WebJEALink {
     color: #5D9EFD;
 }
-/*
- * Main content
- */
 
-.container-fluid {
-    padding-left: 0px;
-    padding-right: 0px;
-}
-/*.main {
-  padding: 20px;
-}
-@media (min-width: 768px) {
-  .main {
-    padding-right: 40px;
-    padding-left: 40px;
-  }
-}
-.main .page-header {
-  margin-top: 0;
-}*/
-
-
-/*
- * Placeholder dashboard ideas
- */
-
-/*.placeholders {
-  margin-bottom: 30px;
-  text-align: center;
-}
-.placeholders h4 {
-  margin-bottom: 0;
-}
-.placeholder {
-  margin-bottom: 20px;
-}
-.placeholder img {
-  display: inline-block;
-  border-radius: 50%;
-}
-
-.page-header > h1 {display: inline-block;}
-.page-header > a {
-    vertical-align: text-bottom;
-
-}*/
-
-#footer {
-    font-size: smaller;
-    /*position: absolute;*/
-    /*bottom: 0;*/
-    /*width: 100%;*/
-    /*height: 24px;*/
-    padding-left: 7px;
-    line-height: 24px;
-    padding-top: 4px;
-
-}
-.footer a {
-    line-height: 24px;
-}
 .accordion-button:not(.collapsed), .accordion-button.collapsed {
     color: black;
     background-color: #eee;
 }
 .card {
-    /*forces the pre to bottom margins, also affects the inpub field, but not that bad.*/
     margin-top: 12px;
-    margin-right: 12px;
 }
 
 #btnMore {
@@ -158,4 +96,22 @@ input[type="checkbox"] {
     height: 17px;
     display: inline-block;
     vertical-align: middle;
+}
+
+/* Verbose control styling - admin only feature */
+.verbose-control {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px dashed #6c757d;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+}
+
+.verbose-control .form-label {
+    color: #495057;
+}
+
+.verbose-control .help-message {
+    font-style: italic;
+    color: #6c757d;
 }

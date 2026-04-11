@@ -9,114 +9,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- favicon info -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />
-    <link rel="manifest" href="/images/site.webmanifest" />
+    <link rel="apple-touch-icon" sizes="180x180" href="resources/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="resources/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="resources/favicon-16x16.png" />
+    <link rel="manifest" href="resources/site.webmanifest" />
 
     <title>WebJEA</title>
 
     <link href="content/bootstrap.min.css" rel="stylesheet" />
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <%--<link href="content/ie10-viewport-bug-workaround.css" rel="stylesheet" />--%>
 
     <link href="content/themes/base/jquery-ui.min.css" rel="stylesheet" />
     <link href="content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
 
-    <link href="sidebar.css" rel="stylesheet" />
-    <%--<link href="loader.css" rel="stylesheet" />--%>
-    <link href="main.css" rel="stylesheet" />
-    <link href="psoutput.css" rel="stylesheet" />
+    <link href="resources/sidebar.css" rel="stylesheet" />
+    <link href="resources/main.css" rel="stylesheet" />
+    <link href="resources/psoutput.css" rel="stylesheet" />
 </head>
-<body>
-    <!-- webjea specific scripts -->
-    <script src="validation.js"></script>
+<body class="bg-light d-flex flex-column vh-100">
+    <script src="resources/validation.js"></script>
     <form id="frmMain" runat="server">
 
-        <div class="container-fluid ">
-            <div class="row no-gutters">
-                <div class="col-md-3">
-                    <div class="nav-side-menu">
-                        <asp:Label ID="lblTitle" runat="server" Text="lblTitle" CssClass="brand"></asp:Label>
-                        <%--navbar-brand--%>
+        <!-- ── MOBILE TOPBAR (hidden lg+) ── -->
+        <nav class="navbar navbar-dark bg-dark d-flex d-lg-none flex-shrink-0 px-3">
+            <asp:Label ID="lblTitle" runat="server" Text="lblTitle" CssClass="navbar-brand fw-bold mb-0"></asp:Label>
+            <button class="btn btn-outline-secondary btn-sm" type="button"
+                data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-label="Toggle navigation">
+                <span aria-hidden="true">&#9776;</span>
+            </button>
+        </nav>
 
-                        <div type="button" class="navbar-toggler toggle-btn " data-toggle="collapse" data-target="#menu-content" aria-label="Toggle Menu"><div class="hamburger">&nbsp;</div></div>
+        <!-- ── WRAPPER ── -->
+        <div class="d-flex flex-row flex-grow-1 overflow-hidden">
 
-                        <div id="menu-list" class="menu-list ">
-                            <div id="menu-content" class="menu-content collapse out" >
-                                <asp:ListView ID="lvMenu" runat="server" class="">
-                                    <LayoutTemplate>
-                                        <ul ">
-                                            <asp:PlaceHolder ID="itemPlaceholder" runat="server" />
-<%--                                            <li id="footer" class="menulink footer">Powered by <a href="http://webjea.com" target="_blank">WebJEA</a> <asp:Literal runat="server" ID="lblVersion"></asp:Literal>.</li>--%>
-                                        </ul>
-                                    </LayoutTemplate>
-                                    <ItemTemplate>
-                                        <li class="menulink <%#Eval("CSS") %>"><a href="<%#Eval("Uri") %>"><%#Eval("DisplayName") %></a></li>
-                                    </ItemTemplate>
-                                </asp:ListView>
-                                <div id="footer" class="footer">Powered by <a href="http://www.webjea.com" target="_blank" class="WebJEALink">WebJEA</a><asp:Literal runat="server" ID="lblVersion"></asp:Literal>.</div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- ── DESKTOP SIDEBAR (hidden below lg) ── -->
+            <nav id="desktopSidebar" class="d-none d-lg-flex flex-column flex-shrink-0 overflow-auto sidebar-dark">
+                <!-- Brand -->
+                <div class="sidebar-brand">
+                    <asp:Label ID="lblTitleDesktop" runat="server" Text="lblTitle" CssClass="brand"></asp:Label>
                 </div>
 
-                <%--col-sm-offset-1--%>
-                <div class="col-md-9 main" role="main" runat="server" id="divCmdBody" clientmode="static">
-                    <div class="page-header">
-                        <h1 id="lblCmdTitle" runat="server"></h1>
-                    </div>
+                <!-- Menu -->
+                <div class="flex-grow-1 sidebar-menu-list">
+                    <asp:ListView ID="lvMenu" runat="server">
+                        <LayoutTemplate>
+                            <ul class="sidebar-menu">
+                                <asp:PlaceHolder ID="itemPlaceholder" runat="server" />
+                            </ul>
+                        </LayoutTemplate>
+                        <ItemTemplate>
+                            <li class="menulink <%#Eval("CSS") %>"><a href="<%#Eval("Uri") %>"><%#Eval("DisplayName") %></a></li>
+                        </ItemTemplate>
+                    </asp:ListView>
+                </div>
 
-                    <div class="accordion" id="SynopsisAndDescription">
-                        <div class="accordion-item">
+                <!-- Sidebar footer -->
+                <div class="sidebar-footer">
+                    <%-- Future: user info display will go here --%>
+                    <div id="footer" class="footer">Powered by <a href="http://www.webjea.com" target="_blank" class="WebJEALink">WebJEA</a><asp:Literal runat="server" ID="lblVersion"></asp:Literal>.</div>
+                </div>
+            </nav>
+
+            <!-- ── MAIN CONTENT ── -->
+            <main class="flex-grow-1 overflow-auto p-4" role="main" runat="server" id="divCmdBody" clientidmode="static">
+                <div class="page-header">
+                    <h1 id="lblCmdTitle" runat="server" class="h3 fw-bold"></h1>
+                </div>
+
+                <div class="accordion" id="SynopsisAndDescription">
+                    <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                                 <asp:Label ID="lblCmdSynopsis" runat="server" Text="lblCmdSynopsis"></asp:Label>
                             </button>
                         </h2>
-                        <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                        <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#SynopsisAndDescription">
                             <div class="accordion-body">
                                 <asp:Label ID="lblCmdDescription" runat="server" Text="lblCmdDescription"></asp:Label>
                             </div>
                         </div>
                     </div>
-                    <%--<div>&nbsp;</div>--%>
-                    <div id="panelOnload" class="" runat="server">
-                        <div class="card psouter">
-                            <div id="consoleOnload" runat="server" class="ps">consoleOnLoad</div>
-                        </div>
-                    </div>
-                    <div class="card " id="panelInput" runat="server">
-                        <div class="card-body">
-                            <div id="divParameters" runat="server"></div>
-                            <asp:Button CssClass="btn btn-primary" ID="btnRun" runat="server" Text="Submit" OnClientClick="return disableOnPostback();" UseSubmitBehavior="True" /><span id="imgLoader"><span id="imgLoaderSVG" ></span></span>
-                        </div>
+                </div>
 
+                <div id="panelOnload" class="" runat="server">
+                    <div class="card psouter">
+                        <div id="consoleOnload" runat="server" class="ps">consoleOnLoad</div>
                     </div>
+                </div>
 
-                    <div class="collapse" id="panelOutput" runat="server">
-                        <div class="card psouter">
-                            <asp:Label ID="consoleOutput" runat="server" Text="consoleOutput" CssClass="ps"></asp:Label></div>
+                <div class="card" id="panelInput" runat="server">
+                    <div class="card-body">
+                        <div id="divParameters" runat="server"></div>
+                        <asp:Button CssClass="btn btn-primary" ID="btnRun" runat="server" Text="Submit" OnClientClick="return disableOnPostback();" UseSubmitBehavior="True" /><span id="imgLoader"><span id="imgLoaderSVG"></span></span>
                     </div>
+                </div>
 
-        </div>
-        </div>
-        </div>
+                <div class="collapse" id="panelOutput" runat="server">
+                    <div class="card psouter">
+                        <asp:Label ID="consoleOutput" runat="server" Text="consoleOutput" CssClass="ps"></asp:Label>
+                    </div>
+                </div>
+            </main>
+
+        </div><!-- /.wrapper -->
 
     </form>
 
+    <!-- ── OFFCANVAS SIDEBAR (mobile only) ── -->
+    <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebarOffcanvas">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title text-white fw-bold mb-0" id="offcanvasTitle"></h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body px-0 py-2 d-flex flex-column">
+            <div id="offcanvasMenuTarget" class="flex-grow-1 sidebar-menu-list"></div>
+            <div class="px-3 py-3 border-top border-secondary mt-auto">
+                <div id="offcanvasFooter" class="footer"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="<%= ResolveUrl("~/scripts/jquery-" & ConfigurationManager.AppSettings("jQueryVersion") & ".min.js") %>"></script>
+    <script src="<%= ResolveUrl("~/scripts/jquery-" & ConfigurationManager.AppSettings("jQueryVersion") & ".js") %>"></script>
     <script src="<%= ResolveUrl("~/scripts/jquery-ui-" & ConfigurationManager.AppSettings("jQueryUIVersion") & ".min.js") %>"></script>
     <script src="scripts/jquery-ui-sliderAccess.js"></script>
     <script src="scripts/jquery-ui-timepicker-addon.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="scripts/popper.min.js"></script>
-    <script src="scripts/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <%--<script src="scripts/ie10-viewport-bug-workaround.js"></script>--%>
+    <script src="scripts/bootstrap.bundle.min.js"></script>
 
     <!-- webjea startup -->
-    <script src="startup.js"></script>
+    <script src="resources/startup.js"></script>
 </body>
 </html>

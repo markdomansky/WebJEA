@@ -5,6 +5,7 @@
 Properties {
     $dcStartupDelay = 60
     $timeout = 300
+    $doNotRunDeploy = $false
 }
 
 # ---------------------------------------------------------------------------
@@ -17,6 +18,7 @@ Task Init {
     $script:skipWindowsUpdate = $SkipWindowsUpdate
     $script:UseGitHubBuild = $UseGitHubBuild
     $script:skipBuild = $SkipBuild
+    $script:doNotRunDeploy = $DoNotRunDeploy
     Assert ($script:configPath -and (Test-Path $script:configPath)) "ConfigPath '$script:configPath' not found."
     Assert ($script:helpersPath -and (Test-Path $script:helpersPath)) "HelpersPath '$script:helpersPath' not found."
 
@@ -36,6 +38,7 @@ Task Init {
     Write-Log "  Use GitHub Build:     $script:useGitHubBuild"
     Write-Log "  Skip Build:           $script:skipBuild"
     Write-Log "  Skip Windows Update:  $script:skipWindowsUpdate"
+    Write-Log "  Do Not Run Deploy:    $script:doNotRunDeploy"
     Write-Log "  BuildOutputDir:       $script:buildOutputDir"
     Write-Log "  BuildInfoFile:        $script:buildInfoFile"
     Write-Log "  Tags:                 $(if ($script:tags.Count -gt 0) { ($script:tags -join ', ') } else { '(none)' })"
@@ -75,7 +78,7 @@ Task StartVM_DC -Depends Init {
     & $script:helpersPath\StartVM.ps1 -VMName $script:dcVMName -StartupDelay $script:dcStartupDelay -TimeoutSeconds $script:timeout
 }
 
-Task StartVM_Web -Depends StartVM_DC {
+Task StartVM_Web -Depends StartVM_DC, RevertSnapshot_Web {
     write-log 'Starting Web Server...'
     & $script:helpersPath\StartVM.ps1 -VMName $script:webVMName -StartupDelay 0 -TimeoutSeconds $script:timeout
 }
@@ -130,7 +133,7 @@ Task StopVM_Web -Depends Init {
     Write-Log 'Web Server VM stopped successfully' -Level Success
 }
 
-Task StopVM_Web2 -Depends Init {
+Task ShutdownVM_Web -Depends Init {
     Write-Log "Stopping Web Server VM '$script:webVMName' for snapshot maintenance..."
     #request shutdown
     Stop-VM -Name $script:webVMName -TurnOff
@@ -248,7 +251,7 @@ Task ResolveSettings -Depends Init {
     Write-Log "Using settings file: $settingsSourcePath"
 }
 
-Task DeployToVM -Depends GetCredential, StartVMs, ResolveBuildPackage, ResolveSettings {
+Task StageDeployment -Depends GetCredential, StartVMs, ResolveBuildPackage, ResolveSettings {
     $pkg = $script:deploymentPackage
 
     Write-Log "Establishing PowerShell Direct session to VM '$script:webVMName'..."
@@ -307,18 +310,18 @@ Task DeployToVM -Depends GetCredential, StartVMs, ResolveBuildPackage, ResolveSe
         Copy-Item -Path $script:settingsSourcePath -Destination $vmSettingsPath -ToSession $session -Force
         Write-Log 'Settings file copied successfully' -Level Success
 
-        # Extract and execute Deploy.ps1 on VM
-        Write-Log 'Processing deployment package...'
-        $result = Invoke-Command -Session $session -ScriptBlock {
+        # Extract package and locate Deploy.ps1 on VM
+        Write-Log 'Extracting deployment package on VM...'
+        $staged = Invoke-Command -Session $session -ScriptBlock {
             param($DeployFolder, $ZipPath, $SettingsPath, $SettingsFileName)
             $ErrorActionPreference = 'Stop'
 
             Write-Host "Extracting $ZipPath to $DeployFolder"
             Expand-Archive -Path $ZipPath -DestinationPath $DeployFolder -Force
 
-            $extractedContent = Get-ChildItem -Path $DeployFolder -Filter 'Deploy.ps1' -Recurse | Select-Object -First 1
-            if (-not $extractedContent) { throw 'Deploy.ps1 not found in extracted content' }
-            $deployRoot = $extractedContent.Directory
+            $found = Get-ChildItem -Path $DeployFolder -Filter 'Deploy.ps1' -Recurse | Select-Object -First 1
+            if (-not $found) { throw 'Deploy.ps1 not found in extracted content' }
+            $deployRoot = $found.Directory.FullName
 
             Write-Host "Deployment root: $deployRoot"
 
@@ -326,25 +329,59 @@ Task DeployToVM -Depends GetCredential, StartVMs, ResolveBuildPackage, ResolveSe
             Write-Host "Copying settings file $SettingsPath to $targetSettingsPath"
             Copy-Item -Path $SettingsPath -Destination $targetSettingsPath -Force
 
-            $deployScript = Get-ChildItem -Path $deployRoot -Filter 'Deploy.ps1' -File | Select-Object -First 1
-            if (-not $deployScript) { throw 'Deploy.ps1 not found in deployment folder' }
+            return @{
+                DeployRoot   = $deployRoot
+                SettingsPath = $targetSettingsPath
+            }
+        } -ArgumentList $vmDeployFolder, $vmZipPath, $vmSettingsPath, $script:config.Deployment.SettingsFileName
 
-            Write-Host "Executing $($deployScript.fullname)..."
-            & $deployScript.FullName -SettingsFile $targetSettingsPath -Verbose
+        $script:stagedDeployRoot   = $staged.DeployRoot
+        $script:stagedSettingsPath = $staged.SettingsPath
+
+        Write-Log "Staging complete. Deploy root on VM: $script:stagedDeployRoot" -Level Success
+    }
+    finally
+    {
+        if ($session)
+        {
+            Write-Log 'Closing PowerShell Direct session...'
+            Remove-PSSession -Session $session -ErrorAction SilentlyContinue
+        }
+    }
+}
+
+Task RunDeployScript -Depends GetCredential, StageDeployment -PreCondition { -not $script:doNotRunDeploy } {
+    Write-Log "Establishing PowerShell Direct session to VM '$script:webVMName'..."
+    $session = New-PSSession -VMName $script:webVMName -Credential $script:credential -ErrorAction Stop
+    Write-Log 'Session established successfully' -Level Success
+
+    try
+    {
+        Write-Log 'Executing Deploy.ps1 on VM...'
+        Write-Log "  Deploy root:   $script:stagedDeployRoot"
+        Write-Log "  Settings file: $script:stagedSettingsPath"
+
+        $result = Invoke-Command -Session $session -ScriptBlock {
+            param($DeployRoot, $SettingsPath)
+            $ErrorActionPreference = 'Stop'
+
+            $deployScript = Get-ChildItem -Path $DeployRoot -Filter 'Deploy.ps1' -File | Select-Object -First 1
+            if (-not $deployScript) { throw "Deploy.ps1 not found in: $DeployRoot" }
+
+            Write-Host "Executing $($deployScript.FullName)..."
+            $deployResult = & $deployScript.FullName -SettingsFile $SettingsPath -Verbose
 
             return @{
                 Success      = $true
-                DeployRoot   = $deployRoot
-                SettingsPath = $targetSettingsPath
                 DeployScript = $deployScript.FullName
                 Output       = $deployResult | Out-String
             }
-        } -ArgumentList $vmDeployFolder, $vmZipPath, $vmSettingsPath, $script:config.Deployment.SettingsFileName
+        } -ArgumentList $script:stagedDeployRoot, $script:stagedSettingsPath
+
         write-host ($result | convertto-json -depth 5)
         Assert $result.Success "Deployment failed: $($result.Output)"
 
         Write-Log 'Deployment completed successfully!' -Level Success
-        Write-Log "Deploy root: $($result.DeployRoot)"
         if ($result.Output)
         {
             Write-Log 'Deployment output:'
@@ -362,6 +399,8 @@ Task DeployToVM -Depends GetCredential, StartVMs, ResolveBuildPackage, ResolveSe
         }
     }
 }
+
+Task DeployToVM -Depends StageDeployment, RunDeployScript {}
 
 Task Deploy -Depends DeployToVM {
     Write-Log 'WebJEA deployment completed successfully!' -Level Success
@@ -385,7 +424,7 @@ Task RevertSnapshot_Web -Depends StopVM_Web {
     Write-Log 'Snapshot reverted successfully' -Level Success
 }
 
-Task ApplyUpdates_Web -Depends GetCredential, RevertSnapshot_Web, StartVM_Web -PreCondition { -not $script:skipWindowsUpdate } {
+Task ApplyUpdates_Web -Depends GetCredential, StartVM_Web -PreCondition { -not $script:skipWindowsUpdate } {
     Write-Log 'Applying Windows Updates to Web Server...'
 
     # & $script:helpersPath\StartVM.ps1 -VMName $script:webVMName -StartupDelay 0 -TimeoutSeconds $script:timeout
@@ -442,7 +481,7 @@ Task ApplyUpdates_Web -Depends GetCredential, RevertSnapshot_Web, StartVM_Web -P
     Write-Log 'Windows Updates completed for Web Server' -Level Success
 }
 
-Task ApplyUpdates_DC -Depends GetCredential, RevertSnapshot_Web, StartVM_DC -PreCondition { -not $script:skipWindowsUpdate } {
+Task ApplyUpdates_DC -Depends GetCredential, StartVM_DC -PreCondition { -not $script:skipWindowsUpdate } {
     Write-Log 'Applying Windows Updates to Domain Controller...'
 
     # & $script:helpersPath\StartVM.ps1 -VMName $script:dcVMName -StartupDelay 30 -TimeoutSeconds $script:timeout
@@ -499,7 +538,7 @@ Task ApplyUpdates_DC -Depends GetCredential, RevertSnapshot_Web, StartVM_DC -Pre
     Write-Log 'Windows Updates completed for Domain Controller' -Level Success
 }
 
-Task AddSnapshot_Web -Depends ApplyUpdates_Web, ApplyUpdates_DC, StopVM_Web2 {
+Task AddSnapshot_Web -Depends ApplyUpdates_Web, ShutdownVM_Web {
     Write-Log 'Creating new snapshot...'
 
     $script:newSnapshotName = "$script:snapshotName-$(Get-Date -Format 'yyyyMMdd')"
@@ -525,7 +564,7 @@ Task ReplaceSnapshotBaseline -Depends AddSnapshot_Web {
     Write-Log "Renamed snapshot to: $script:snapshotName" -Level Success
 }
 
-Task SnapshotMaintenance -Depends ReplaceSnapshotBaseline {
+Task SnapshotMaintenance -Depends ApplyUpdates_DC, ReplaceSnapshotBaseline {
     Write-Log 'VM snapshot maintenance completed successfully!' -Level Success
     Write-Log "Baseline snapshot '$script:snapshotName' has been updated with latest Windows Updates."
 }

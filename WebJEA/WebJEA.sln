@@ -10,15 +10,20 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug-Remote|Any CPU = Debug-Remote|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B0AA4E7A-CBF8-4807-9CAD-15316F88F758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0AA4E7A-CBF8-4807-9CAD-15316F88F758}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0AA4E7A-CBF8-4807-9CAD-15316F88F758}.Debug-Remote|Any CPU.ActiveCfg = Debug-Remote|Any CPU
+		{B0AA4E7A-CBF8-4807-9CAD-15316F88F758}.Debug-Remote|Any CPU.Build.0 = Debug-Remote|Any CPU
 		{B0AA4E7A-CBF8-4807-9CAD-15316F88F758}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0AA4E7A-CBF8-4807-9CAD-15316F88F758}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A99E6A2B-BBBF-2011-F3EE-A1FB8DE0BA41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A99E6A2B-BBBF-2011-F3EE-A1FB8DE0BA41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A99E6A2B-BBBF-2011-F3EE-A1FB8DE0BA41}.Debug-Remote|Any CPU.ActiveCfg = Debug-Remote|Any CPU
+		{A99E6A2B-BBBF-2011-F3EE-A1FB8DE0BA41}.Debug-Remote|Any CPU.Build.0 = Debug-Remote|Any CPU
 		{A99E6A2B-BBBF-2011-F3EE-A1FB8DE0BA41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A99E6A2B-BBBF-2011-F3EE-A1FB8DE0BA41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

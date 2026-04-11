@@ -749,6 +749,59 @@
 
 #End Region
 
+#Region "Verbose Control for Global Users"
+
+    ''' <summary>
+    ''' Creates a verbose checkbox control that is only shown to global users (members of top-level permitted groups).
+    ''' </summary>
+    ''' <param name="pg">The current page</param>
+    ''' <returns>An HtmlControl containing the verbose checkbox</returns>
+    Public Function NewVerboseControl(pg As Page) As HtmlControl
+        'this is the output object, everything goes in it
+        Dim objRow As HtmlGenericControl = NewControl("div", "checkbox verbose-control")
+
+        'generate the label
+        Dim objLabel As New Label
+
+        'text to display in the label
+        Dim strLabel As String = "Verbose Output"
+        Dim objName As HtmlControl = NewControl("span", "form-label", strLabel)
+
+        'generate the actual control
+        Dim objControl As New CheckBox
+        objControl.ID = "chkWebJEAVerbose"
+        objLabel.AssociatedControlID = objControl.ID
+        objControl.Checked = False
+
+        'Add help message
+        Dim helpMsg As HtmlControl = NewControl("span", "help-message", "Enable verbose output from script execution (admin only)")
+
+        'control and text go inside the label for checkboxes
+        objLabel.Controls.Add(objControl)
+        objLabel.Controls.Add(objName)
+        objLabel.Controls.Add(helpMsg)
+
+        'label goes inside row
+        objRow.Controls.Add(objLabel)
+
+        Return objRow
+    End Function
+
+    ''' <summary>
+    ''' Gets the verbose checkbox value from the page
+    ''' </summary>
+    ''' <param name="page">The current page</param>
+    ''' <returns>True if verbose is checked, False otherwise</returns>
+    Public Function GetVerboseParameter(page As Page) As Boolean
+        Dim ctrl As CheckBox = page.FindControl("chkWebJEAVerbose")
+        If ctrl IsNot Nothing Then
+            Return ctrl.Checked
+        End If
+        Return False
+    End Function
+
+#End Region
+
 
 
 End Class

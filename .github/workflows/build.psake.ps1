@@ -132,7 +132,7 @@ Task CleanBuildPath -Depends Init {
 
 Task OutputBuildStructure -Depends RestoreNuGet, CleanBuildPath {
     #Needed this temporarily to look for files.  Disable for now but may be useful in the future for debugging build structure issues.
-    #Get-ChildItem $script:repoRoot -Recurse | Select-Object -expand fullname
+    Get-ChildItem $script:repoRoot -Recurse | Select-Object -expand fullname
 }
 
 Task Compile -Depends UpdateAssemblyInfo, GenerateAwsSecrets, RestoreNuGet, CleanBuildPath, OutputBuildStructure {
@@ -208,7 +208,7 @@ Task CopyBuildFiles -Depends Compile {
         )
         $destDir = Split-Path $Destination -Parent
         if (-not (Test-Path $destDir)) { New-Item -Path $destDir -ItemType Directory -Force | Out-Null }
-        if (-not (Test-Path $Source)) { Write-Warning "Missing: $Source"; return }
+        if (-not (Test-Path $Source)) { throw "Missing required file: $Source" }
         Copy-Item -Path $Source -Destination $Destination -Force
     }
 
@@ -245,33 +245,34 @@ Task CopyBuildFiles -Depends Compile {
     # ── Site files from source tree ──
     Write-Host 'Copying site files...'
     $siteFiles = @(
-        'default.aspx'
-        'error.aspx'
+        '*.aspx'
+        'resources\*'
         'Global.asax'
-        'main.css'
         'NLog.config'
-        'psoutput.css'
-        'sidebar.css'
-        'startup.js'
-        'validation.js'
         'Web.config'
-        'images\*'
     )
 
     foreach ($relPath in $siteFiles)
     {
-        if ($relPath -match '\\\*$')
+        if ($relPath -match '\*')
         {
-            $sourceDir = Join-Path -Path $src -ChildPath ($relPath -replace '\\\*$', '')
-            Get-ChildItem -Path $sourceDir -File -ErrorAction SilentlyContinue | ForEach-Object {
-                $fileRel = $_.FullName.Substring($src.Length).TrimStart('\')
-                Copy-SiteFile -Source $_.FullName -Destination "$outSite\$fileRel"
+            $parentRel = Split-Path $relPath -Parent
+            $filter = Split-Path $relPath -Leaf
+            $sourceDir = if ($parentRel) { Join-Path $src $parentRel } else { $src }
+            $files = @(Get-ChildItem -Path $sourceDir -Filter $filter -File -ErrorAction SilentlyContinue)
+            if ($files.Count -eq 0) { throw "No files matched pattern: $relPath" }
+            foreach ($file in $files)
+            {
+                $fileRel = $file.FullName.Substring($src.Length).TrimStart('\')
+                Copy-SiteFile -Source $file.FullName -Destination "$outSite\$fileRel"
                 Write-Host "  $fileRel"
             }
         }
         else
         {
-            Copy-SiteFile -Source "$src\$relPath" -Destination "$outSite\$relPath"
+            $sourceFull = "$src\$relPath"
+            if (-not (Test-Path $sourceFull)) { throw "Missing required file: $sourceFull" }
+            Copy-SiteFile -Source $sourceFull -Destination "$outSite\$relPath"
             Write-Host "  $relPath"
         }
     }
@@ -291,28 +292,25 @@ Task CopyPackageFiles -Depends CopyBuildFiles {
     # Wildcard patterns are resolved via Get-ChildItem; slim builds are excluded.
     $packageFiles = [ordered]@{
         'bootstrap'               = @(
-            'Content\bootstrap-grid.min.css'
-            'Content\bootstrap-reboot.min.css'
-            'Content\bootstrap.min.css'
-            'Scripts\bootstrap.bundle.min.js'
-            'Scripts\bootstrap.min.js'
+            @{ Src = 'content\Scripts\bootstrap.bundle.min.js'; Dest = 'Scripts' }
+             @{ Src = 'content\Content\bootstrap.min.css'; Dest = 'Content' }
         )
         'jQuery'                  = @(
-            'Scripts\jquery-*.min.js'
+            @{ Src = 'Content\Scripts\jquery-*.js'; Dest = 'Scripts' }
         )
         'jQuery.UI.Combined'      = @(
-            'Scripts\jquery-ui-*.min.js'
-            'Content\themes\base\*.css'
-            'Content\themes\base\images\*.png'
+            @{ Src = 'Content\Scripts\jquery-ui-*.min.js'; Dest = 'Scripts' }
+             @{ Src = 'Content\Content\themes\base\jquery-ui.min.css'; Dest = 'Content\themes\base' }
+             @{ Src = 'Content\Content\themes\base\images\*.png'; Dest = 'Content\themes\base\images' }
         )
         'jQuery-Timepicker-Addon' = @(
-            'Content\jquery-ui-timepicker-addon.min.css'
-            'Scripts\jquery-ui-sliderAccess.js'
-            'Scripts\jquery-ui-timepicker-addon.min.js'
+            @{ Src = 'content\Content\jquery-ui-timepicker-addon.min.css'; Dest = 'Scripts' }
+            @{ Src = 'content\Scripts\jquery-ui-sliderAccess.js'; Dest = 'Scripts' }
+            @{ Src = 'content\Scripts\jquery-ui-timepicker-addon.min.js'; Dest = 'Scripts' }
         )
         'popper.js'               = @(
-            'Scripts\popper-utils.min.js'
-            'Scripts\popper.min.js'
+            @{ Src = 'content\Scripts\popper.min.js'; Dest = 'Scripts' }
+             @{ Src = 'content\Scripts\popper-utils.min.js'; Dest = 'Scripts' }
         )
     }
 
@@ -328,49 +326,65 @@ Task CopyPackageFiles -Depends CopyBuildFiles {
             throw "Package folder not found for '$packageName' in $packagesDir"
         }
 
-        # NuGet content root (content/ or Content/) sits directly inside the package folder
-        $contentRoot = Get-ChildItem -Path $packageDir.FullName -Directory |
-            Where-Object { $_.Name -eq 'content' -or $_.Name -eq 'Content' } |
-            Select-Object -First 1
-
-        if (-not $contentRoot)
-        {
-            throw "Content root not found in package: $($packageDir.Name)"
-        }
-
+        $contentRoot = $packageDir
         Write-Host "Package: $packageName ($($packageDir.Name))"
 
-        foreach ($relPath in $packageFiles[$packageName])
+        foreach ($entry in $packageFiles[$packageName])
         {
-            $sourcePath = Join-Path -Path $contentRoot.FullName -ChildPath $relPath
-
-            if ($relPath -match '\*')
+            # Support plain string (src path == dest path) or @{ Src = '...'; Dest = '...' }
+            # to handle packages where the NuGet content root has extra nesting.
+            if ($entry -is [hashtable])
             {
-                $parentDir = Split-Path -Path $sourcePath -Parent
-                $filter = Split-Path -Path $sourcePath -Leaf
-                Get-ChildItem -Path $parentDir -Filter $filter -File -ErrorAction SilentlyContinue |
-                    Where-Object { $_.Name -notmatch 'slim' } |
-                    ForEach-Object {
-                        $fileRelPath = $_.FullName.Substring($contentRoot.FullName.Length).TrimStart('\')
-                        $destFile = Join-Path -Path $outSite -ChildPath $fileRelPath
-                        $destDir = Split-Path -Path $destFile -Parent
-                        if (-not (Test-Path $destDir)) { New-Item -Path $destDir -ItemType Directory -Force | Out-Null }
-                        Copy-Item -Path $_.FullName -Destination $destFile -Force
-                        Write-Host "  $fileRelPath"
-                    }
+                $srcRel  = $entry.Src
+                $destRel = $entry.Dest
             }
             else
             {
-                if (-not (Test-Path $sourcePath))
+                $srcRel  = $entry
+                $destRel = $null
+            }
+
+            $sourcePath = Join-Path -Path $contentRoot.FullName -ChildPath $srcRel
+
+            if ($srcRel -match '\*')
+            {
+                $parentDir = Split-Path -Path $sourcePath -Parent
+                $filter    = Split-Path -Path $sourcePath -Leaf
+                Write-Host "  [wildcard] searching '$parentDir' for '$filter'"
+                $files = @(Get-ChildItem -Path $parentDir -Filter $filter -File -ErrorAction SilentlyContinue |
+                    Where-Object { $_.Name -notmatch 'slim' })
+                if ($files.Count -eq 0)
                 {
-                    Write-Warning "Missing: $sourcePath"
-                    continue
+                    $destLabel = if ($destRel) { $destRel } else { '(mirrored from contentRoot)' }
+                    throw "No files matched pattern '$srcRel' in $($packageDir.Name)`n  Searched : $parentDir`n  Filter   : $filter`n  Dest     : $outSite\$destLabel"
                 }
-                $destFile = Join-Path -Path $outSite -ChildPath $relPath
-                $destDir = Split-Path -Path $destFile -Parent
+                foreach ($file in $files)
+                {
+                    $fileRelPath = if ($destRel) {
+                        "$destRel\$($file.Name)"
+                    } else {
+                        $file.FullName.Substring($contentRoot.FullName.Length).TrimStart('\')
+                    }
+                    $destFile = Join-Path -Path $outSite -ChildPath $fileRelPath
+                    $destDir  = Split-Path -Path $destFile -Parent
+                    if (-not (Test-Path $destDir)) { New-Item -Path $destDir -ItemType Directory -Force | Out-Null }
+                    Copy-Item -Path $file.FullName -Destination $destFile -Force
+                    Write-Host "  $fileRelPath"
+                }
+            }
+            else
+            {
+                if (-not (Test-Path $sourcePath)) { throw "Missing: $sourcePath" }
+                $fileRelPath = if ($destRel) {
+                    "$destRel\$(Split-Path $sourcePath -Leaf)"
+                } else {
+                    $srcRel
+                }
+                $destFile = Join-Path -Path $outSite -ChildPath $fileRelPath
+                $destDir  = Split-Path -Path $destFile -Parent
                 if (-not (Test-Path $destDir)) { New-Item -Path $destDir -ItemType Directory -Force | Out-Null }
                 Copy-Item -Path $sourcePath -Destination $destFile -Force
-                Write-Host "  $relPath"
+                Write-Host "  $fileRelPath"
             }
         }
     }

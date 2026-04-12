@@ -37,6 +37,7 @@ env:
   PROJECT_PATH: WebJEA/WebJEA.vbproj
   BUILD_CONFIGURATION: Release
   DOTNET_FRAMEWORK_VERSION: v4.8
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
@@ -99,6 +100,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get commit message
+        id: commit_msg
+        shell: pwsh
+        run: |
+          if ('${{ github.event.head_commit.message }}' -ne '') {
+            $commitMessage = '${{ github.event.head_commit.message }}'
+          } else {
+            $commitMessage = git log -1 --format=%B
+          }
+
+          # Escape for JSON and multiline
+          $commitMessage = $commitMessage -replace '"', '\"' -replace "`n", '\n'
+          echo "message=$commitMessage" >> $env:GITHUB_OUTPUT
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -127,7 +144,11 @@ jobs:
           tag_name: v${{ needs.build.outputs.version }}
           body: |
             WebJEA Release ${{ needs.build.outputs.version }}
-            [Installation Guide](https://github.com/markdomansky/WebJEABuildTest/wiki/Installation)
+
+            ## Commit Message
+            ${{ steps.commit_msg.outputs.message }}
+
+            [Installation Guide](https://github.com/${{ github.repository }}/wiki/Installation)
           files: webjea-${{ needs.build.outputs.version }}.zip
           draft: false
           prerelease: ${{ contains(needs.build.outputs.version, '-') }}

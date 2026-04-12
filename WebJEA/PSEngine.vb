@@ -5,11 +5,17 @@ Public Class PSEngine
     Private ps As PowerShell
 
     Public LogParameters As Boolean = True
+    Public Verbose As Boolean = False
+    Public PipeToOutString As Boolean = True
+    Public WebJEAUserName As String = ""
+    Public WebJEAHostName As String = ""
     Private prvScript As String
     Private prvParams As New Dictionary(Of String, Object)
     Private prvOutput As String
     Private prvRuntime As Single = 0
     Private prvOutputQ As New Queue(Of OutputData)
+    Private prvOutputObjects As New List(Of Management.Automation.PSObject)
+    Public HasErrors As Boolean = False
 
     Public Enum OutputType
         Unknown
@@ -56,6 +62,10 @@ Public Class PSEngine
     Public Function getOutputData() As Queue(Of OutputData)
         Return prvOutputQ
     End Function
+
+    Public Function GetOutputObjects() As List(Of Management.Automation.PSObject)
+        Return prvOutputObjects
+    End Function
     'Public ReadOnly Property Output As Queue(Of OutputData)
     '    Get
     '        Return prvOutputQ
@@ -82,6 +92,20 @@ Public Class PSEngine
         AddHandler ps.Streams.Verbose.DataAdded, AddressOf CacheOutputStreams
         AddHandler ps.Streams.Debug.DataAdded, AddressOf CacheOutputStreams
 
+        'Set VerbosePreference if verbose mode is enabled
+        If Verbose Then
+            ps.Runspace.SessionStateProxy.SetVariable("VerbosePreference", "Continue")
+        End If
+
+        'Set WebJEA environment variables for script context
+        ps.Runspace.SessionStateProxy.SetVariable("env:WebJEAUserName", WebJEAUserName)
+        ps.Runspace.SessionStateProxy.SetVariable("env:WebJEAHostName", WebJEAHostName)
+
+        'Set execution policy to bypass for this runspace
+        'FUTURE: Make this configurable via config.json
+        ps.AddScript("Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force").Invoke()
+        ps.Commands.Clear()
+
         prvOutput = ""
         'read the runspace in powershell
         '''''ps.Commands.AddScript(GetFileContent(prvScript))
@@ -94,7 +118,9 @@ Public Class PSEngine
             Next
         End If
 
-        ps.Commands.AddCommand("out-string")
+        If PipeToOutString Then
+            ps.Commands.AddCommand("out-string")
+        End If
 
         LogCommandExecuted()
         Dim timestart As DateTime = Now
@@ -122,15 +148,20 @@ Public Class PSEngine
         dlog.Info("Executed|" & prvScript & "|" & prvRuntime)
 
         If (results.Count > 0) Then
-            For Each resobj As PSObject In results
-                Dim item As OutputData
-                item.OutputType = OutputType.Output
-                item.Content = resobj.ToString()
-                If item.Content <> "" Then
-                    prvOutputQ.Enqueue(item)
-                End If
-
-            Next
+            If PipeToOutString Then
+                For Each resobj As PSObject In results
+                    Dim item As OutputData
+                    item.OutputType = OutputType.Output
+                    item.Content = resobj.ToString()
+                    If item.Content <> "" Then
+                        prvOutputQ.Enqueue(item)
+                    End If
+                Next
+            Else
+                For Each resobj As PSObject In results
+                    prvOutputObjects.Add(resobj)
+                Next
+            End If
 
             'prvOutput += GetStreamDetails(ps.Streams.Progress)
             'str += ps.Streams.information.readall()
@@ -157,6 +188,7 @@ Public Class PSEngine
                 'Dim errobj As System.Management.Automation.ErrorRecord = sender(e.Index)
                 item.Content = sender(e.Index).exception.message & vbCrLf & sender(e.Index).scriptstacktrace & vbCrLf & "    + CategoryInfo          : " & sender(e.Index).categoryinfo.ToString
                 item.OutputType = OutputType.Err
+                HasErrors = True
             Case "System.Management.Automation.PSDataCollection`1[System.Management.Automation.VerboseRecord]"
                 item.Content = sender(e.Index).ToString()
                 item.OutputType = OutputType.Verbose

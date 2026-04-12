@@ -1,18 +1,24 @@
 #Requires -RunAsAdministrator
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName = 'Install')]
 param (
-    [Parameter(Mandatory)]
+    [Parameter(Mandatory, ParameterSetName = 'Install')]
+    [Parameter(Mandatory, ParameterSetName = 'Test')]
+    [Parameter(Mandatory, ParameterSetName = 'ReturnSteps')]
+    [Parameter(Mandatory, ParameterSetName = 'ReturnSettings')]
     [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
     [string]$SettingsFile,
 
-    [Parameter()]
+    [Parameter(Mandatory, ParameterSetName = 'Test')]
     [switch]$TestOnly,
 
-    [Parameter()]
-    [switch]$returnSteps,
+    [Parameter(Mandatory, ParameterSetName = "ReturnSteps")]
+    [switch]$OnlyReturnSteps,
+
+    [Parameter(Mandatory, ParameterSetName = "ReturnSettings")]
+    [switch]$OnlyReturnSettings,
 
     [Parameter()]
-    [ValidateSet('PowerShell', 'Server', 'WebServer', 'WebJEA', 'Finalize','All')]
+    [ValidateSet('PowerShell', 'Server', 'WebServer', 'WebJEA', 'Finalize', 'All')]
     [string[]]$OnlySections = 'All'
 )
 begin
@@ -110,7 +116,7 @@ begin
             'WebAdministrationDsc'
             'xXMLConfigFile'
             'cUserRightsAssignment'
-            'WebJEAConfig'
+            # 'WebJEAConfig'
             'DSCR_FileContent'
         )
         foreach ($module in $modules)
@@ -165,7 +171,7 @@ begin
             SetScript   = {
                 $msiUrl = 'https://download.microsoft.com/download/1/2/8/128E2E22-C1B9-44A4-BE2A-5859ED1D4592/rewrite_amd64_en-US.msi'
                 $msiPath = Join-Path $env:TEMP 'urlrewrite2.msi'
-                Write-Verbose "Downloading IIS URL Rewrite 2.1 from Microsoft..."
+                Write-Verbose 'Downloading IIS URL Rewrite 2.1 from Microsoft...'
                 Invoke-WebRequest -Uri $msiUrl -OutFile $msiPath -UseBasicParsing
                 Start-Process -FilePath msiexec.exe -ArgumentList "/i `"$msiPath`" /quiet /norestart" -Wait
                 Remove-Item $msiPath -Force -ErrorAction SilentlyContinue
@@ -182,8 +188,8 @@ begin
                 # /E  - copy subdirectories including empty ones
                 # /IS - include same files (force-overwrites even when content matches)
                 # /IT - include tweaked files (same timestamp, different size)
-                $params = @($src,$dst,'/E', '/IS', '/IT', '/NJH', '/NJS', '/NFL', '/NDL')
-                write-verbose "robocopy.exe $($params -join ' ')"
+                $params = @($src, $dst, '/E', '/IS', '/IT', '/NJH', '/NJS', '/NFL', '/NDL')
+                Write-Verbose "robocopy.exe $($params -join ' ')"
                 if (-not (Test-Path $dst)) { New-Item -Path $dst -ItemType Directory -Force | Out-Null }
                 & robocopy.exe $params
                 if ($LASTEXITCODE -ge 8) { throw "robocopy failed with exit code $LASTEXITCODE" }
@@ -271,19 +277,21 @@ begin
         #build app pool and set identity
         if ($settings.apppoolpassword)
         {
-            #FIXME Need to work on this
             #User Account with known password
             $appPoolRes.Description = $appPoolRes.Description + ' (with cred)'
             $appPoolRes.userName = $settings.AppPoolUserName
             $appPoolRes.password = $settings.AppPoolPassword
 
+            #Return the $apppoolres with the user/pass
             Write-Output $appPoolRes
         }
         else
         {
             #no additional changes required
             $appPoolRes.Description = $appPoolRes.Description + ' (no cred)'
+            #Return the $apppoolres without user/pass, and then we'll set the credential next because xWebAppPool doesn't support gMSA accounts where you don't specify the password
             Write-Output $appPoolRes
+
             #GMSA - set username with trailing $ and blank password, and set identity type to SpecificUser
             #set the app pool to use GMSA.  This is a separate resource because xWebAppPool doesn't have built in support for gMSA accounts where you don't specify the password.
             @{
@@ -401,7 +409,7 @@ begin
                     $ruleName = 'HTTP to HTTPS Redirect'
                     Remove-WebConfigurationProperty -pspath $sitePath `
                         -filter 'system.webServer/rewrite/rules' -name '.' `
-                        -AtElement @{ name = $ruleName } -ErrorAction SilentlyContinue
+                        -AtElement @{ name = $ruleName } -ErrorAction SilentlyContinue -warningaction SilentlyContinue
                     Add-WebConfigurationProperty -pspath $sitePath `
                         -filter 'system.webServer/rewrite/rules' -name '.' `
                         -value @{ name = $ruleName; stopProcessing = $true }
@@ -431,8 +439,8 @@ begin
                     # treats curly braces as .NET format specifiers and throws a FormatException.
                     # Enumerate all conditions and match in PowerShell instead.
                     $conds = @(Get-WebConfiguration -pspath "IIS:\Sites\$($settings.SiteName)" `
-                        -filter "system.webServer/rewrite/rules/rule[@name='HTTP to HTTPS Redirect']/conditions/add" `
-                        -ErrorAction SilentlyContinue)
+                            -filter "system.webServer/rewrite/rules/rule[@name='HTTP to HTTPS Redirect']/conditions/add" `
+                            -ErrorAction SilentlyContinue)
                     $cond = $conds | Where-Object { $_.input -eq '{HTTPS}' }
                     ($null -ne $cond) -and ($cond.pattern -eq 'off') -and ($cond.ignoreCase -eq $true)
                 }
@@ -456,18 +464,18 @@ begin
                     $action = Get-WebConfigurationProperty -pspath "IIS:\Sites\$($settings.SiteName)" `
                         -filter "system.webServer/rewrite/rules/rule[@name='HTTP to HTTPS Redirect']/action" `
                         -name '.' -ErrorAction SilentlyContinue
-                    ($action.type            -eq 'Redirect') -and
-                    ($action.url             -eq 'https://{HTTP_HOST}/{R:1}') -and
-                    ($action.redirectType    -eq 'Permanent') -and
+                    ($action.type -eq 'Redirect') -and
+                    ($action.url -eq 'https://{HTTP_HOST}/{R:1}') -and
+                    ($action.redirectType -eq 'Permanent') -and
                     ($action.appendQueryString -eq $true)
                 }
                 SetScript   = {
                     Import-Module WebAdministration -Verbose:$false
                     $sitePath = "IIS:\Sites\$($settings.SiteName)"
-                    $filter   = "system.webServer/rewrite/rules/rule[@name='HTTP to HTTPS Redirect']/action"
-                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'type'              -value 'Redirect'
-                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'url'               -value 'https://{HTTP_HOST}/{R:1}'
-                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'redirectType'      -value 'Permanent'
+                    $filter = "system.webServer/rewrite/rules/rule[@name='HTTP to HTTPS Redirect']/action"
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'type' -value 'Redirect'
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'url' -value 'https://{HTTP_HOST}/{R:1}'
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'redirectType' -value 'Permanent'
                     Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'appendQueryString' -value $true
                 }
             }
@@ -491,7 +499,7 @@ begin
                     $ruleName = 'WebJEA Backward Compatibility'
                     Remove-WebConfigurationProperty -pspath $sitePath `
                         -filter 'system.webServer/rewrite/rules' -name '.' `
-                        -AtElement @{ name = $ruleName } -ErrorAction SilentlyContinue
+                        -AtElement @{ name = $ruleName } -ErrorAction SilentlyContinue -warningaction SilentlyContinue
                     Add-WebConfigurationProperty -pspath $sitePath `
                         -filter 'system.webServer/rewrite/rules' -name '.' `
                         -value @{ name = $ruleName; stopProcessing = $true }
@@ -509,8 +517,8 @@ begin
                 SetScript   = {
                     Import-Module WebAdministration -Verbose:$false
                     $sitePath = "IIS:\Sites\$($settings.SiteName)"
-                    $filter   = "system.webServer/rewrite/rules/rule[@name='WebJEA Backward Compatibility']/match"
-                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'url'        -value '^webjea/(.*)'
+                    $filter = "system.webServer/rewrite/rules/rule[@name='WebJEA Backward Compatibility']/match"
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'url' -value '^webjea/(.*)'
                     Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'ignoreCase' -value $true
                 }
             }
@@ -521,18 +529,18 @@ begin
                     $action = Get-WebConfigurationProperty -pspath "IIS:\Sites\$($settings.SiteName)" `
                         -filter "system.webServer/rewrite/rules/rule[@name='WebJEA Backward Compatibility']/action" `
                         -name '.' -ErrorAction SilentlyContinue
-                    ($action.type             -eq 'Redirect') -and
-                    ($action.url              -eq '/{R:1}') -and
-                    ($action.redirectType     -eq 'Permanent') -and
+                    ($action.type -eq 'Redirect') -and
+                    ($action.url -eq '/{R:1}') -and
+                    ($action.redirectType -eq 'Permanent') -and
                     ($action.appendQueryString -eq $true)
                 }
                 SetScript   = {
                     Import-Module WebAdministration -Verbose:$false
                     $sitePath = "IIS:\Sites\$($settings.SiteName)"
-                    $filter   = "system.webServer/rewrite/rules/rule[@name='WebJEA Backward Compatibility']/action"
-                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'type'              -value 'Redirect'
-                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'url'               -value '/{R:1}'
-                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'redirectType'      -value 'Permanent'
+                    $filter = "system.webServer/rewrite/rules/rule[@name='WebJEA Backward Compatibility']/action"
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'type' -value 'Redirect'
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'url' -value '/{R:1}'
+                    Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'redirectType' -value 'Permanent'
                     Set-WebConfigurationProperty -pspath $sitePath -filter $filter -name 'appendQueryString' -value $true
                 }
             }
@@ -842,28 +850,25 @@ process
     $Settings = Get-Content -Path $SettingsFilePath | Where-Object { $_ -notmatch '^\s*//' } | ConvertFrom-Json
     $settings | Add-Member -NotePropertyName 'SourcePath' -NotePropertyValue $PSScriptRoot
     Write-Verbose "Settings read from file (and calculated settings): $($Settings | ConvertTo-Json -Depth 1)"
-
+    if ($OnlyReturnSettings)
+    {
+        Write-Output $Settings
+        return
+    }
     # ValidateSettings -Settings $Settings
 
     [hashtable[]]$Steps = GetSteps -Settings $Settings -OnlySections $OnlySections
-    write-host "Found $($Steps.Count) configuration steps to apply based on the settings and selected sections."
-    if ($returnSteps) { Write-Output $Steps }
+    Write-Host "Found $($Steps.Count) configuration steps to apply based on the settings and selected sections."
+    if ($OnlyReturnSteps)
+    {
+        Write-Output $Steps
+        return
+    }
     #Use a combination of DSC and custom scripts to configure the server.
     foreach ($Step in $Steps)
     {
         InvokeStep -Step $Step -TestOnly:$TestOnly
     }
-
-    #create the group MSA account
-    #add-kdsrootkey -effectivetime ((get-date).addhours(-10))
-    #new-ADServiceAccount -name gmsa1 -dnshostname (get-addomaincontroller).hostname -principalsallowedtoretrievemanagedpassword mgmt1
-    #install-adserviceaccount gmsa1
-    #add-adgroupmember -identity "domain1\domain admins" -members (get-adserviceaccount gmsa1).distinguishedname
-    #at a later time, grant gmsa1 the permissions you want.
-
-    #cd wsman::localhost\client
-    #Set-Item TrustedHosts * -confirm:$false -force
-    #restart-service winrm
 
     #endregion Main
 }

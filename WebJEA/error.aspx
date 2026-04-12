@@ -9,8 +9,8 @@
 <body>
     <form id="form1" runat="server">
     <div>
-    
-        There was an error.</div>
+
+        There was an error.  <A href="default.aspx">Click here to return to the page</A>.</div>
     </form>
 </body>
 </html>

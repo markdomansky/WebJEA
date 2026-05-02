@@ -304,7 +304,7 @@ Task CopyPackageFiles -Depends CopyBuildFiles {
              @{ Src = 'Content\Content\themes\base\images\*.png'; Dest = 'Content\themes\base\images' }
         )
         'jQuery-Timepicker-Addon' = @(
-            @{ Src = 'content\Content\jquery-ui-timepicker-addon.min.css'; Dest = 'Scripts' }
+            @{ Src = 'content\Content\jquery-ui-timepicker-addon.min.css'; Dest = 'Content' }
             @{ Src = 'content\Scripts\jquery-ui-sliderAccess.js'; Dest = 'Scripts' }
             @{ Src = 'content\Scripts\jquery-ui-timepicker-addon.min.js'; Dest = 'Scripts' }
         )

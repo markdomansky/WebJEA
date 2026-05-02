@@ -1,9 +1,13 @@
 <#
 .SYNOPSIS
-Short 1 line description of what this script does.
+Short 1 line description of what this script does. <b>html is supported here.</b>
 
 .DESCRIPTION
-Detailed description of the script and what it is for.  This can be longer as well.
+Detailed description of the script and what it is for.  This can be longer as well. <b>html is also supported here.</b>
+Describe the function in more detail. Describe the function in more detail. Describe the function in more detail. Describe the function in more detail. Describe the function in more detail. Describe the function in more detail.
+Describe the function in more detail. Describe the function in more detail. Describe the function in more detail. Describe the function in more detail. Describe the function in more detail. Describe the function in more detail. Describe the function in more detail. Describe the function in more detail.
+Describe the function in more detail. Describe the function in more detail. Describe the function in more detail. Describe the function in more detail. BLAH
+
 
 .EXAMPLE
 ScriptTemplate.ps1 -param1 "Value"
@@ -36,14 +40,7 @@ Purpose/Change:   Initial release
 This template is CC0/1.0 Public Domain and can be found at github.com/markdomansky/powershellscripttemplate
 #note: This comment block MUST come before everything else.
 #>
-#requires -version 3
-#r#equires -runasadministrator
-#r#equires -pssnapin <snapin> -version X.x
-#r#equires -modules <module-name>,<module-name> #repeat as desired, replace <module-name> with @{ModuleName="X";ModuleVersion="1.0.0.0"} if you want specific versions
-#r#equires -shellid <shellid>
-##these must have the leading # to work. i.e. #requires -version 3 is active
-##for -version: specify specific version requirements: 3, 5.1, etc.
-##the other requires are pretty straightforward, just remove the extra # in requires
+#requires -version 5.1
 
 #This PS1 script can be turned into a function by wrapping the entire script in "Function <functionname> {<full content of script including help block>}"
 
@@ -61,17 +58,14 @@ This template is CC0/1.0 Public Domain and can be found at github.com/markdomans
 
 param
 (
-    #special variables for WebJEA
-    #[Parameter(Mandatory)] [string]$WEBJEAUsername="$($env:userdomain)\$($env:username)", #passes the domain\username to the script
-    #[Parameter(Mandatory)] [string]$WEBJEAHostname=($env:computername), #passes the client machine from asp.net, will return IP address some times
 
 #strings
     [Parameter(Position=0, Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName,
     HelpMessage='What computer name would you like to target?')]
 	#also random comment
-    [string]$Input01Mandatory, 
+    [string]$Input01Mandatory,
 	#just a comment
-		
+
     [Parameter(Position=1, Mandatory=$true)]
     [ValidateLength(3,30)]
 	<# comment block #>
@@ -88,13 +82,13 @@ param
     [Parameter(Mandatory=$true,HelpMessage="Weird Help 'Message to trip up parser[]()")]
     [ValidateScript({$_ -eq [string]"ABCD"})] #must return $true/$false
     [string]$Input05Script="ABCD",
-	
+
     [Parameter()]
     [ValidateNotNullOrEmpty()]
 	#WEBJEA-Multiline
     [string]$Input13NotNullEmpty='x', #I think this will trip up the parser
 
-    
+
 #numbers
     [Parameter()]
     [int]$NInput01,
@@ -110,12 +104,12 @@ param
 
 #listbox
     [Parameter()]
-    [VALIDATESET('Input','Output','Both','A',1,2,3,"1/1/2017")] 
+    [VALIDATESET('Input','Output','Both','A',1,2,3,"1/1/2017")]
 	[ValidateCount(1,3)]
     [string[]]$LInput2,
 
     [Parameter(Mandatory)]
-    [ValidateSet('Input','Output','Both')] 
+    [ValidateSet('Input','Output','Both')]
     [string]$LInput1,
 
     [Parameter()]
@@ -148,22 +142,15 @@ param
     [switch]$Input11Switch,
 
     [Parameter()]
-    [boolean]$Input12Bool,
+    [boolean]$Input12Bool
 
-
-#webjea hidden parameters
-    [Parameter()]
-    [string]$WebJEAUsername, #this won't be shown to the user
-
-    [Parameter()]
-    [string]$WebJEAuserHostname #this won't be shown to the user
 
 
 ) #/param
 
 begin {
     #do pre script checks, etc
-    
+
 } #/begin
 
 process {
@@ -175,7 +162,7 @@ process {
 	$PSBoundParameters.keys | %{
 		Write-Host "[[span|psbold|$_]]"
 		$PSBoundParameters[$_] | write-host
-		
+
 	}
 
 
@@ -189,7 +176,7 @@ end {
 # Parameter Template
 ###############################################################
 #    [Parameter(Position=0, Mandatory, ParameterSetName="Group1", ValueFromPipeline, ValueFromPipelineByPropertyName, HelpMessage='What computer name would you like to target?')]
-##Also available in parameter: ValueFromRemainingArgument=$true -this pushes all remaining unassigned variables into this parameter. 
+##Also available in parameter: ValueFromRemainingArgument=$true -this pushes all remaining unassigned variables into this parameter.
 ##if you use parametersetname and want a parameter eligible for some but not all paramsets, you can specify the [Parameter()] property multiple times consecutively before the parameter definition ([string]$computername)
 ##if you want a parameter available always, don't specify parametersetname
 ##mandatory, valuefrom* can have "=$true/$false" but like a switch, it's implicit. note: I think v2 requires explicit declaration

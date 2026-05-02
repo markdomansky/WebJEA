@@ -13,15 +13,17 @@ Public Class PSCmdParamVal
         Pattern
         Count
         SetCol
+        NotNull
+        NotNullOrEmpty
         Err
     End Enum
 
     Private prvRule As String
-    Public Type As ValType = ValType.Err
-    Public UpperLimit As Integer
-    Public LowerLimit As Integer
-    Public Pattern As String
-    Public Options As New List(Of String)
+    Public Property Type As ValType = ValType.Err
+    Public Property UpperLimit As Integer
+    Public Property LowerLimit As Integer
+    Public Property Pattern As String
+    Public Property Options As New List(Of String)
 
     Sub New(rule As String)
 
@@ -30,8 +32,12 @@ Public Class PSCmdParamVal
         End If
         prvRule = rule
 
-        If rule.ToUpper = "VALIDATENOTNULL" Or rule.ToUpper = "VALIDATENOTNULLOREMPTY" Or rule.ToUpper = "ALLOWNULL" Or rule.ToUpper = "ALLOWEMPTYSTRING" Or rule.ToUpper = "ALLOWEMPTYCOLLECTION" Then
-            'we can'don't support these at this time.
+        If rule.ToUpper = "VALIDATENOTNULL" Then
+            Type = ValType.NotNull
+        ElseIf rule.ToUpper = "VALIDATENOTNULLOREMPTY" Then
+            Type = ValType.NotNullOrEmpty
+        ElseIf rule.ToUpper = "ALLOWNULL" Or rule.ToUpper = "ALLOWEMPTYSTRING" Or rule.ToUpper = "ALLOWEMPTYCOLLECTION" Then
+            'we don't support these at this time.
         ElseIf rule.ToUpper Like "VALIDATESCRIPT(*)" Then
             'can't validate
         ElseIf rule.ToUpper Like "VALIDATELENGTH(*)" Then

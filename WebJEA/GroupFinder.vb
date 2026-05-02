@@ -1,6 +1,7 @@
 ﻿Imports System.DirectoryServices.AccountManagement
 
 Public Class GroupFinder
+    Implements IGroupResolver
     Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
     Private prvPC As New Dictionary(Of String, PrincipalContext)
@@ -8,7 +9,7 @@ Public Class GroupFinder
     Public Sub New()
     End Sub
 
-    Public Function GetSID(input As String) As String
+    Public Function GetSID(input As String) As String Implements IGroupResolver.GetSID
 
         dlog.Trace("GroupFinder: GetSID: Cached Contexts: " & prvPC.Count.ToString)
 

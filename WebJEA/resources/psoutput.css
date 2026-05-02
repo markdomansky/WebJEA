@@ -19,7 +19,7 @@
 }
 
 
-.pslink, .ps a {
+.pslink, .ps a, #lblCmdSynopsis a, #lblCmdDescription a {
     /*This tag is always added to formatted links.  changing this affects all links output from PS.*/
     /*Works for links at any depth within psoutput, with or without intermediate HTML tags*/
     color: #0D4EAD;

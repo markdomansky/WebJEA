@@ -30,7 +30,7 @@ Write-Error "This is an error message with a [[a|?cmdid=overview|link]] in it"
 Write-Verbose "This is a verbose message"
 Write-Debug "This is a debug message"
 write-host ""
-Write-Host "All of this is exposed in [[a|psoutput.css|psoutput.css]]."
+Write-Host "All of this is exposed in [[a|resources/psoutput.css|psoutput.css]]."
 Write-Host $null
 write-host "PSVersion: $($PSVersionTable.psversion.tostring())"
 Write-Host (Get-Date).tostring()

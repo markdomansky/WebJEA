@@ -2,11 +2,12 @@
 Imports System.Web.Services
 Imports System.Web.Services.Protocols
 Imports System.ComponentModel
+Imports System.Management.Automation.Language
 
 Public Class PSScriptParser
     Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
-    Private prvScript As String 'the content of the script
+    Private prvScript As String
     Private prvScriptPath As String
     Private prvSynopsis As String
     Private prvDescription As String
@@ -30,7 +31,6 @@ Public Class PSScriptParser
         prvPSParam = New List(Of PSCmdParam)
         prvIsValid = False
 
-        'get content of file into prvscript
         If Not IO.File.Exists(prvScriptPath) Then
             dlog.Trace("PSScriptParser|File Not Exist: '" & prvScriptPath & "'")
             Return
@@ -38,7 +38,6 @@ Public Class PSScriptParser
 
         prvScript = GetFileContent(prvScriptPath)
 
-        'start parser
         StartParser()
 
     End Sub
@@ -78,25 +77,19 @@ Public Class PSScriptParser
     End Function
 
     Private Sub StartParser()
+        If String.IsNullOrWhiteSpace(prvScript) Then Return
 
-        'look for <#
-        'officially, <# can only be preceeded by whitespace and cr/lf
-        'in our case, we don't care.  If the script doesn't work, that will be covered when PS tries to run.
         If prvScript.IndexOf("<#") > -1 Then
             ParseCommentBlock()
         End If
 
+        Dim tokens As Token() = Nothing
+        Dim errors As ParseError() = Nothing
+        Dim ast As ScriptBlockAst = Parser.ParseInput(prvScript, tokens, errors)
 
-        'same with param(
-        'it should only be preceeded by the <##> block, whitespace, and # directives/comments.
-        'we also don't care if there's other stuff in the way.  That is the PS engine's problem
-        If prvScript.IndexOf("param", StringComparison.InvariantCultureIgnoreCase) > -1 Then
-            ParseParameters()
+        If ast IsNot Nothing AndAlso ast.ParamBlock IsNot Nothing Then
+            ParseAstParameters(ast.ParamBlock, tokens)
         End If
-
-
-
-
     End Sub
 
     Private Sub ParseCommentBlock()
@@ -104,12 +97,9 @@ Public Class PSScriptParser
 
         Dim startIDX As Integer = prvScript.IndexOf("<#")
         Dim endIDX As Integer = prvScript.IndexOf(vbLf & "#>")
-        'Dim dividerIDX As Integer
-        'Dim dividerIDX2 As Integer
         Dim commentBlock As String
 
         If (startIDX = -1 Or endIDX = -1) Then
-            'comment block isn't valid, can't do anything with it.
             Return
         End If
 
@@ -120,41 +110,18 @@ Public Class PSScriptParser
             ParseCommentBlockSection(cbItem.Trim())
         Next
 
-        'dividerIDX = prvScript.IndexOf(vbLf & ".", startIDX)
-        'While Not (dividerIDX = -1 Or dividerIDX2 >= endIDX)
-        '    'find the next entry in the comment block, or if non exists (or > then endidx), set to endidx
-        '    dividerIDX2 = prvScript.IndexOf(vbLf & ".", dividerIDX + 1)
-        '    If dividerIDX2 = -1 Or dividerIDX2 > endIDX Then
-        '        dividerIDX2 = endIDX
-        '    End If
-
-        '    Dim section As String = prvScript.Substring(dividerIDX + 1, dividerIDX2 - dividerIDX) 'the +1 and -2 account for the vblf
-        '    ParseCommentBlockSection(section)
-
-        '    dividerIDX = dividerIDX2
-        'End While
-
-        'copy Parameter help to psparams
-
-
     End Sub
 
     Private Sub ParseCommentBlockSection(Section As String)
-        'this should look like:
-        '.XXXXXXX
-        'string
-        'more string
-        ' <expected, extra line break, but not necessary as it will be trimmed automatically>
-
-        Section = Section.Trim 'trim leading and trailing spaces, cr,lf, etc
+        Section = Section.Trim
 
         Dim sectionarr() As String = Section.Split(vbLf.ToCharArray, 2)
-        If (sectionarr.Count) <> 2 Then Return 'this isn't a valid section, so skip it
+        If (sectionarr.Count) <> 2 Then Return
 
         Dim header As String = sectionarr(0).Trim
         Dim comment As String = sectionarr(1).Trim
 
-        If header.StartsWith(".") Then 'want to verify it has the ., then we remove it
+        If header.StartsWith(".") Then
             header = header.Trim(".")
             If (header.ToUpper = "SYNOPSIS") Then
                 dlog.Trace("ScriptParser: CommentBlockSection: Adding SYNOPSIS")
@@ -176,220 +143,127 @@ Public Class PSScriptParser
 
     End Sub
 
-    Private Sub ParseParameters()
-        dlog.Trace("ScriptParser: ParseParameters")
-        Dim IDX As Integer = 0
-        Dim psparam As New PSCmdParam
+    Private Sub ParseAstParameters(paramBlock As ParamBlockAst, tokens As Token())
+        dlog.Trace("ScriptParser: ParseAstParameters")
 
-        Dim endIDX As Integer = prvScript.Length
+        Dim multilineLines As New HashSet(Of Integer)
+        Dim datetimeLines As New HashSet(Of Integer)
 
-        'check for <#
-        Dim commentIDX As Integer = prvScript.IndexOf("<#")
-        If commentIDX > -1 Then
-            'found a comment block that MIGHT have 'param' in it
-
-            IDX = prvScript.IndexOf("#>", commentIDX)
-            If IDX = -1 Then
-                dlog.Error("ScriptParser: Did not find end of comment block")
+        For Each token In tokens
+            If token.Kind = TokenKind.Comment Then
+                Dim commentText = token.Text.Trim()
+                If commentText.Equals("#WEBJEA-MULTILINE", StringComparison.OrdinalIgnoreCase) Then
+                    multilineLines.Add(token.Extent.StartLineNumber)
+                ElseIf commentText.Equals("#WEBJEA-DATETIME", StringComparison.OrdinalIgnoreCase) Then
+                    datetimeLines.Add(token.Extent.StartLineNumber)
+                End If
             End If
-            IDX += 2 'skip the #>
-            dlog.Trace("ScriptParsers: ParseParameters: Found Comment Block " & commentIDX.ToString & " to " & IDX.ToString)
-        End If
+        Next
 
-        'get the idx of param
-        Dim paramMatch As Match = Regex.Match(prvScript, "(^|\n)param\s*\(", RegexOptions.IgnoreCase)
-        If paramMatch.Success Then
-            dlog.Trace("ScriptParser: ParseParameters: Found param() block")
-            'found a properly formatted param( that isn't some function or something undesired.  must be new line, param, whitespace (incl crlf), then (
-            IDX = paramMatch.Index
-        Else
-            dlog.Trace("ScriptParser: ParseParameters: Did NOT find param() block")
-            'didn't find a parameter block
-            Return
-        End If
+        Dim prevEndLine As Integer = paramBlock.Extent.StartLineNumber
 
-        'then get the idx of (
-        IDX = prvScript.IndexOf("(", IDX)
-        endIDX = AdvIndexOf(prvScript, ")", IDX)
-        Dim FoundCloseTag As Boolean = False
+        For Each paramAst In paramBlock.Parameters
+            Dim psparam As New PSCmdParam
 
-        If endIDX = -1 Then endIDX = prvScript.Length 'probably means the param block doesnt have a proper close tag)
-        dlog.Trace("ScriptParser: ParseParameters: IDX Start: " & IDX & " IDX End: " & endIDX)
-        'we've entered the param block
+            psparam.Name = paramAst.Name.VariablePath.UserPath
+            dlog.Trace("ScriptParser: ParseAstParameters: Processing parameter: " & psparam.Name)
 
-        While Not FoundCloseTag And IDX < endIDX
-            'we should not see a close param, until the end of the param block.
-            '  close params we do see should handled before it gets to the while loop
+            For Each line In multilineLines
+                If line >= prevEndLine AndAlso line <= paramAst.Extent.EndLineNumber Then
+                    dlog.Trace("ScriptParser: ParseAstParameters: #WEBJEA-MULTILINE for: " & psparam.Name)
+                    psparam.DirectiveMultiline = True
+                End If
+            Next
+            For Each line In datetimeLines
+                If line >= prevEndLine AndAlso line <= paramAst.Extent.EndLineNumber Then
+                    dlog.Trace("ScriptParser: ParseAstParameters: #WEBJEA-DATETIME for: " & psparam.Name)
+                    psparam.DirectiveDateTime = True
+                End If
+            Next
 
-            'the -1 on idx=closeidx is so we catch every character, other wise we'll skip a char each time.
+            For Each attr In paramAst.Attributes
+                If TypeOf attr Is TypeConstraintAst Then
+                    ProcessTypeConstraint(psparam, DirectCast(attr, TypeConstraintAst))
+                ElseIf TypeOf attr Is AttributeAst Then
+                    ProcessAttribute(psparam, DirectCast(attr, AttributeAst))
+                End If
+            Next
 
-            IDX += 1
-            Dim idxchar As String = prvScript.Substring(IDX, 1) 'just for debugging
-            Select Case prvScript.Substring(IDX, 1)
-                Case "["
-                    Dim closeIDX As Integer = AdvIndexOf(prvScript, "]", IDX)
-                    Dim valstring As String = prvScript.Substring(IDX, closeIDX - IDX + 1)
-                    dlog.Trace("ScriptParser: ParseParameters: Processing []: " & valstring)
-                    ParseParameterString(psparam, valstring)
-                    IDX = closeIDX
-                Case "$"
-                    Dim closeIDX As Integer = AdvIndexOf(prvScript, New List(Of String)({",", ")", "=", vbLf, " ", vbTab}), IDX)
-                    Dim valstring As String = prvScript.Substring(IDX + 1, closeIDX - IDX - 1).Trim
-                    dlog.Trace("ScriptParser: ParseParameters: Processing $: " & valstring)
-                    psparam.Name = valstring
-                    'check if there's a helpdetail, if so, add it now
-                    If prvParameterHelp.ContainsKey(valstring.ToUpper) Then
-                        psparam.HelpDetail = prvParameterHelp(valstring.ToUpper)
-                    End If
-                    IDX = closeIDX - 1 'subtract one because we didn't use the matched character and we want to evaluate it on the next step
-                Case "=" 'default value
-                    Dim closeIDX As Integer = AdvIndexOf(prvScript, New List(Of String)({",", ")", "#"}), IDX)
-                    Dim valstring As String = prvScript.Substring(IDX + 1, closeIDX - IDX - 1)
-                    dlog.Trace("ScriptParser: ParseParameters: Processing =: " & valstring)
-                    psparam.DefaultValue = ParseDefaultValue(valstring)
-                    IDX = closeIDX - 1 'subtract one because we didn't use the matched character and we want to evaluate it on the next step
-                Case "#"
-                    'just get to end of line
-                    Dim closeIDX As Integer = AdvIndexOf(prvScript, vbLf, IDX)
-                    If prvScript.Substring(IDX, closeIDX - IDX).ToUpper() = ("#WEBJEA-MULTILINE" & vbCr) Then
-                        dlog.Trace("ScriptParser: ParseParameters: Processing #WEBJEA directive: Multiline")
-                        psparam.DirectiveMultiline = True
-                    ElseIf prvScript.Substring(IDX, closeIDX - IDX).ToUpper() = ("#WEBJEA-DATETIME" & vbCr) Then
-                        dlog.Trace("ScriptParser: ParseParameters: Processing #WEBJEA directive: DateTime")
-                        psparam.DirectiveDateTime = True
-                    Else
-                        dlog.Trace("ScriptParser: ParseParameters: Processing #: Skipping to IDX: " & closeIDX)
-                    End If
-                    IDX = closeIDX
-                Case "<"
-                    'this is for <# #> but can just shortcut to <> to match this code, but may be well supported to use <# #>
-                    Dim closeIDX As Integer = AdvIndexOf(prvScript, ">", IDX)
-                    dlog.Trace("ScriptParser: ParseParameters: Processing <##>: Skipping to IDX: " & IDX)
-                    IDX = closeIDX
-                Case ","
-                    '    complete the param and add to code
-                    If Not (psparam Is Nothing) Then 'commit the param and then set it to nothing so the earlier code works.
-                        dlog.Trace("ScriptParser: ParseParameters: Adding Parameter to Set: " & psparam.Name)
-                        prvPSParam.Add(psparam.Clone)
-                        psparam = New PSCmdParam
-                    End If
-                Case ")"
-                    'complete the param and add to code
-                    If Not (psparam Is Nothing) And psparam.Name <> "" Then 'commit the param and then set it to nothing so the earlier code works.
-                        dlog.Trace("ScriptParser: ParseParameters: Adding Parameter to Set: " & psparam.Name)
-                        prvPSParam.Add(psparam.Clone)
-                        psparam = New PSCmdParam
-                    End If
-                    FoundCloseTag = True
-                    'this should be the end of the param block, should be processed as the end of the while loop in a moment
-                Case Else
-                    'Nothing to do, hopefully, should just be whitespace characters
-            End Select
-        End While
+            If paramAst.DefaultValue IsNot Nothing Then
+                psparam.DefaultValue = ParseDefaultValue(paramAst.DefaultValue.Extent.Text)
+            End If
 
-        dlog.Trace("ScriptParser: ParseParameters: Completed Parsing at IDX: " & IDX)
+            If prvParameterHelp.ContainsKey(psparam.Name.ToUpper()) Then
+                psparam.HelpDetail = prvParameterHelp(psparam.Name.ToUpper())
+            End If
 
+            prvPSParam.Add(psparam)
+            prevEndLine = paramAst.Extent.EndLineNumber
+        Next
+
+        dlog.Trace("ScriptParser: ParseAstParameters: Found " & prvPSParam.Count.ToString() & " parameters")
     End Sub
 
-    Private Sub ParseParameterString(psparam As PSCmdParam, valstring As String)
+    Private Sub ProcessTypeConstraint(psparam As PSCmdParam, typeAst As TypeConstraintAst)
+        Dim typeName As String = typeAst.TypeName.Name
+        dlog.Trace("ScriptParser: ProcessTypeConstraint: " & typeName)
 
-        'trim the outer []
-        valstring = valstring.Substring(1, valstring.LastIndexOf("]") - 1)
-        '**************************
-        'Parameter() parsing
-        '**************************
-        If valstring.StartsWith("Parameter", StringComparison.InvariantCultureIgnoreCase) Then
+        If typeName.StartsWith("boolean", StringComparison.InvariantCultureIgnoreCase) OrElse
+           typeName.StartsWith("datetime", StringComparison.InvariantCultureIgnoreCase) OrElse
+           typeName.StartsWith("switch", StringComparison.InvariantCultureIgnoreCase) OrElse
+           typeName.StartsWith("int", StringComparison.InvariantCultureIgnoreCase) OrElse
+           typeName.StartsWith("uint", StringComparison.InvariantCultureIgnoreCase) OrElse
+           typeName.StartsWith("float", StringComparison.InvariantCultureIgnoreCase) OrElse
+           typeName.StartsWith("double", StringComparison.InvariantCultureIgnoreCase) OrElse
+           typeName.StartsWith("string", StringComparison.InvariantCultureIgnoreCase) Then
+            psparam.VarType = typeName
+        Else
+            dlog.Warn("ScriptParser: Unrecognized type: " & typeName)
+        End If
+    End Sub
 
-            'look for mandatory=true/false
-            Dim idxMandatory As Integer = valstring.IndexOf("Mandatory", StringComparison.InvariantCultureIgnoreCase)
-            If idxMandatory > -1 Then
-                Dim idxSepMand As Integer = AdvIndexOf(valstring, New List(Of String)({",", ")"}), idxMandatory)
+    Private Sub ProcessAttribute(psparam As PSCmdParam, attrAst As AttributeAst)
+        Dim attrName = attrAst.TypeName.Name
+        dlog.Trace("ScriptParser: ProcessAttribute: " & attrName)
 
-                Dim strMandatory As String = valstring.Substring(idxMandatory, idxSepMand - idxMandatory)
-                If strMandatory.IndexOf("false", StringComparison.InvariantCultureIgnoreCase) > -1 Then
-                    'not mandatory
+        If String.Equals(attrName, "Parameter", StringComparison.InvariantCultureIgnoreCase) Then
+            ProcessParameterAttribute(psparam, attrAst)
+        ElseIf attrName.StartsWith("ValidateLength", StringComparison.InvariantCultureIgnoreCase) OrElse
+               attrName.StartsWith("ValidateRange", StringComparison.InvariantCultureIgnoreCase) OrElse
+               attrName.StartsWith("ValidatePattern", StringComparison.InvariantCultureIgnoreCase) OrElse
+               attrName.StartsWith("ValidateCount", StringComparison.InvariantCultureIgnoreCase) OrElse
+               attrName.StartsWith("ValidateSet", StringComparison.InvariantCultureIgnoreCase) OrElse
+               attrName.StartsWith("ValidateNotNull", StringComparison.InvariantCultureIgnoreCase) OrElse
+               attrName.StartsWith("ValidateNotNullOrEmpty", StringComparison.InvariantCultureIgnoreCase) Then
+            Dim extentText = attrAst.Extent.Text
+            Dim valstring = extentText.Substring(1, extentText.LastIndexOf("]") - 1)
+            dlog.Trace("ScriptParser: ProcessAttribute: Adding validation: " & valstring)
+            psparam.AddValidation(valstring)
+        End If
+    End Sub
+
+    Private Sub ProcessParameterAttribute(psparam As PSCmdParam, attrAst As AttributeAst)
+        For Each namedArg In attrAst.NamedArguments
+            If String.Equals(namedArg.ArgumentName, "Mandatory", StringComparison.InvariantCultureIgnoreCase) Then
+                If namedArg.ExpressionOmitted Then
+                    dlog.Trace("ScriptParser: ProcessParameterAttribute: Mandatory (expression omitted)")
+                    psparam.AddValidation("Mandatory")
+                ElseIf TypeOf namedArg.Argument Is VariableExpressionAst Then
+                    Dim varExpr = DirectCast(namedArg.Argument, VariableExpressionAst)
+                    If Not String.Equals(varExpr.VariablePath.UserPath, "false", StringComparison.InvariantCultureIgnoreCase) Then
+                        dlog.Trace("ScriptParser: ProcessParameterAttribute: Mandatory=$true")
+                        psparam.AddValidation("Mandatory")
+                    End If
                 Else
-                    dlog.Trace("ScriptParser: ParseParameters: Mandatory=$true")
                     psparam.AddValidation("Mandatory")
                 End If
-
+            ElseIf String.Equals(namedArg.ArgumentName, "HelpMessage", StringComparison.InvariantCultureIgnoreCase) Then
+                If TypeOf namedArg.Argument Is StringConstantExpressionAst Then
+                    psparam.HelpMessage = DirectCast(namedArg.Argument, StringConstantExpressionAst).Value
+                    dlog.Trace("ScriptParser: ProcessParameterAttribute: HelpMessage: " & psparam.HelpMessage)
+                End If
             End If
-
-            'look for helpmessage
-            Dim idxHelp As Integer = valstring.IndexOf("HelpMessage", StringComparison.InvariantCultureIgnoreCase)
-            If idxHelp > -1 Then
-                Dim idxSepHelp As Integer = AdvIndexOf(valstring, New List(Of String)({",", ")"}), idxHelp)
-
-                Dim strHelpMsg As String = valstring.Substring(idxHelp, idxSepHelp - idxHelp)
-                Dim idxHelpMsgStart As Integer = AdvIndexOf(strHelpMsg, New List(Of String)({"'", """"}))
-                Dim idxHelpMsgStartChar As String = strHelpMsg.Substring(idxHelpMsgStart, 1)
-                Dim idxHelpMsgEnd As Integer = AdvIndexOf(strHelpMsg, idxHelpMsgStartChar, idxHelpMsgStart)
-
-                Dim strHelpMsgContent As String = strHelpMsg.Substring(idxHelpMsgStart + 1, idxHelpMsgEnd - idxHelpMsgStart - 1)
-
-                dlog.Trace("ScriptParser: ParseParameters: Help: " & strHelpMsgContent)
-                psparam.HelpMessage = strHelpMsgContent
-
-            End If
-
-            '**************************
-            'Permitted Validation Types
-            '**************************
-        ElseIf valstring.StartsWith("ValidateLength", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.AddValidation(valstring)
-        ElseIf valstring.StartsWith("ValidateRange", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.AddValidation(valstring)
-        ElseIf valstring.StartsWith("ValidatePattern", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.AddValidation(valstring)
-        ElseIf valstring.StartsWith("ValidateCount", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.AddValidation(valstring)
-        ElseIf valstring.StartsWith("ValidateSet", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.AddValidation(valstring)
-
-            '**************************
-            'Variable Types
-            '**************************
-        ElseIf valstring.StartsWith("boolean", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.VarType = valstring
-        ElseIf valstring.StartsWith("datetime", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.VarType = valstring
-        ElseIf valstring.StartsWith("switch", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.VarType = valstring
-        ElseIf valstring.StartsWith("int", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.VarType = valstring
-        ElseIf valstring.StartsWith("uint", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.VarType = valstring
-        ElseIf valstring.StartsWith("float", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.VarType = valstring
-        ElseIf valstring.StartsWith("double", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.VarType = valstring
-        ElseIf valstring.StartsWith("string", StringComparison.InvariantCultureIgnoreCase) Then
-            psparam.VarType = valstring
-
-            '**************************
-            'Ignore These
-            '**************************
-        ElseIf valstring.StartsWith("Alias(", StringComparison.InvariantCultureIgnoreCase) Then
-            'ignore
-        ElseIf valstring.StartsWith("ValidateScript", StringComparison.InvariantCultureIgnoreCase) Then
-            'ignore
-        ElseIf valstring.StartsWith("ValidateNotNullOrEmpty", StringComparison.InvariantCultureIgnoreCase) Then
-            'ignore
-        ElseIf valstring.StartsWith("ValidateNotNull", StringComparison.InvariantCultureIgnoreCase) Then
-            'ignore
-        ElseIf valstring.StartsWith("AllowNull", StringComparison.InvariantCultureIgnoreCase) Then
-            'ignore
-        ElseIf valstring.StartsWith("AllowEmptyString", StringComparison.InvariantCultureIgnoreCase) Then
-            'ignore
-        ElseIf valstring.StartsWith("AllowEmptyCollection", StringComparison.InvariantCultureIgnoreCase) Then
-            'ignore
-        ElseIf valstring.StartsWith("SupportsWildcards", StringComparison.InvariantCultureIgnoreCase) Then
-            'ignore
-        Else
-            dlog.Warn("ScriptParser: Did not expect value: " & valstring)
-        End If
-
-
+        Next
     End Sub
 
     Public Shared Function AdvIndexOf(strInput As String, chars As String, Optional startidx As Integer = -1) As Integer
@@ -398,7 +272,7 @@ Public Class PSScriptParser
     End Function
 
     Public Shared Function AdvIndexOf(strInput As String, chars As List(Of String), Optional startidx As Integer = -1) As Integer
-        'this is kind of like indexOf, except we search character by character and if we encounter certain characters ('(','[','{',''','"'), 
+        'this is kind of like indexOf, except we search character by character and if we encounter certain characters ('(','[','{',''','"'),
         '  we recurse the same function until we eventually get the end of file Or find the correct closing character
         'this is because a command like [ValidateScript({$_ -eq "[`"]"})] is valid but would cause a parsing issue if we just indexof the closing character.
         'this may be part of why we'll want to cache the config in the future

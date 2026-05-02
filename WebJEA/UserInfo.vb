@@ -27,13 +27,18 @@ Public Class UserInfo
     Private prvDomainSID As String = "-"
     Private prvDomainDNSRoot As String = "-"
 
+    Friend Sub New(sids As List(Of String), username As String)
+        prvSIDs = sids
+        uname = username
+    End Sub
+
     Sub New(curuser As System.Security.Principal.IPrincipal)
 
         prvPrincipal = curuser
         Dim WinID As System.Security.Principal.WindowsIdentity = prvPrincipal.Identity
         'get username from page request
         dlog.Trace("UserInfo: User: " & WinID.Name)
-        'save username 
+        'save username
         uname = WinID.Name
 
         For Each clm As System.Security.Claims.Claim In WinID.UserClaims

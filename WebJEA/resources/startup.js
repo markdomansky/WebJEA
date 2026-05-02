@@ -5,33 +5,41 @@ $('*[data-type="date"]').datepicker({ dateFormat:"yy/mm/dd"});
 //date-type=datetime //date and time
 $('*[data-type="datetime"]').datetimepicker({ dateFormat: "yy/mm/dd" });
 
-//this makes the li element clickable using the A elements link
+// Sidebar drawer toggle for mobile (newlayout pattern)
+var sidebarOpen = false;
+
+function isMobile() {
+    return window.innerWidth < 992;
+}
+
+function toggleSidebar() {
+    sidebarOpen = !sidebarOpen;
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('overlay');
+    if (sidebar) sidebar.classList.toggle('open', sidebarOpen);
+    if (overlay) overlay.classList.toggle('show', sidebarOpen);
+}
+
+function closeSidebar() {
+    sidebarOpen = false;
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('overlay');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('show');
+}
+
+window.addEventListener('resize', function () {
+    if (!isMobile()) {
+        // Desktop: close mobile drawer state, CSS handles sidebar visibility
+        closeSidebar();
+    }
+});
+
 $(function () {
-    $('li.menulink').click(function () {
-        window.location = $('a', this).attr('href');
-        return false;
+    // Close sidebar drawer when a nav link is clicked on mobile
+    $(document).on('click', '.nav-item-link', function () {
+        if (isMobile()) {
+            closeSidebar();
+        }
     });
-
-    // Clone desktop sidebar menu into the mobile offcanvas drawer
-    var desktopMenu = document.querySelector('#desktopSidebar .sidebar-menu-list');
-    var offcanvasTarget = document.getElementById('offcanvasMenuTarget');
-    var offcanvasTitle = document.getElementById('offcanvasTitle');
-    var offcanvasFooter = document.getElementById('offcanvasFooter');
-    var sidebarBrand = document.querySelector('.sidebar-brand .brand');
-    var sidebarFooter = document.querySelector('.sidebar-footer .footer');
-
-    if (desktopMenu && offcanvasTarget) {
-        offcanvasTarget.innerHTML = desktopMenu.innerHTML;
-        // Make offcanvas menu items navigable
-        $(offcanvasTarget).find('li.menulink').click(function () {
-            window.location = $('a', this).attr('href');
-            return false;
-        });
-    }
-    if (sidebarBrand && offcanvasTitle) {
-        offcanvasTitle.textContent = sidebarBrand.textContent;
-    }
-    if (sidebarFooter && offcanvasFooter) {
-        offcanvasFooter.innerHTML = sidebarFooter.innerHTML;
-    }
 });

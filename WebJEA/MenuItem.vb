@@ -1,9 +1,10 @@
 ﻿Public Class MenuItem
-    Public ID As String
-    Public DisplayName As String
-    Public Description As String
+    Public Property ID As String
+    Public Property DisplayName As String
+    Public Property Description As String
+    Public Property Synopsis As String
 
     Public Function Uri() As String
-        Return "?cmdid=" & ID
+        Return "command.aspx?cmdid=" & ID
     End Function
 End Class

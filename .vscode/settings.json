@@ -1,0 +1,9 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "&\"C:\\Program": true,
+        "dotnet test": true,
+        "msbuild": true,
+        "dotnet build": true,
+        "&": true
+    }
+}

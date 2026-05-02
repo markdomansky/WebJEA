@@ -31,4 +31,5 @@ Imports System.Runtime.InteropServices
 ' Note: this value is overwritten by the BeforeBuild target in WebJEA.vbproj
 ' Format: Year.Month.DayOfYear.HalfSecondsInDay
 
-<Assembly: AssemblyVersion("2026.3.28.1605")>
+<Assembly: AssemblyVersion("0.0.0.1")>
+<Assembly: Runtime.CompilerServices.InternalsVisibleTo("WebJEA-UnitTests-VBNET")>

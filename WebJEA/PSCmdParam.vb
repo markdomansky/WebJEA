@@ -14,15 +14,15 @@ Public Class PSCmdParam
         PSBoolean
     End Enum
 
-    Public Name As String
-    Public HelpMessage As String = ""
-    Public HelpDetail As String = ""
-    Public DirectiveMultiline As Boolean = False
-    Public DirectiveDateTime As Boolean = False
-    Public VarType As String = ""
-    Public DefaultValue As Object = Nothing
+    Public Property Name As String
+    Public Property HelpMessage As String = ""
+    Public Property HelpDetail As String = ""
+    Public Property DirectiveMultiline As Boolean = False
+    Public Property DirectiveDateTime As Boolean = False
+    Public Property VarType As String = ""
+    Public Property DefaultValue As Object = Nothing
     'TODO: Add support for more than just string default values - can we support arrays?
-    Public Validation As New List(Of String)
+    Public Property Validation As New List(Of String)
     'Private prvValidation As New List(Of PSCmdParamVal)
 
     Sub New()
@@ -175,7 +175,7 @@ Public Class PSCmdParam
 
     Public ReadOnly Property FieldName As String
         Get
-            Return "psparam_" & Name
+            Return Name
         End Get
     End Property
 

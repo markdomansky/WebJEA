@@ -1,21 +1,22 @@
 ﻿Imports System.Management.Automation
 Public Class PSEngine
+    Implements IScriptEngine
     Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
     Private ps As PowerShell
 
-    Public LogParameters As Boolean = True
-    Public Verbose As Boolean = False
-    Public PipeToOutString As Boolean = True
-    Public WebJEAUserName As String = ""
-    Public WebJEAHostName As String = ""
+    Public Property LogParameters As Boolean = True Implements IScriptEngine.LogParameters
+    Public Property Verbose As Boolean = False Implements IScriptEngine.Verbose
+    Public Property PipeToOutString As Boolean = True Implements IScriptEngine.PipeToOutString
+    Public Property WebJEAUserName As String = "" Implements IScriptEngine.WebJEAUserName
+    Public Property WebJEAHostName As String = "" Implements IScriptEngine.WebJEAHostName
     Private prvScript As String
     Private prvParams As New Dictionary(Of String, Object)
     Private prvOutput As String
     Private prvRuntime As Single = 0
     Private prvOutputQ As New Queue(Of OutputData)
     Private prvOutputObjects As New List(Of Management.Automation.PSObject)
-    Public HasErrors As Boolean = False
+    Public Property HasErrors As Boolean = False Implements IScriptEngine.HasErrors
 
     Public Enum OutputType
         Unknown
@@ -34,13 +35,13 @@ Public Class PSEngine
     Public Sub New()
     End Sub
 
-    Public ReadOnly Property Runtime As Single
+    Public ReadOnly Property Runtime As Single Implements IScriptEngine.Runtime
         Get
             Return prvRuntime
         End Get
     End Property
 
-    Public Property Script As String
+    Public Property Script As String Implements IScriptEngine.Script
         Get
             Return prvScript
         End Get
@@ -49,7 +50,7 @@ Public Class PSEngine
         End Set
     End Property
 
-    Public Property Parameters As Dictionary(Of String, Object)
+    Public Property Parameters As Dictionary(Of String, Object) Implements IScriptEngine.Parameters
         Get
             Return prvParams
         End Get
@@ -59,11 +60,11 @@ Public Class PSEngine
 
     End Property
 
-    Public Function getOutputData() As Queue(Of OutputData)
+    Public Function getOutputData() As Queue(Of OutputData) Implements IScriptEngine.GetOutputData
         Return prvOutputQ
     End Function
 
-    Public Function GetOutputObjects() As List(Of Management.Automation.PSObject)
+    Public Function GetOutputObjects() As List(Of Management.Automation.PSObject) Implements IScriptEngine.GetOutputObjects
         Return prvOutputObjects
     End Function
     'Public ReadOnly Property Output As Queue(Of OutputData)
@@ -72,7 +73,7 @@ Public Class PSEngine
     '    End Get
     'End Property
 
-    Public Sub Run()
+    Public Sub Run() Implements IScriptEngine.Run
 
         If Not IO.File.Exists(prvScript) Then
             'file didn't exist
@@ -225,25 +226,25 @@ Public Class PSEngine
 
     End Sub
 
-    Public Sub AddParameter(Key As String, Value As Object)
+    Public Sub AddParameter(Key As String, Value As Object) Implements IScriptEngine.AddParameter
         UpdateParameter(Key, Value)
     End Sub
 
-    Public Sub RemoveParameter(Key As String)
+    Public Sub RemoveParameter(Key As String) Implements IScriptEngine.RemoveParameter
         If prvParams.ContainsKey(Key) Then
             prvParams.Remove(Key)
         End If
     End Sub
 
-    Public Sub UpdateParameter(Key As String, Value As Object)
+    Public Sub UpdateParameter(Key As String, Value As Object) Implements IScriptEngine.UpdateParameter
         RemoveParameter(Key)
         prvParams.Add(Key, Value)
     End Sub
 
-    Public Sub ClearParameters()
+    Public Sub ClearParameters() Implements IScriptEngine.ClearParameters
         prvParams.Clear()
     End Sub
-    Public Sub ClearOutput()
+    Public Sub ClearOutput() Implements IScriptEngine.ClearOutput
         prvOutput = ""
     End Sub
 End Class

@@ -1,0 +1,93 @@
+﻿/* ── Dashboard / Command mode switching ── */
+#dashboard-header,
+#dashboard-footer {
+    display: none;
+}
+
+/* Dashboard mode: full-width header + footer, no sidebar or mobile chrome */
+.mode-dashboard #mobile-topbar,
+.mode-dashboard #mobile-footer {
+    display: none !important;
+}
+
+.mode-dashboard #sidebar {
+    display: none !important;
+}
+
+.mode-dashboard #dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    min-height: 56px;
+}
+
+.mode-dashboard .dashboard-title {
+    font-weight: 700;
+    font-size: 18px;
+    color: #212529;
+}
+
+.mode-dashboard #dashboard-footer {
+    display: flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 24px;
+    overflow: hidden;
+}
+
+/* ── Dashboard tile grid ── */
+.tile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    align-content: start;
+}
+
+/* Sticky footer: fill remaining space so footer stays at viewport bottom */
+.mode-dashboard #divTileView {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+/* Make dashboard HTML full width above the tiles */
+.tile-grid > .dashboard-html {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 0 0 12px 0;
+    padding: 0;
+}
+
+.tile-card {
+    display: block;
+    height: 100%;
+    margin-top: 0;
+    transition: border-color 0.15s, background 0.15s;
+    color: inherit;
+}
+
+.tile-card:hover {
+    border-color: #0d6efd;
+    background: #f0f6ff;
+    text-decoration: none;
+}
+
+.tile-card .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 8px;
+}
+
+.tile-card .card-text {
+    font-size: 13px;
+    color: #6c757d;
+    line-height: 1.5;
+}
+
+.card-synopsis {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 8px;
+}

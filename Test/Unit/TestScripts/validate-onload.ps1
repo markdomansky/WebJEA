@@ -1,7 +1,7 @@
 $VerbosePreference = "Continue"
 $DebugPreference = "Continue"
 
-write-host "You can also specify a script to run each time the page loads."
+write-host "You can also specify a script to run each time the page loads using the onloadscript property."
 
 write-host "WebJEA supports some basic formatting like:
 Links: [[a |url|display]] -[[a|?cmdid=sample1|go to sample1]]-
@@ -33,5 +33,9 @@ Write-Debug "This is a debug message"
 write-host ""
 Write-Host "All of this is exposed in [[a|psoutput.css|psoutput.css]]."
 Write-Host $null
+
+write-host "`$Env:WebJEAUsername is $($env:WebJEAUsername)"
+write-host "`$Env:WebJEAHostname is $($env:WebJEAHostname)"
+write-host ''
 write-host "PSVersion: $($PSVersionTable.psversion.tostring())"
 Write-Host (Get-Date).tostring()

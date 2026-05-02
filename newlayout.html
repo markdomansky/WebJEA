@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Application</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #app {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Layout ── */
+    #layout {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      min-height: 0;
+      position: relative;
+    }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      width: 220px;
+      min-width: 220px;
+      display: none;
+      flex-direction: column;
+      background: #fff;
+      border-right: 1px solid #dee2e6;
+      overflow: hidden;
+    }
+    #sidebar.open { display: flex; }
+
+    #sidebar-brand {
+      padding: 14px 16px;
+      border-bottom: 1px solid #dee2e6;
+      font-weight: 600;
+      font-size: 15px;
+      color: #212529;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-shrink: 0;
+    }
+
+    #sidebar-subnav {
+      padding: 8px 12px;
+      border-bottom: 1px solid #dee2e6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    #nav-list { overflow-y: auto; flex: 1; }
+
+    .nav-item-link {
+      display: block;
+      padding: 9px 16px;
+      font-size: 13px;
+      color: #495057;
+      border-left: 2px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .nav-item-link:hover {
+      background: #f8f9fa;
+      color: #212529;
+      border-left-color: #6c757d;
+    }
+    .nav-item-link.active {
+      background: #cfe2ff;
+      color: #084298;
+      border-left-color: #0d6efd;
+      font-weight: 500;
+    }
+
+    .nav-tip {
+      display: none;
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #6c757d;
+      width: 200px;
+      z-index: 100;
+      line-height: 1.5;
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .nav-item-link:hover .nav-tip { display: block; }
+
+    #sidebar-footer {
+      padding: 10px 16px;
+      border-top: 1px solid #dee2e6;
+      font-size: 11px;
+      color: #6c757d;
+      background: #f8f9fa;
+      flex-shrink: 0;
+    }
+
+    /* ── Main area ── */
+    #main {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    #main-titlebar {
+      background: #fff;
+      border-bottom: 1px solid #dee2e6;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      min-height: 48px;
+      flex-shrink: 0;
+    }
+    #main-titlebar .site-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: #212529;
+    }
+
+    #main-footer {
+      background: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+      padding: 10px 20px;
+      font-size: 11px;
+      color: #6c757d;
+      flex-shrink: 0;
+    }
+
+    /* ── Mobile topbar ── */
+    #mobile-topbar {
+      display: none;
+      background: #fff;
+      border-bottom: 1px solid #dee2e6;
+      padding: 0 12px;
+      min-height: 48px;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    #mobile-footer {
+      display: none;
+      background: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+      padding: 10px 16px;
+      font-size: 11px;
+      color: #6c757d;
+      flex-shrink: 0;
+    }
+
+    /* ── Scroll area ── */
+    #scroll-area { flex: 1; overflow-y: auto; }
+
+    /* ── Tile grid ── */
+    #tile-view {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+      align-content: start;
+    }
+
+    .tile { cursor: pointer; }
+    .tile .card { height: 100%; transition: border-color 0.15s, background 0.15s; }
+    .tile:hover .card { border-color: #0d6efd; background: #f0f6ff; }
+    .tile .card-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+    .tile .card-text { font-size: 12px; color: #6c757d; line-height: 1.5; }
+
+    /* ── Content view ── */
+    #content-view { display: none; padding: 24px; }
+    #content-view.show { display: block; }
+    #tile-view.hide { display: none; }
+
+    /* ── Placeholder ── */
+    .ph { height: 8px; border-radius: 4px; background: #e9ecef; }
+    .ph-card {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ── Mobile drawer overlay ── */
+    #overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 20;
+    }
+    #overlay.show { display: block; }
+
+    #sidebar.drawer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      z-index: 30;
+      box-shadow: 4px 0 16px rgba(0,0,0,0.12);
+    }
+    #sidebar.drawer.collapsed { display: none; }
+
+    /* ── Responsive breakpoint ── */
+    @media (max-width: 640px) {
+      #mobile-topbar { display: flex; }
+      #main-titlebar { display: none !important; }
+      #main-footer { display: none !important; }
+      #sidebar { position: absolute; top: 0; left: 0; height: 100%; z-index: 30; box-shadow: 4px 0 16px rgba(0,0,0,0.12); }
+      #sidebar.open { display: flex; }
+      #sidebar:not(.open) { display: none; }
+    }
+  </style>
+</head>
+<body class="bg-light">
+<div id="app">
+
+  <!-- Mobile topbar -->
+  <div id="mobile-topbar">
+    <button class="navbar-toggler border" type="button" onclick="toggleSidebar()" style="padding:4px 8px;font-size:14px">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <span class="fw-semibold" style="font-size:15px;flex:1">My Application</span>
+    <button id="mobile-dash-btn" class="btn btn-sm btn-outline-secondary" onclick="goHome()" style="display:none">Dashboard</button>
+  </div>
+
+  <div id="layout">
+    <div id="overlay" onclick="closeSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+      <div id="sidebar-brand">My Application</div>
+      <div id="sidebar-subnav">
+        <span class="text-muted" style="font-size:12px">Navigation</span>
+        <button class="btn btn-sm btn-outline-secondary" onclick="goHome()">Dashboard</button>
+      </div>
+      <div id="nav-list"></div>
+      <div id="sidebar-footer">© 2026 My Application &middot; <a href="#" class="text-muted">Privacy</a> &middot; <a href="#" class="text-muted">Terms</a></div>
+    </div>
+
+    <!-- Main -->
+    <div id="main">
+      <div id="main-titlebar">
+        <span class="site-name">My Application</span>
+      </div>
+      <div id="scroll-area">
+        <div id="tile-view"></div>
+        <div id="content-view">
+          <div class="border-bottom pb-3 mb-4">
+            <h5 id="cv-title" class="mb-1"></h5>
+            <p id="cv-desc" class="text-muted mb-0" style="font-size:13px"></p>
+          </div>
+          <div class="bg-white border rounded p-4 d-flex flex-column gap-3">
+            <div class="ph" style="width:70%"></div>
+            <div class="ph" style="width:90%"></div>
+            <div class="ph" style="width:55%"></div>
+            <div class="row g-3 mt-1">
+              <div class="col-6">
+                <div class="ph-card"><div class="ph"></div><div class="ph" style="width:60%"></div></div>
+              </div>
+              <div class="col-6">
+                <div class="ph-card"><div class="ph"></div><div class="ph" style="width:75%"></div></div>
+              </div>
+            </div>
+            <p class="text-center text-muted mt-2 mb-0" style="font-size:13px">Your content renders here</p>
+          </div>
+        </div>
+      </div>
+      <div id="main-footer">© 2026 My Application &middot; <a href="#" class="text-muted">Privacy</a> &middot; <a href="#" class="text-muted">Terms</a></div>
+    </div>
+  </div>
+
+  <!-- Mobile footer -->
+  <div id="mobile-footer">© 2026 My Application &middot; <a href="#" class="text-muted">Privacy</a> &middot; <a href="#" class="text-muted">Terms</a></div>
+
+</div>
+
+<script>
+  const SITE_NAME = "My Application";
+  const FOOTER_HTML = `&copy; 2026 ${SITE_NAME} &middot; <a href="#" class="text-muted">Privacy</a> &middot; <a href="#" class="text-muted">Terms</a>`;
+
+  // ── Menu items — customise this array ──────────────────────────────────────
+  const items = [
+    { title: "Analytics",     desc: "Track KPIs, usage metrics, and real-time dashboards across your products." },
+    { title: "Users",         desc: "Manage accounts, roles, permissions, and user activity logs." },
+    { title: "Billing",       desc: "Invoices, subscription plans, payment methods, and revenue reports." },
+    { title: "Notifications", desc: "Configure alerts, email templates, and push notification rules." },
+    { title: "Settings",      desc: "Global configuration, integrations, and environment variables." },
+    { title: "Files",         desc: "Upload, organize, and share documents, images, and assets." },
+    { title: "Security",      desc: "Audit logs, 2FA settings, API keys, and access controls." },
+    { title: "Products",      desc: "Manage your product catalog, variants, SKUs, and inventory." },
+    { title: "Calendar",      desc: "Schedule events, set reminders, and coordinate team availability." },
+    { title: "Messages",      desc: "Internal messaging, support tickets, and customer conversations." },
+    { title: "Reports",       desc: "Generate custom reports and export data in multiple formats." },
+    { title: "Integrations",  desc: "Connect third-party tools, webhooks, and external APIs." },
+  ];
+  // ──────────────────────────────────────────────────────────────────────────
+
+  const sidebar       = document.getElementById("sidebar");
+  const tileView      = document.getElementById("tile-view");
+  const contentView   = document.getElementById("content-view");
+  const overlay       = document.getElementById("overlay");
+  const mainTitlebar  = document.getElementById("main-titlebar");
+  const mainFooter    = document.getElementById("main-footer");
+  const mobileTopbar  = document.getElementById("mobile-topbar");
+  const mobileFooter  = document.getElementById("mobile-footer");
+  const mobileDashBtn = document.getElementById("mobile-dash-btn");
+  let sidebarOpen = false;
+  let activeIndex = null;
+
+  function isMobile() { return window.innerWidth <= 640; }
+
+  // Build tiles and nav items
+  items.forEach((item, i) => {
+    const t = document.createElement("div");
+    t.className = "tile";
+    t.innerHTML = `<div class="card h-100"><div class="card-body"><p class="card-title">${item.title}</p><p class="card-text">${item.desc}</p></div></div>`;
+    t.onclick = () => openItem(i);
+    tileView.appendChild(t);
+
+    const n = document.createElement("a");
+    n.className = "nav-item-link";
+    n.id = "nav-" + i;
+    n.innerHTML = `${item.title}<span class="nav-tip">${item.desc}</span>`;
+    n.onclick = () => navClick(i);
+    document.getElementById("nav-list").appendChild(n);
+  });
+
+  function showDashboardChrome() {
+    if (isMobile()) {
+      mobileTopbar.style.display = "flex";
+      mobileFooter.style.display = "block";
+      mainTitlebar.style.display = "none";
+      mainFooter.style.display   = "none";
+      mobileDashBtn.style.display = "none";
+    } else {
+      mainTitlebar.style.display = "flex";
+      mainFooter.style.display   = "block";
+    }
+  }
+
+  function showSectionChrome() {
+    mainTitlebar.style.display = "none";
+    mainFooter.style.display   = "none";
+    if (isMobile()) {
+      mobileTopbar.style.display  = "flex";
+      mobileFooter.style.display  = "none";
+      mobileDashBtn.style.display = "inline-block";
+    }
+  }
+
+  function openItem(i) {
+    activeIndex = i;
+    tileView.classList.add("hide");
+    contentView.classList.add("show");
+    document.getElementById("cv-title").textContent = items[i].title;
+    document.getElementById("cv-desc").textContent  = items[i].desc;
+    document.querySelectorAll(".nav-item-link").forEach((el, j) => el.classList.toggle("active", j === i));
+    showSectionChrome();
+    if (isMobile()) {
+      closeSidebar();
+    } else {
+      sidebar.classList.add("open");
+    }
+  }
+
+  function navClick(i) {
+    openItem(i);
+    if (isMobile()) closeSidebar();
+  }
+
+  function goHome() {
+    activeIndex = null;
+    tileView.classList.remove("hide");
+    contentView.classList.remove("show");
+    document.querySelectorAll(".nav-item-link").forEach(el => el.classList.remove("active"));
+    showDashboardChrome();
+    if (isMobile()) {
+      closeSidebar();
+    } else {
+      sidebar.classList.remove("open");
+    }
+  }
+
+  function toggleSidebar() {
+    sidebarOpen = !sidebarOpen;
+    overlay.classList.toggle("show", sidebarOpen);
+    sidebar.classList.toggle("open", sidebarOpen);
+  }
+
+  function closeSidebar() {
+    sidebarOpen = false;
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+  }
+
+  // Handle resize
+  window.addEventListener("resize", () => {
+    if (!isMobile()) {
+      mobileTopbar.style.display = "none";
+      mobileFooter.style.display = "none";
+      overlay.classList.remove("show");
+      sidebarOpen = false;
+      if (activeIndex !== null) {
+        sidebar.classList.add("open");
+        mainTitlebar.style.display = "none";
+        mainFooter.style.display   = "none";
+      } else {
+        sidebar.classList.remove("open");
+        mainTitlebar.style.display = "flex";
+        mainFooter.style.display   = "block";
+      }
+    } else {
+      sidebar.classList.remove("open");
+      sidebarOpen = false;
+      overlay.classList.remove("show");
+      if (activeIndex !== null) {
+        showSectionChrome();
+      } else {
+        showDashboardChrome();
+      }
+    }
+  });
+
+  // Initial state
+  showDashboardChrome();
+</script>
+</body>
+</html>

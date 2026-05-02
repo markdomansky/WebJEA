@@ -64,13 +64,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AWSSDK.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
-      <HintPath>packages\AWSSDK.Core.4.0.3.27\lib\net472\AWSSDK.Core.dll</HintPath>
+      <HintPath>packages\AWSSDK.Core.4.0.4\lib\net472\AWSSDK.Core.dll</HintPath>
     </Reference>
     <Reference Include="AWSSDK.SQS, Version=4.0.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
-      <HintPath>packages\AWSSDK.SQS.4.0.2.23\lib\net472\AWSSDK.SQS.dll</HintPath>
+      <HintPath>packages\AWSSDK.SQS.4.0.2.27\lib\net472\AWSSDK.SQS.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.10.0.5\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.10.0.7\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -92,8 +92,8 @@
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Pipelines, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.IO.Pipelines.10.0.5\lib\net462\System.IO.Pipelines.dll</HintPath>
+    <Reference Include="System.IO.Pipelines, Version=10.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Pipelines.10.0.7\lib\net462\System.IO.Pipelines.dll</HintPath>
     </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -116,11 +116,11 @@
       <HintPath>packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Text.Encodings.Web, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.Text.Encodings.Web.10.0.5\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    <Reference Include="System.Text.Encodings.Web, Version=10.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.Encodings.Web.10.0.7\lib\net462\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
-    <Reference Include="System.Text.Json, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.Text.Json.10.0.5\lib\net462\System.Text.Json.dll</HintPath>
+    <Reference Include="System.Text.Json, Version=10.0.0.7, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.Json.10.0.7\lib\net462\System.Text.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Threading.Tasks.Extensions.4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
@@ -184,14 +184,17 @@
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\jquery-ui-timepicker-addon.css" />
     <Content Include="Content\jquery-ui-timepicker-addon.min.css" />
-    <Content Include="images\android-chrome-192x192.png" />
-    <Content Include="images\android-chrome-512x512.png" />
-    <Content Include="images\apple-touch-icon.png" />
-    <Content Include="images\favicon-16x16.png" />
-    <Content Include="images\favicon-32x32.png" />
-    <Content Include="images\favicon.ico" />
-    <Content Include="images\logo.svg" />
-    <Content Include="images\ps.png" />
+    <Content Include="resources\android-chrome-192x192.png" />
+    <Content Include="resources\android-chrome-512x512.png" />
+    <Content Include="resources\apple-touch-icon.png" />
+    <Content Include="resources\default.css" />
+    <Content Include="resources\favicon-16x16.png" />
+    <Content Include="resources\favicon-32x32.png" />
+    <Content Include="resources\favicon.ico" />
+    <Content Include="resources\loader2.svg" />
+    <Content Include="resources\logo.svg" />
+    <Content Include="resources\main.css" />
+    <Content Include="resources\ps.png" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -233,12 +236,16 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="command.aspx" />
     <Content Include="default.aspx" />
     <Content Include="error.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="images\loader.svg" />
-    <Content Include="main.css" />
-    <Content Include="psoutput.css" />
+    <Content Include="resources\loader.svg" />
+    <Content Include="resources\psoutput.css" />
+    <Content Include="resources\command.css" />
+    <Content Include="resources\startup.js" />
+    <Content Include="resources\validation.js" />
+    <Content Include="resources\purify.min.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -300,7 +307,9 @@
     <Content Include="Scripts\esm\popper.js.map" />
     <Content Include="Scripts\esm\popper-utils.min.js.map" />
     <Content Include="Scripts\esm\popper-utils.js.map" />
-    <Content Include="images\site.webmanifest" />
+    <Content Include="resources\site.webmanifest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
     <Content Include="Content\bootstrap.rtl.css.map" />
     <Content Include="Content\bootstrap.min.css.map" />
@@ -409,9 +418,6 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
-    <Content Include="sidebar.css" />
-    <Content Include="startup.js" />
-    <Content Include="validation.js" />
     <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.1.min.map" />
     <None Include="Web.config" />
@@ -419,7 +425,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AwsSecrets.vb" />
+    <Compile Include="AuthorizationService.vb" />
     <Compile Include="Config.vb" />
+    <Compile Include="CommandService.vb" />
+    <Compile Include="command.aspx.designer.vb">
+      <DependentUpon>command.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="command.aspx.vb">
+      <DependentUpon>command.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="default.aspx.designer.vb">
       <DependentUpon>default.aspx</DependentUpon>
     </Compile>
@@ -439,6 +454,11 @@
     </Compile>
     <Compile Include="GroupFinder.vb" />
     <Compile Include="Helpers.vb" />
+    <Compile Include="IAuthorizationService.vb" />
+    <Compile Include="IConfigProvider.vb" />
+    <Compile Include="IGroupResolver.vb" />
+    <Compile Include="IScriptEngine.vb" />
+    <Compile Include="ITelemetryService.vb" />
     <Compile Include="MenuItem.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -461,12 +481,16 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="PSCmd.vb" />
+    <Compile Include="ConfigCmd.vb" />
     <Compile Include="PSCmdParam.vb" />
     <Compile Include="PSCmdParamVal.vb" />
     <Compile Include="PSEngine.vb" />
     <Compile Include="ApiExecuteHandler.vb" />
     <Compile Include="PSScriptParser.vb" />
-    <Compile Include="PSWebHelper.vb" />
+    <Compile Include="ControlBuilder.vb" />
+    <Compile Include="InputReader.vb" />
+    <Compile Include="OutputRenderer.vb" />
+    <Compile Include="ScriptExecutionService.vb" />
     <Compile Include="Telemetry.vb" />
     <Compile Include="UserInfo.vb" />
   </ItemGroup>
@@ -561,10 +585,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <!-- Stamp AssemblyVersion with FullYear.Month.DayOfMonth.HHMM (UTC) before each build -->
-  <Target Name="BeforeBuild">
-    <Exec Command="powershell -NonInteractive -ExecutionPolicy Bypass -Command &quot;$d=(Get-Date).ToUniversalTime(); $v='{0}.{1}.{2}.{3}' -f $d.Year,$d.Month,$d.Day,($d.Hour*100+$d.Minute); $f='$(ProjectDir)My Project\AssemblyInfo.vb'; (Get-Content $f) -replace 'AssemblyVersion\(.*\)', ('AssemblyVersion(' + [char]34 + $v + [char]34 + ')') | Set-Content $f; Write-Host ('AssemblyVersion set to: '+$v)&quot;" />
-  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
@@ -574,4 +594,8 @@
   </Target>
   <Import Project="packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
   <Import Project="packages\NLog.Schema.6.1.2\build\NLog.Schema.targets" Condition="Exists('packages\NLog.Schema.6.1.2\build\NLog.Schema.targets')" />
+  <Target Name="DownloadDomPurify" BeforeTargets="BeforeBuild">
+    <Message Importance="high" Text="Downloading latest DOMPurify to resources\purify.min.js" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$out = '$(ProjectDir)resources\purify.min.js'; if(-not (Test-Path (Split-Path $out))) { New-Item -ItemType Directory -Path (Split-Path $out) | Out-Null }; try { Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/cure53/DOMPurify/refs/heads/main/dist/purify.min.js' -OutFile $out -ErrorAction Stop } catch { Write-Host 'Warning: failed to download DOMPurify:' $_.Exception.Message }&quot;" />
+  </Target>
 </Project>

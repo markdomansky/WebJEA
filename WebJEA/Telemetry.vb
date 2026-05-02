@@ -4,11 +4,12 @@ Imports System.Threading.Tasks
 Imports System.Web.Script.Serialization
 
 Class Telemetry
+    Implements ITelemetryService
     Private dlog As NLog.Logger = NLog.LogManager.GetCurrentClassLogger()
 
     Private Metrics As New Dictionary(Of String, Object)
 
-    Public Sub Add(key As String, value As Object)
+    Public Sub Add(key As String, value As Object) Implements ITelemetryService.Add
         If Metrics.Keys.Contains(key) Then
             Metrics(key) = value 'update
         Else
@@ -17,15 +18,15 @@ Class Telemetry
 
     End Sub
 
-    Public Sub Clear(key As String)
+    Public Sub Clear(key As String) Implements ITelemetryService.Clear
         Metrics.Clear()
     End Sub
-    Public Sub Remove(key As String)
+    Public Sub Remove(key As String) Implements ITelemetryService.Remove
         If Metrics.Keys.Contains(key) Then
             Metrics.Remove(key)
         End If
     End Sub
-    Public Sub SendTelemetry()
+    Public Sub SendTelemetry() Implements ITelemetryService.SendTelemetry
         dlog.Trace("SendTelemetry")
         'sends whatever telemetry we have
         Dim cts As New CancellationTokenSource
@@ -33,7 +34,7 @@ Class Telemetry
 
     End Sub
 
-    Public Sub AddIDs(DomainSid As String, DomainDNSRoot As String, ScriptID As String, UserID As String, Optional Permitted As Boolean = True)
+    Public Sub AddIDs(DomainSid As String, DomainDNSRoot As String, ScriptID As String, UserID As String, Optional Permitted As Boolean = True) Implements ITelemetryService.AddIDs
 
         Dim oid As String = StringHash256(DomainSid & ";" & DomainDNSRoot.ToUpper())
 #If DEBUG Then
@@ -47,11 +48,11 @@ Class Telemetry
 
     End Sub
 
-    Public Sub AddIsOnload(state As Boolean)
+    Public Sub AddIsOnload(state As Boolean) Implements ITelemetryService.AddIsOnload
         Add("IsOnload", state)
     End Sub
 
-    Public Sub AddRuntime(SecondsRuntime As Single)
+    Public Sub AddRuntime(SecondsRuntime As Single) Implements ITelemetryService.AddRuntime
 
         Add("runtimesec", (Math.Ceiling(SecondsRuntime * 10D) / 10D).ToString()) 'round up to 1 decimal
 

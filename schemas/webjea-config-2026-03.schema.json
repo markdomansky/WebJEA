@@ -11,10 +11,6 @@
       "description": "The page title displayed in WebJEA.",
       "default": "WebJEA"
     },
-    "DefaultCommandId": {
-      "type": ["string", "null"],
-      "description": "The command ID to load by default when no command is specified."
-    },
     "BasePath": {
       "type": ["string", "null"],
       "description": "Default folder path for scripts with relative paths."

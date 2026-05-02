@@ -1,0 +1,140 @@
+﻿/* ── Sidebar Layout ──
+   Uses newlayout.html structure: flexbox sidebar with brand, subnav,
+   scrollable nav-list, and pinned footer. Dark theme, 360px width.
+   Desktop sidebar visible at lg+ (992px), drawer below lg.
+*/
+
+/* ── Sidebar container ── */
+#sidebar {
+    width: 360px;
+    min-width: 360px;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    color: #212529;
+    font-size: 13px;
+    border-right: 1px solid #dee2e6;
+    overflow: hidden;
+}
+
+#sidebar.open {
+    display: flex;
+}
+
+/* Desktop: always show sidebar at lg+ */
+@media (min-width: 992px) {
+    #sidebar {
+        display: flex;
+    }
+}
+
+/* ── Brand ── */
+#sidebar-brand {
+    padding: 14px 16px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #212529;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    line-height: 24px;
+}
+
+/* ── Sub-navigation (Home button row) ── */
+#sidebar-subnav {
+    /*padding: 8px 12px;*/
+    border-bottom: 1px solid #dee2e6;
+    flex-shrink: 0;
+}
+
+#sidebar-subnav .nav-label {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* ── Nav list (scrollable) ── */
+#nav-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 4px 0;
+}
+
+/* ── Nav item links ── */
+.nav-item-link {
+    display: block;
+    padding: 9px 16px;
+    font-size: 13px;
+    color: #495057;
+    border-left: 3px solid transparent;
+    border-bottom: 1px solid #dee2e6;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 20px;
+    position: relative;
+}
+
+.nav-item-link:hover {
+    background: #f8f9fa;
+    color: #212529;
+    border-left-color: #6c757d;
+    transition: all 0.15s ease;
+}
+
+.nav-item-link.active {
+    background: #cfe2ff;
+    color: #084298;
+    border-left-color: #0d6efd;
+    font-weight: 500;
+}
+
+/* ── Nav tooltip (hover description) ── */
+.nav-tip {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #6c757d;
+    width: 200px;
+    z-index: 100;
+    line-height: 1.5;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.nav-item-link:hover .nav-tip {
+    display: block;
+}
+
+/* ── Sidebar footer ── */
+#sidebar-footer {
+    padding: 10px 16px;
+}
+
+#sidebar-footer .footer {
+    font-size: smaller;
+    padding-left: 7px;
+    line-height: 24px;
+    color: #666;
+}
+
+.footer a {
+    line-height: 24px;
+}
+
+#btnRun {
+    margin-top: 16px;
+}
+
+#divParameters .checkbox {
+    margin-top: 16px;
+}

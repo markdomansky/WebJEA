@@ -73,24 +73,13 @@ Public Class ApiExecuteHandler
                 End If
             End If
 
-            ' Load config (same pattern as default.aspx.vb)
-            Dim grpfinder As New GroupFinder
-            Dim cfg As Config
-
-            Dim configstr As String = GetFileContent(My.Settings("configfile"))
+            ' Load config via CommandService
+            Dim cmdSvc As New CommandService
             Try
-                cfg = JsonConvert.DeserializeObject(Of Config)(configstr)
+                cmdSvc.LoadConfig(My.Settings("configfile"), New GroupFinder)
             Catch ex As Exception
-                dlog.Error("API: Could not read config file: " & ex.Message)
+                dlog.Error("API: " & ex.Message & If(ex.InnerException IsNot Nothing, ": " & ex.InnerException.Message, ""))
                 WriteResponse(context, 500, "Internal server error: configuration failure.")
-                Return
-            End Try
-
-            Try
-                cfg.InitGroups(grpfinder)
-            Catch ex As Exception
-                dlog.Error("API: Could not initialize groups: " & ex.Message)
-                WriteResponse(context, 500, "Internal server error: group initialization failure.")
                 Return
             End Try
 
@@ -98,14 +87,25 @@ Public Class ApiExecuteHandler
             Dim uinfo As New UserInfo(context.User)
 
             ' Check authorization
-            If Not cfg.IsCommandAvailable(uinfo, cmdid) Then
+            If Not cmdSvc.Auth.IsCommandAvailable(uinfo, cmdid) Then
                 dlog.Warn("API: User " & uinfo.UserName & " denied access to cmdid " & cmdid)
                 WriteResponse(context, 403, "Access denied. Command not available or insufficient permissions.")
                 Return
             End If
 
-            cfg.Init(cmdid)
-            Dim cmd As PSCmd = cfg.GetCommand(uinfo, cmdid)
+            Dim runOnload As Boolean = False
+            Dim runOnloadToken As JToken = Nothing
+            If requestObj.TryGetValue("runOnload", runOnloadToken) AndAlso runOnloadToken.Type = JTokenType.Boolean Then
+                runOnload = runOnloadToken.Value(Of Boolean)()
+            End If
+
+            Dim verbose As Boolean = False
+            Dim verboseToken As JToken = Nothing
+            If requestObj.TryGetValue("verbose", verboseToken) AndAlso verboseToken.Type = JTokenType.Boolean Then
+                verbose = verboseToken.Value(Of Boolean)()
+            End If
+
+            Dim cmd As ConfigCmd = cmdSvc.GetCommand(uinfo, cmdid)
 
             If cmd Is Nothing Then
                 dlog.Error("API: Command " & cmdid & " not found after authorization check")
@@ -113,12 +113,23 @@ Public Class ApiExecuteHandler
                 Return
             End If
 
+            Dim scriptCmd As PSCmd = If(runOnload, cmdSvc.GetOnloadCmd(cmdid), cmdSvc.GetScriptCmd(cmdid))
+
+            If scriptCmd Is Nothing Then
+                If runOnload Then
+                    WriteResponse(context, 400, "No onload script configured for cmdid.")
+                Else
+                    WriteResponse(context, 400, "No script configured for cmdid.")
+                End If
+                Return
+            End If
+
             ' Validate and build parameters
             Dim psParams As New Dictionary(Of String, Object)
             Dim validationErrors As New List(Of String)
 
-            If cmd.Parameters IsNot Nothing Then
-                For Each param As PSCmdParam In cmd.Parameters
+            If scriptCmd IsNot Nothing AndAlso scriptCmd.Parameters IsNot Nothing Then
+                For Each param As PSCmdParam In scriptCmd.Parameters
                     ' Handle WEBJEA* internal parameters
                     If param.Name.ToUpper().StartsWith("WEBJEA") Then
                         If param.Name.ToUpper() = "WEBJEAUSERNAME" Then
@@ -172,25 +183,20 @@ Public Class ApiExecuteHandler
             End If
 
             ' Execute the command
-            Dim ps As New PSEngine
-            ps.Script = cmd.Script
-            ps.LogParameters = cmd.LogParameters
-            ps.PipeToOutString = False
-            ps.Parameters = psParams
+            Dim scriptSvc As New ScriptExecutionService
+            Dim ps = scriptSvc.Execute(scriptCmd.Script, psParams, scriptCmd.LogParameters, uinfo.UserName, context.Request.UserHostName, verbose:=verbose, pipeToOutString:=False)
 
-            'Set WebJEA context for the PowerShell runspace
-            ps.WebJEAUserName = uinfo.UserName
-            ps.WebJEAHostName = context.Request.UserHostName
+            Const NLOGPREFIX As String = "WEBJEA:"
 
-            ps.Run()
-
-            ' Build messages from streams (info, verbose, warning, error, debug — in order)
+            ' Build messages from all streams in order; filter server-side log directives
             Dim messages As New JArray
-            Dim streamData As Queue(Of PSEngine.OutputData) = ps.getOutputData()
+            Dim streamData As Queue(Of PSEngine.OutputData) = ps.GetOutputData()
             While streamData.Count > 0
                 Dim item As PSEngine.OutputData = streamData.Dequeue()
-                ' Skip output-type items, those go to the output field
-                If item.OutputType = PSEngine.OutputType.Output Then Continue While
+                If item.Content.StartsWith(NLOGPREFIX) Then
+                    dlog.Info(item.Content.Substring(NLOGPREFIX.Length).Trim())
+                    Continue While
+                End If
                 Dim msgObj As New JObject
                 msgObj("stream") = item.OutputType.ToString().ToLower()
                 msgObj("message") = item.Content
@@ -215,7 +221,7 @@ Public Class ApiExecuteHandler
             Dim statusCode As Integer = If(ps.HasErrors, 206, 200)
             Dim statusMessage As String = If(ps.HasErrors, "Completed with errors in stream.", "OK")
 
-            dlog.Info("API: Executed|" & cmdid & "|User=" & uinfo.UserName & "|Status=" & statusCode & "|Runtime=" & ps.Runtime)
+            dlog.Info("API: Executed|" & cmdid & "|Onload=" & runOnload.ToString() & "|User=" & uinfo.UserName & "|Status=" & statusCode & "|Runtime=" & ps.Runtime)
 
             WriteResponse(context, statusCode, statusMessage, output, Nothing, messages)
             ps = Nothing

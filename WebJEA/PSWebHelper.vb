@@ -164,6 +164,9 @@
 
         'generate string inputs
         Dim objLabel As Label = NewControlLabel(param.Name)
+        If Not String.IsNullOrWhiteSpace(param.HelpMessage) Then
+            objLabel.Text = param.HelpMessage
+        End If
 
 
         Dim objControl As New TextBox
@@ -192,7 +195,7 @@
 
         'label, reqopt, control into row
         objRow.Controls.Add(objLabel)
-        If Not String.IsNullOrWhiteSpace(param.HelpMessage) Then AddMessageHelp(param.HelpMessage, objRow)
+        'If Not String.IsNullOrWhiteSpace(param.HelpMessage) Then AddMessageHelp(param.HelpMessage, objRow)
         If param.IsMandatory Then AddMessageRequired(objRow)
         objRow.Controls.Add(objControl)
         '   then help
@@ -555,21 +558,38 @@
                 valctrl.ControlToValidate = param.FieldName
                 retctrls.Add(valctrl)
             ElseIf valobj.Type = PSCmdParamVal.ValType.Range Then
-                Dim valctrl As New RangeValidator()
-                valctrl.MinimumValue = valobj.LowerLimit
-                valctrl.MaximumValue = valobj.UpperLimit
-                valctrl.ErrorMessage = "Not in allowed range (" & valobj.LowerLimit & "-" & valobj.UpperLimit & ")"
-                valctrl.CssClass = "valmsg"
-                If param.ParamType = PSCmdParam.ParameterType.PSInt Then
-                    valctrl.Type = ValidationDataType.Integer
-                ElseIf param.ParamType = PSCmdParam.ParameterType.PSFloat Then 'single/double
-                    valctrl.Type = ValidationDataType.Double
-                ElseIf param.ParamType = PSCmdParam.ParameterType.PSDate Then
-                    valctrl.Type = ValidationDataType.Date
+                If param.IsMultiValued Then
+                    Dim valctrl As New CustomValidator
+                    valctrl.ClientValidationFunction = "validateRangeMultiline"
+                    valctrl.ErrorMessage = "Each value must be in allowed range (" & valobj.LowerLimit & "-" & valobj.UpperLimit & ")"
+                    valctrl.CssClass = "valmsg"
+                    valctrl.Attributes("data-min") = valobj.LowerLimit
+                    valctrl.Attributes("data-max") = valobj.UpperLimit
+                    If param.ParamType = PSCmdParam.ParameterType.PSFloat Then
+                        valctrl.Attributes("data-type") = "float"
+                    Else
+                        valctrl.Attributes("data-type") = "integer"
+                    End If
+                    valctrl.SetFocusOnError = True
+                    valctrl.ControlToValidate = param.FieldName
+                    retctrls.Add(valctrl)
+                Else
+                    Dim valctrl As New RangeValidator()
+                    valctrl.MinimumValue = valobj.LowerLimit
+                    valctrl.MaximumValue = valobj.UpperLimit
+                    valctrl.ErrorMessage = "Not in allowed range (" & valobj.LowerLimit & "-" & valobj.UpperLimit & ")"
+                    valctrl.CssClass = "valmsg"
+                    If param.ParamType = PSCmdParam.ParameterType.PSInt Then
+                        valctrl.Type = ValidationDataType.Integer
+                    ElseIf param.ParamType = PSCmdParam.ParameterType.PSFloat Then 'single/double
+                        valctrl.Type = ValidationDataType.Double
+                    ElseIf param.ParamType = PSCmdParam.ParameterType.PSDate Then
+                        valctrl.Type = ValidationDataType.Date
+                    End If
+                    valctrl.SetFocusOnError = True
+                    valctrl.ControlToValidate = param.FieldName
+                    retctrls.Add(valctrl)
                 End If
-                valctrl.SetFocusOnError = True
-                valctrl.ControlToValidate = param.FieldName
-                retctrls.Add(valctrl)
             ElseIf valobj.Type = PSCmdParamVal.ValType.Count Then
                 Dim valctrl As New CustomValidator
                 valctrl.ClientValidationFunction = "validateCollection"
@@ -583,6 +603,13 @@
                 retctrls.Add(valctrl)
             ElseIf valobj.Type = PSCmdParamVal.ValType.SetCol Then
                 'do nothing, this is handled by forcing a SELECT field
+            ElseIf valobj.Type = PSCmdParamVal.ValType.NotNull OrElse valobj.Type = PSCmdParamVal.ValType.NotNullOrEmpty Then
+                Dim valctrl As New RequiredFieldValidator()
+                valctrl.ErrorMessage = "Required Field"
+                valctrl.CssClass = "valmsg"
+                valctrl.SetFocusOnError = True
+                valctrl.ControlToValidate = param.FieldName
+                retctrls.Add(valctrl)
             Else
                 dlog.Error("Unknown Validation Rule: " & valobj.Rule)
 
@@ -764,7 +791,7 @@
         Dim objLabel As New Label
 
         'text to display in the label
-        Dim strLabel As String = "Verbose Output"
+        Dim strLabel As String = "Verbose"
         Dim objName As HtmlControl = NewControl("span", "form-label", strLabel)
 
         'generate the actual control
@@ -774,12 +801,12 @@
         objControl.Checked = False
 
         'Add help message
-        Dim helpMsg As HtmlControl = NewControl("span", "help-message", "Enable verbose output from script execution (admin only)")
+        'Dim helpMsg As HtmlControl = NewControl("span", "help-message", "Enable verbose output from script execution (admin only)")
 
         'control and text go inside the label for checkboxes
         objLabel.Controls.Add(objControl)
         objLabel.Controls.Add(objName)
-        objLabel.Controls.Add(helpMsg)
+        'objLabel.Controls.Add(helpMsg)
 
         'label goes inside row
         objRow.Controls.Add(objLabel)

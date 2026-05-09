@@ -10,7 +10,7 @@
     Alternatively, use -UseGitHubBuild to download the latest release from GitHub instead.
 
     Use -DoNotRunDeploy to stage the package on the VM (transfer and extract) without
-    executing Deploy.ps1. Useful for validating the staging pipeline or preparing a VM
+    executing DeployV3.ps1. Useful for validating the staging pipeline or preparing a VM
     for manual deployment.
 
 .PARAMETER ConfigPath
@@ -31,10 +31,21 @@
     .\Deploy-WebJEA.ps1 -ConfigPath .\custom-config.json
 
 .PARAMETER DoNotRunDeploy
-    Stage the package on the VM (transfer and extract) without executing Deploy.ps1.
+    Stage the package on the VM (transfer and extract) without executing DeployV3.ps1.
+
+.PARAMETER ResetVM
+    Revert the Web Server VM to the baseline snapshot before deploying.
+    When specified, the VM is stopped, reverted to the snapshot defined in config.json (HyperV.SnapshotName),
+    and started fresh before the deployment begins.
 
 .EXAMPLE
     .\Deploy-WebJEA.ps1 -DoNotRunDeploy
+
+.EXAMPLE
+    .\TestDeploy.ps1 -ResetVM
+
+.EXAMPLE
+    .\TestDeploy.ps1 -ResetVM -UseGitHubBuild
 
 .NOTES
     Requires Hyper-V PowerShell module and psake module.
@@ -54,10 +65,13 @@ param(
     [switch]$UseGitHubBuild,
 
     [Parameter()]
-    [switch]$SkipBuild,
+    [switch]$QuickBuild,
 
     [Parameter()]
-    [switch]$DoNotRunDeploy
+    [switch]$DoNotRunDeploy,
+
+    [Parameter()]
+    [switch]$ResetVM
 )
 
 $ErrorActionPreference = 'Stop'
@@ -68,15 +82,18 @@ if (-not (Get-Module -ListAvailable -Name psake)) {
 }
 Import-Module psake -ErrorAction Stop
 
+$taskList = if ($ResetVM) { @('RevertVMs', 'Deploy') } else { @('Deploy') }
+
 $psakeParams = @{
     buildFile  = "$PSScriptRoot\integration.psake.ps1"
-    taskList   = @('Deploy')
+    taskList   = $taskList
     properties = @{
         configPath     = $ConfigPath
         helpersPath    = Join-Path $PSScriptRoot 'Helpers'
         useGitHubBuild = [bool]$UseGitHubBuild
-        skipBuild      = [bool]$SkipBuild
+        quickBuild     = [bool]$QuickBuild
         doNotRunDeploy = [bool]$DoNotRunDeploy
+        resetVM        = [bool]$ResetVM
     }
     nologo     = $true
 }

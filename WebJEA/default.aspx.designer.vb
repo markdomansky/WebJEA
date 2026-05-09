@@ -66,4 +66,13 @@ Partial Public Class _default
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblVersionDash As Global.System.Web.UI.WebControls.Literal
+
+    '''<summary>
+    '''divDashboardHtml control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents divDashboardHtml As Global.System.Web.UI.HtmlControls.HtmlGenericControl
 End Class

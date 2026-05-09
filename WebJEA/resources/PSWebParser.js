@@ -247,7 +247,7 @@
         el.innerHTML = '<img src="/resources/loader.svg" alt="Loading..." width="150" />';
     }
 
-    function callApi(cmdid, params, runOnload, verbose, loaderEl, outputEl) {
+    function callApi(cmdid, params, runOnload, verbose, loaderEl, outputEl, completeCallback) {
         showLoader(loaderEl);
 
         var body = {
@@ -272,6 +272,11 @@
         })
         .catch(function (err) {
             outputEl.innerHTML = purify('<span class="pserror">Request failed: ' + escapeHtml(String(err)) + '</span><br/>');
+        })
+        .finally(function () {
+            try {
+                if (typeof completeCallback === 'function') completeCallback();
+            } catch (e) { }
         });
     }
 
@@ -290,13 +295,30 @@
         var params = collectFormParams();
         var verbose = collectVerbose();
 
+        // Find the submit button and disable it to prevent duplicate clicks.
+        var submitBtn = document.getElementById('btnRun') || document.querySelector('#frmMain button[type="button"].btn-primary, #frmMain input[type="submit"], #frmMain button[type="submit"]');
+        if (submitBtn) {
+            try {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('disabled');
+            } catch (e) { }
+        }
+
         var panelOutput = document.getElementById('panelOutput');
         var consoleOutput = document.getElementById('consoleOutput');
 
         if (panelOutput) panelOutput.classList.remove('collapse');
         if (consoleOutput) {
             window.location.hash = '#panelOutput';
-            callApi(cmdid, params, false, verbose, consoleOutput, consoleOutput);
+            callApi(cmdid, params, false, verbose, consoleOutput, consoleOutput, function () {
+                // Re-enable the submit button when the API call finishes (success or failure).
+                if (submitBtn) {
+                    try {
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('disabled');
+                    } catch (e) { }
+                }
+            });
         }
 
         return false;

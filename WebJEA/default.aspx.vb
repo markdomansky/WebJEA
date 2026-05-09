@@ -52,13 +52,13 @@
 
         'show dashboard - command tiles for all commands available to the user
         Dim menuItems As List(Of MenuItem) = cmdSvc.Auth.GetMenu(uinfo)
-        Dim sbTiles As New System.Text.StringBuilder
-        'If DashboardHtml is provided in config, display it above the tiles
+        'If DashboardHtml is provided in config, display it above the tiles in its own container.
+        'BalanceHtmlFragment ensures unclosed tags are closed and excess closing tags are discarded
+        'so the fragment cannot leak structure into the card grid below.
         If Not String.IsNullOrEmpty(cmdSvc.Config.DashboardHtml) Then
-            sbTiles.Append("<p class=""dashboard-html"">")
-            sbTiles.Append(cmdSvc.Config.DashboardHtml)
-            sbTiles.Append("</p>")
+            divDashboardHtml.InnerHtml = "<div class=""card border-0 rounded-0 w-100 dashboard-html""><div class=""card-body"">" & BalanceHtmlFragment(cmdSvc.Config.DashboardHtml) & "</div></div>"
         End If
+        Dim sbTiles As New System.Text.StringBuilder
         For Each mi As MenuItem In menuItems
             sbTiles.Append("<div class=""tile"">")
             sbTiles.Append("<a class=""card h-100 text-decoration-none tile-card"" href=""")
@@ -88,6 +88,54 @@
 
     End Sub
 
+
+    ' Closes any unclosed HTML tags and discards excess closing tags so that
+    ' an arbitrary HTML snippet cannot break the surrounding page structure.
+    Private Function BalanceHtmlFragment(html As String) As String
+        Dim voidTags As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase) From {
+            "area", "base", "br", "col", "embed", "hr", "img", "input",
+            "link", "meta", "param", "source", "track", "wbr"
+        }
+        Dim stack As New Stack(Of String)()
+        Dim result As New System.Text.StringBuilder()
+        Dim tagRx As New System.Text.RegularExpressions.Regex(
+            "<(/?)([a-zA-Z][a-zA-Z0-9]*)([^>]*)(/?)>",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase Or
+            System.Text.RegularExpressions.RegexOptions.Compiled)
+        Dim pos As Integer = 0
+        For Each m As System.Text.RegularExpressions.Match In tagRx.Matches(html)
+            result.Append(html.Substring(pos, m.Index - pos))
+            pos = m.Index + m.Length
+            Dim isClosing As Boolean = m.Groups(1).Value = "/"
+            Dim tagName As String = m.Groups(2).Value.ToLowerInvariant()
+            Dim isSelfClosing As Boolean = m.Groups(4).Value = "/" OrElse voidTags.Contains(tagName)
+            If isClosing Then
+                If stack.Count > 0 AndAlso stack.Peek() = tagName Then
+                    stack.Pop()
+                    result.Append(m.Value)
+                ElseIf stack.Contains(tagName) Then
+                    ' Close intermediate open tags and then this one
+                    Do While stack.Count > 0
+                        Dim top As String = stack.Pop()
+                        result.Append("</" & top & ">")
+                        If top = tagName Then Exit Do
+                    Loop
+                End If
+                ' else: excess closing tag with no matching open – discard it
+            ElseIf isSelfClosing Then
+                result.Append(m.Value)
+            Else
+                stack.Push(tagName)
+                result.Append(m.Value)
+            End If
+        Next
+        If pos < html.Length Then result.Append(html.Substring(pos))
+        ' Close any tags still open at the end of the fragment
+        Do While stack.Count > 0
+            result.Append("</" & stack.Pop() & ">")
+        Loop
+        Return result.ToString()
+    End Function
 
     Private Function ReadGetPost(param As String, DefaultValue As String) As String
         If Page.Request.Form(param) IsNot Nothing Then

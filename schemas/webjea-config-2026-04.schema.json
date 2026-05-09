@@ -4,7 +4,10 @@
   "title": "WebJEA Configuration",
   "description": "Configuration schema for WebJEA - a web-based JEA execution framework.",
   "type": "object",
-  "required": ["Title", "Commands"],
+  "required": [
+    "Title",
+    "Commands"
+  ],
   "properties": {
     "Title": {
       "type": "string",
@@ -12,7 +15,10 @@
       "default": "WebJEA"
     },
     "BasePath": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "Default folder path for scripts with relative paths."
     },
     "LogParameters": {
@@ -34,7 +40,10 @@
       "default": true
     },
     "DashboardHtml": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "An HTML String displayed on the landing page. Can be used for instructions, help text, or branding."
     },
     "HtmlLanguage": {
@@ -46,6 +55,20 @@
       "type": "boolean",
       "description": "Show verbose output when commands are called by global permitted group.",
       "default": true
+    },
+    "DefaultCommandId": {
+      "type": "string",
+      "description": "OBSOLETE as of v2026.5.2.1922. The ID of the command to display by default.",
+      "deprecated": true
+    },
+    "RenderMode": {
+      "type": "string",
+      "description": "Default rendering mode for command output. Allowed values: 'Legacy' or 'Markdown'.",
+      "enum": [
+        "Legacy",
+        "Markdown"
+      ],
+      "default": "Legacy"
     },
     "Commands": {
       "type": "array",
@@ -59,40 +82,69 @@
   "definitions": {
     "Command": {
       "type": "object",
-      "required": ["Id"],
+      "required": [
+        "Id"
+      ],
       "properties": {
         "Id": {
           "type": "string",
           "description": "Unique identifier for this command. Used in URL parameters (?id=<value>)."
         },
         "DisplayName": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "description": "Friendly name presented to users."
         },
         "Synopsis": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "description": "Description text for the landing page. Can contain HTML.  Will be displayed on the dashboard below the command title."
         },
         "OnloadScript": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "description": "Script to execute on page load. Should not require parameters and should run quickly."
         },
         "Script": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "description": "Script to parse for form generation and execution."
         },
         "LogParameters": {
-          "type": ["boolean", "null"],
+          "type": [
+            "boolean",
+            "null"
+          ],
           "description": "Override config-level LogParameters for this command."
         },
         "PermittedGroups": {
           "description": "Groups or users with access to this command. Use '*' for all users. Format: domain\\group.",
           "oneOf": [
-            { "type": "string" },
+            {
+              "type": "string"
+            },
             {
               "type": "array",
-              "items": { "type": "string" }
+              "items": {
+                "type": "string"
+              }
             }
+          ]
+        },
+        "RenderMode": {
+          "type": "string",
+          "description": "Rendering mode for output of this command. Allowed values: 'Legacy' or 'Markdown'.",
+          "enum": [
+            "Legacy",
+            "Markdown"
           ]
         }
       }

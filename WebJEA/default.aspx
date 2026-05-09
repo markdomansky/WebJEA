@@ -34,6 +34,7 @@
         <h1 id="dashboard-header">
             <asp:Label ID="lblTitleDash" runat="server" Text="" CssClass="dashboard-title"></asp:Label>
         </h1>
+        <div id="divDashboardHtml" runat="server" clientidmode="static"></div>
         <main>
         <!-- ── MAIN CONTENT ── -->
         <div id="divTileView" runat="server" clientidmode="static" class="tile-grid"></div>

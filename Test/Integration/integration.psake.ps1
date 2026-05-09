@@ -6,6 +6,7 @@ Properties {
     $dcStartupDelay = 60
     $timeout = 300
     $doNotRunDeploy = $false
+    $resetVM = $false
 }
 
 # ---------------------------------------------------------------------------
@@ -17,8 +18,9 @@ Task Init {
     $script:helpersPath = $helpersPath
     $script:skipWindowsUpdate = $SkipWindowsUpdate
     $script:UseGitHubBuild = $UseGitHubBuild
-    $script:skipBuild = $SkipBuild
+    $script:quickBuild = $QuickBuild
     $script:doNotRunDeploy = $DoNotRunDeploy
+    $script:resetVM = $ResetVM
     Assert ($script:configPath -and (Test-Path $script:configPath)) "ConfigPath '$script:configPath' not found."
     Assert ($script:helpersPath -and (Test-Path $script:helpersPath)) "HelpersPath '$script:helpersPath' not found."
 
@@ -36,9 +38,10 @@ Task Init {
     Write-Log "  Config Path:          $script:configPath"
     Write-Log "  Helpers Path:         $script:helpersPath"
     Write-Log "  Use GitHub Build:     $script:useGitHubBuild"
-    Write-Log "  Skip Build:           $script:skipBuild"
+    Write-Log "  Quick Build:          $script:quickBuild"
     Write-Log "  Skip Windows Update:  $script:skipWindowsUpdate"
     Write-Log "  Do Not Run Deploy:    $script:doNotRunDeploy"
+    Write-Log "  Reset VM:             $script:resetVM"
     Write-Log "  BuildOutputDir:       $script:buildOutputDir"
     Write-Log "  BuildInfoFile:        $script:buildInfoFile"
     Write-Log "  Tags:                 $(if ($script:tags.Count -gt 0) { ($script:tags -join ', ') } else { '(none)' })"
@@ -78,7 +81,7 @@ Task StartVM_DC -Depends Init {
     & $script:helpersPath\StartVM.ps1 -VMName $script:dcVMName -StartupDelay $script:dcStartupDelay -TimeoutSeconds $script:timeout
 }
 
-Task StartVM_Web -Depends StartVM_DC, RevertSnapshot_Web {
+Task StartVM_Web -Depends StartVM_DC {
     write-log 'Starting Web Server...'
     & $script:helpersPath\StartVM.ps1 -VMName $script:webVMName -StartupDelay 0 -TimeoutSeconds $script:timeout
 }
@@ -134,20 +137,23 @@ Task StopVM_Web -Depends Init {
 }
 
 Task ShutdownVM_Web -Depends Init {
-    Write-Log "Stopping Web Server VM '$script:webVMName' for snapshot maintenance..."
-    #request shutdown
-    Stop-VM -Name $script:webVMName -TurnOff
+    Write-Log "Gracefully shutting down Web Server VM '$script:webVMName'..."
+    Stop-VM -Name $script:webVMName -ErrorAction SilentlyContinue
 
     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
     while ((Get-VM -Name $script:webVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 300)
     {
         Start-Sleep -Seconds 5
     }
-    #force shutdown
-    Stop-VM -Name $script:webVMName -TurnOff -Force
-    while ((Get-VM -Name $script:webVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 450)
+
+    if ((Get-VM -Name $script:webVMName).State -ne 'Off')
     {
-        Start-Sleep -Seconds 5
+        Write-Log 'Graceful shutdown timed out. Forcing power off...' -Level Warning
+        Stop-VM -Name $script:webVMName -TurnOff -Force
+        while ((Get-VM -Name $script:webVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 450)
+        {
+            Start-Sleep -Seconds 5
+        }
     }
 
     if ((Get-VM -Name $script:webVMName).State -ne 'Off')
@@ -155,7 +161,7 @@ Task ShutdownVM_Web -Depends Init {
         Write-Log "Failed to stop Web Server VM '$script:webVMName' within timeout" -Level Error
         throw "Unable to stop Web Server VM '$script:webVMName'"
     }
-    Write-Log 'Web Server VM stopped successfully' -Level Success
+    Write-Log 'Web Server VM shut down successfully' -Level Success
 }
 
 Task StopVMs -Depends StopVM_Web, StopVM_DC {}
@@ -165,7 +171,7 @@ Task StopVMs -Depends StopVM_Web, StopVM_DC {}
 # ---------------------------------------------------------------------------
 #TODO Create a certificate on the remote server, update the settings file with the thumbprint
 
-Task CleanBuildOutput -Depends Init -PreCondition { -not $script:useGithubBuild } {
+Task CleanBuildOutput -Depends Init -PreCondition { -not $script:useGithubBuild -and -not $script:quickBuild } {
     if (-not (Test-Path $script:buildInfoFile)) { New-Item -Path $script:buildOutputDir -ItemType directory -Force | Out-Null }
 
     Write-Log "Cleaning existing build output directory: $script:buildOutputDir"
@@ -173,7 +179,7 @@ Task CleanBuildOutput -Depends Init -PreCondition { -not $script:useGithubBuild 
 
 }
 
-Task BuildPackage -Depends CleanBuildOutput -PreCondition { -not $script:useGithubBuild -and -not $script:skipBuild } {
+Task BuildPackage -Depends CleanBuildOutput -PreCondition { -not $script:useGithubBuild -and -not $script:quickBuild } {
     $buildScriptPath = Resolve-Path -LiteralPath (Join-Path (Split-Path $script:configPath) '..\..\.github\workflows')
     $buildScriptFilePath = "$buildScriptPath\build.ps1"
     $outputDir = $script:buildOutputDir
@@ -197,7 +203,23 @@ Task BuildPackage -Depends CleanBuildOutput -PreCondition { -not $script:useGith
     Pop-Location
 }
 
-Task ResolveBuildPackage -Depends Init, BuildPackage {
+Task QuickCopyDeployScript -Depends Init -PreCondition { $script:quickBuild -and -not $script:useGitHubBuild } {
+    $releaseFilesPath = Resolve-Path -LiteralPath (Join-Path (Split-Path $script:configPath) '..\..\ReleaseFiles')
+    $deployScriptSource = Join-Path $releaseFilesPath 'Deploy.ps1'
+    Assert (Test-Path $deployScriptSource) "Deploy.ps1 not found at: $deployScriptSource"
+
+    if (-not (Test-Path $script:buildOutputDir)) {
+        New-Item -Path $script:buildOutputDir -ItemType Directory -Force | Out-Null
+    }
+
+    Write-Log 'Quick Build: Copying ReleaseFiles to build folder...'
+    Write-Log "  Source:      $releaseFilesPath"
+    Write-Log "  Destination: $script:buildOutputDir"
+    Copy-Item -Path (Join-Path $releaseFilesPath '*') -Destination $script:buildOutputDir -Recurse -Force
+    Write-Log 'ReleaseFiles copied successfully' -Level Success
+}
+
+Task ResolveBuildPackage -Depends Init, BuildPackage, QuickCopyDeployScript {
     if ($script:useGitHubBuild)
     {
         Write-Log 'Using GitHub release (via -UseGitHubBuild)'
@@ -244,11 +266,25 @@ Task ResolveSettings -Depends Init {
     {
         $settingsSourcePath = Join-Path (Split-Path $script:configPath) $settingsSourcePath
     }
-
     Assert (Test-Path $settingsSourcePath) "Settings file not found: $settingsSourcePath"
-
     $script:settingsSourcePath = $settingsSourcePath
     Write-Log "Using settings file: $settingsSourcePath"
+
+    $script:deployMode = if ($script:config.Deployment.Mode) { $script:config.Deployment.Mode } else { 'Root' }
+    Write-Log "Deployment mode: $script:deployMode"
+
+    if ($script:deployMode -eq 'Both')
+    {
+        $subPath = $script:config.Deployment.SubModuleLocalSettingsPath
+        Assert $subPath "Deployment.SubModuleLocalSettingsPath is required when Mode is 'Both'"
+        if (-not [System.IO.Path]::IsPathRooted($subPath))
+        {
+            $subPath = Join-Path (Split-Path $script:configPath) $subPath
+        }
+        Assert (Test-Path $subPath) "Sub-module settings file not found: $subPath"
+        $script:subModuleSettingsSourcePath = $subPath
+        Write-Log "Using sub-module settings file: $subPath"
+    }
 }
 
 Task StageDeployment -Depends GetCredential, StartVMs, ResolveBuildPackage, ResolveSettings {
@@ -310,10 +346,22 @@ Task StageDeployment -Depends GetCredential, StartVMs, ResolveBuildPackage, Reso
         Copy-Item -Path $script:settingsSourcePath -Destination $vmSettingsPath -ToSession $session -Force
         Write-Log 'Settings file copied successfully' -Level Success
 
+        # Transfer sub-module settings if deploying Both
+        $vmSubModuleSettingsPath = $null
+        if ($script:deployMode -eq 'Both')
+        {
+            $subSettingsFileName = $script:config.Deployment.SubModuleSettingsFileName
+            Assert $subSettingsFileName "Deployment.SubModuleSettingsFileName is required when Mode is 'Both'"
+            $vmSubModuleSettingsPath = Join-Path $vmExtractPath $subSettingsFileName
+            Write-Log 'Copying sub-module settings file to VM...'
+            Copy-Item -Path $script:subModuleSettingsSourcePath -Destination $vmSubModuleSettingsPath -ToSession $session -Force
+            Write-Log 'Sub-module settings file copied successfully' -Level Success
+        }
+
         # Extract package and locate Deploy.ps1 on VM
         Write-Log 'Extracting deployment package on VM...'
         $staged = Invoke-Command -Session $session -ScriptBlock {
-            param($DeployFolder, $ZipPath, $SettingsPath, $SettingsFileName)
+            param($DeployFolder, $ZipPath, $SettingsPath, $SettingsFileName, $SubModuleSettingsPath, $SubModuleSettingsFileName, $DeployMode)
             $ErrorActionPreference = 'Stop'
 
             Write-Host "Extracting $ZipPath to $DeployFolder"
@@ -329,14 +377,31 @@ Task StageDeployment -Depends GetCredential, StartVMs, ResolveBuildPackage, Reso
             Write-Host "Copying settings file $SettingsPath to $targetSettingsPath"
             Copy-Item -Path $SettingsPath -Destination $targetSettingsPath -Force
 
-            return @{
-                DeployRoot   = $deployRoot
-                SettingsPath = $targetSettingsPath
+            $targetSubPath = $null
+            if ($DeployMode -eq 'Both')
+            {
+                $targetSubPath = Join-Path $deployRoot $SubModuleSettingsFileName
+                Write-Host "Copying sub-module settings file $SubModuleSettingsPath to $targetSubPath"
+                Copy-Item -Path $SubModuleSettingsPath -Destination $targetSubPath -Force
             }
-        } -ArgumentList $vmDeployFolder, $vmZipPath, $vmSettingsPath, $script:config.Deployment.SettingsFileName
 
-        $script:stagedDeployRoot   = $staged.DeployRoot
-        $script:stagedSettingsPath = $staged.SettingsPath
+            return @{
+                DeployRoot              = $deployRoot
+                SettingsPath            = $targetSettingsPath
+                SubModuleSettingsPath   = $targetSubPath
+            }
+        } -ArgumentList $vmDeployFolder, $vmZipPath, $vmSettingsPath, $script:config.Deployment.SettingsFileName, $vmSubModuleSettingsPath, $script:config.Deployment.SubModuleSettingsFileName, $script:deployMode
+
+        $script:stagedDeployRoot            = $staged.DeployRoot
+        $script:stagedSettingsPath          = $staged.SettingsPath
+        $script:stagedSubModuleSettingsPath = $staged.SubModuleSettingsPath
+
+        if ($script:quickBuild) {
+            Write-Log 'Quick Build: Overriding ReleaseFiles in VM deploy root...'
+            $localReleaseContents = Join-Path $script:buildOutputDir '*'
+            Copy-Item -Path $localReleaseContents -Destination $script:stagedDeployRoot -ToSession $session -Recurse -Force
+            Write-Log 'ReleaseFiles overridden successfully' -Level Success
+        }
 
         Write-Log "Staging complete. Deploy root on VM: $script:stagedDeployRoot" -Level Success
     }
@@ -369,7 +434,14 @@ Task RunDeployScript -Depends GetCredential, StageDeployment -PreCondition { -no
             if (-not $deployScript) { throw "Deploy.ps1 not found in: $DeployRoot" }
 
             Write-Host "Executing $($deployScript.FullName)..."
-            $deployResult = & $deployScript.FullName -SettingsFile $SettingsPath -Verbose
+            $deployArgs = @{
+                SettingsFile = $SettingsPath
+            }
+
+            # Ensure this process allows running the deploy script (temporary for this process only)
+            Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+
+            $deployResult = & $deployScript.FullName @deployArgs -Verbose
 
             return @{
                 Success      = $true
@@ -424,7 +496,7 @@ Task RevertSnapshot_Web -Depends StopVM_Web {
     Write-Log 'Snapshot reverted successfully' -Level Success
 }
 
-Task ApplyUpdates_Web -Depends GetCredential, StartVM_Web -PreCondition { -not $script:skipWindowsUpdate } {
+Task ApplyUpdates_Web -Depends GetCredential, RevertSnapshot_Web, StartVM_Web -PreCondition { -not $script:skipWindowsUpdate } {
     Write-Log 'Applying Windows Updates to Web Server...'
 
     # & $script:helpersPath\StartVM.ps1 -VMName $script:webVMName -StartupDelay 0 -TimeoutSeconds $script:timeout
@@ -562,6 +634,10 @@ Task ReplaceSnapshotBaseline -Depends AddSnapshot_Web {
 
     Rename-VMSnapshot -VMName $script:webVMName -Name $script:newSnapshotName -NewName $script:snapshotName
     Write-Log "Renamed snapshot to: $script:snapshotName" -Level Success
+}
+
+Task RevertVMs -Depends RevertSnapshot_Web {
+    Write-Log "VMs reverted to baseline snapshot '$script:snapshotName'" -Level Success
 }
 
 Task SnapshotMaintenance -Depends ApplyUpdates_DC, ReplaceSnapshotBaseline {

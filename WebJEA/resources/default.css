@@ -54,12 +54,9 @@
     padding: 24px;
 }
 
-/* Make dashboard HTML full width above the tiles */
-.tile-grid > .dashboard-html {
-    grid-column: 1 / -1;
-    width: 100%;
-    margin: 0 0 12px 0;
-    padding: 0;
+/* Dashboard HTML banner: same outer padding as the tile view, no bottom padding (gap comes from main's margin) */
+#divDashboardHtml {
+    padding: 24px 24px 0;
 }
 
 .tile-card {

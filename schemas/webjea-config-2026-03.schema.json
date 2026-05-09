@@ -43,6 +43,11 @@
       "description": "Show verbose output when commands are called by global permitted group.",
       "default": true
     },
+    "DefaultCommandId": {
+      "type": "string",
+      "description": "The ID of the command to display by default.",
+      "default": ""
+    },
     "Commands": {
       "type": "array",
       "description": "Array of command definitions available in WebJEA.",

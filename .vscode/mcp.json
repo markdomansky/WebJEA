@@ -1,0 +1,9 @@
+{
+	"servers": {
+		"SchemaStore": {
+			"url": "https://mcp.schemastore.org/",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}

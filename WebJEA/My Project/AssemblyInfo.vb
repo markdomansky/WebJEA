@@ -1,4 +1,4 @@
-Imports System
+﻿Imports System
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 <Assembly: AssemblyTitle("WebJEA")>
-<Assembly: AssemblyDescription("webjea.com")>
+<Assembly: AssemblyDescription("https://webjea.com")>
 <Assembly: AssemblyCompany("Mark Domansky")>
 <Assembly: AssemblyProduct("WebJEA")>
-<Assembly: AssemblyCopyright("Copyright ? Mark Domansky, 2026")>
+<Assembly: AssemblyCopyright("Copyright 2026, Mark Domansky")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' Note: this value is overwritten by the BeforeBuild target in WebJEA.vbproj
 ' Format: Year.Month.DayOfYear.HalfSecondsInDay
 
-<Assembly: AssemblyVersion("0.0.0.1")>
+<Assembly: AssemblyVersion("1.0.0.0")>
 <Assembly: Runtime.CompilerServices.InternalsVisibleTo("WebJEA-UnitTests-VBNET")>

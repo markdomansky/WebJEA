@@ -1,1 +1,1 @@
-#TODO Include install guidance
+https://github.com/markdomansky/WebJEA/wiki/Installation

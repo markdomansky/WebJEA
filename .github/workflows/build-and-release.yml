@@ -106,16 +106,21 @@ jobs:
       - name: Get commit message
         id: commit_msg
         shell: pwsh
+        env:
+          HEAD_COMMIT_MSG: ${{ github.event.head_commit.message }}
         run: |
-          if ('${{ github.event.head_commit.message }}' -ne '') {
-            $commitMessage = '${{ github.event.head_commit.message }}'
+          # Read from env so no special characters (apostrophes, quotes, etc.)
+          # are ever interpolated into the script body.
+          $commitMessage = if ($env:HEAD_COMMIT_MSG) {
+            $env:HEAD_COMMIT_MSG
           } else {
-            $commitMessage = git log -1 --format=%B
+            git log -1 --format=%B
           }
-
-          # Escape for JSON and multiline
-          $commitMessage = $commitMessage -replace '"', '\"' -replace "`n", '\n'
-          echo "message=$commitMessage" >> $env:GITHUB_OUTPUT
+          # Always use the multiline delimiter format to safely handle newlines.
+          $delimiter = 'MSG' + [System.Guid]::NewGuid().ToString('N')
+          Add-Content $env:GITHUB_OUTPUT "message<<$delimiter"
+          Add-Content $env:GITHUB_OUTPUT $commitMessage
+          Add-Content $env:GITHUB_OUTPUT $delimiter
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -155,4 +160,3 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

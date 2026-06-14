@@ -5,6 +5,8 @@
         "_comment": "Hyper-V host and VM configuration",
         "DomainControllerVMName": "DC01",
         "WebServerVMName": "WEB01",
+        "_comment1": "Optional: A debug/development VM that receives updates but has no snapshot baseline",
+        "WebDebugVMName": "",
         "SnapshotName": "Clean-Baseline",
         "HyperVHost": "localhost",
         "_comment2": "Timeout in seconds for VM operations",

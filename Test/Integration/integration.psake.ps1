@@ -4,7 +4,7 @@
 
 Properties {
     $dcStartupDelay = 60
-    $timeout = 300
+    $timeout = 900
     $doNotRunDeploy = $false
     $resetVM = $false
 }
@@ -57,9 +57,11 @@ Task Init {
     $script:dcStartupDelay = if ($script:config.HyperV.DCStartupDelay) { $script:config.HyperV.DCStartupDelay } else { 60 }
     $script:timeout = if ($script:config.HyperV.VMOperationTimeout) { $script:config.HyperV.VMOperationTimeout } else { 300 }
     $script:snapshotName = $script:config.HyperV.SnapshotName
+    $script:webDebugVMName = $script:config.HyperV.WebDebugVMName
 
     Write-Log 'Resolved Configuration:' -Level Information
     Write-Log "  WebServer VM:         $script:webVMName"
+    Write-Log "  WebDebug VM:          $(if ($script:webDebugVMName) { $script:webDebugVMName } else { '(not configured)' })"
     Write-Log "  DC VM:                $script:dcVMName"
     Write-Log "  Snapshot Name:        $script:snapshotName"
     Write-Log "  DC Startup Delay:     $script:dcStartupDelay seconds"
@@ -84,6 +86,11 @@ Task StartVM_DC -Depends Init {
 Task StartVM_Web -Depends StartVM_DC {
     write-log 'Starting Web Server...'
     & $script:helpersPath\StartVM.ps1 -VMName $script:webVMName -StartupDelay 0 -TimeoutSeconds $script:timeout
+}
+
+Task StartVM_WebDebug -Depends StartVM_DC -PreCondition { $script:webDebugVMName } {
+    Write-Log 'Starting WebDebug Server...'
+    & $script:helpersPath\StartVM.ps1 -VMName $script:webDebugVMName -StartupDelay 0 -TimeoutSeconds $script:timeout
 }
 
 Task RestartVM_Web -Depends StartVM_DC {
@@ -162,6 +169,57 @@ Task ShutdownVM_Web -Depends Init {
         throw "Unable to stop Web Server VM '$script:webVMName'"
     }
     Write-Log 'Web Server VM shut down successfully' -Level Success
+}
+
+Task StopVM_WebDebug -Depends Init -PreCondition { $script:webDebugVMName } {
+    Write-Log "Stopping WebDebug VM '$script:webDebugVMName' for maintenance..."
+    Stop-VM -Name $script:webDebugVMName -TurnOff
+
+    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+    while ((Get-VM -Name $script:webDebugVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 300)
+    {
+        Start-Sleep -Seconds 5
+    }
+    Stop-VM -Name $script:webDebugVMName -TurnOff -Force
+    while ((Get-VM -Name $script:webDebugVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 450)
+    {
+        Start-Sleep -Seconds 5
+    }
+
+    if ((Get-VM -Name $script:webDebugVMName).State -ne 'Off')
+    {
+        Write-Log "Failed to stop WebDebug VM '$script:webDebugVMName' within timeout" -Level Error
+        throw "Unable to stop WebDebug VM '$script:webDebugVMName'"
+    }
+    Write-Log 'WebDebug VM stopped successfully' -Level Success
+}
+
+Task ShutdownVM_WebDebug -Depends Init -PreCondition { $script:webDebugVMName } {
+    Write-Log "Gracefully shutting down WebDebug VM '$script:webDebugVMName'..."
+    Stop-VM -Name $script:webDebugVMName -ErrorAction SilentlyContinue
+
+    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+    while ((Get-VM -Name $script:webDebugVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 300)
+    {
+        Start-Sleep -Seconds 5
+    }
+
+    if ((Get-VM -Name $script:webDebugVMName).State -ne 'Off')
+    {
+        Write-Log 'Graceful shutdown timed out. Forcing power off...' -Level Warning
+        Stop-VM -Name $script:webDebugVMName -TurnOff -Force
+        while ((Get-VM -Name $script:webDebugVMName).State -ne 'Off' -and $stopwatch.Elapsed.TotalSeconds -lt 450)
+        {
+            Start-Sleep -Seconds 5
+        }
+    }
+
+    if ((Get-VM -Name $script:webDebugVMName).State -ne 'Off')
+    {
+        Write-Log "Failed to stop WebDebug VM '$script:webDebugVMName' within timeout" -Level Error
+        throw "Unable to stop WebDebug VM '$script:webDebugVMName'"
+    }
+    Write-Log 'WebDebug VM shut down successfully' -Level Success
 }
 
 Task StopVMs -Depends StopVM_Web, StopVM_DC {}
@@ -496,7 +554,24 @@ Task RevertSnapshot_Web -Depends StopVM_Web {
     Write-Log 'Snapshot reverted successfully' -Level Success
 }
 
-Task ApplyUpdates_Web -Depends GetCredential, RevertSnapshot_Web, StartVM_Web -PreCondition { -not $script:skipWindowsUpdate } {
+Task SetSkipRearm_Web -Depends GetCredential, RevertSnapshot_Web, StartVM_Web {
+    Write-Log "Setting SkipRearm registry key on '$script:webVMName'..."
+    $session = New-PSSession -VMName $script:webVMName -Credential $script:credential -ErrorAction Stop
+    try
+    {
+        Invoke-Command -Session $session -ScriptBlock {
+            Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform' `
+                -Name 'SkipRearm' -Value 1 -Type DWord -Force
+        }
+        Write-Log "SkipRearm set on '$script:webVMName'" -Level Success
+    }
+    finally
+    {
+        Remove-PSSession -Session $session -ErrorAction SilentlyContinue
+    }
+}
+
+Task ApplyUpdates_Web -Depends SetSkipRearm_Web -PreCondition { -not $script:skipWindowsUpdate } {
     Write-Log 'Applying Windows Updates to Web Server...'
 
     # & $script:helpersPath\StartVM.ps1 -VMName $script:webVMName -StartupDelay 0 -TimeoutSeconds $script:timeout
@@ -553,7 +628,24 @@ Task ApplyUpdates_Web -Depends GetCredential, RevertSnapshot_Web, StartVM_Web -P
     Write-Log 'Windows Updates completed for Web Server' -Level Success
 }
 
-Task ApplyUpdates_DC -Depends GetCredential, StartVM_DC -PreCondition { -not $script:skipWindowsUpdate } {
+Task SetSkipRearm_DC -Depends GetCredential, StartVM_DC {
+    Write-Log "Setting SkipRearm registry key on '$script:dcVMName'..."
+    $session = New-PSSession -VMName $script:dcVMName -Credential $script:credential -ErrorAction Stop
+    try
+    {
+        Invoke-Command -Session $session -ScriptBlock {
+            Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform' `
+                -Name 'SkipRearm' -Value 1 -Type DWord -Force
+        }
+        Write-Log "SkipRearm set on '$script:dcVMName'" -Level Success
+    }
+    finally
+    {
+        Remove-PSSession -Session $session -ErrorAction SilentlyContinue
+    }
+}
+
+Task ApplyUpdates_DC -Depends SetSkipRearm_DC -PreCondition { -not $script:skipWindowsUpdate } {
     Write-Log 'Applying Windows Updates to Domain Controller...'
 
     # & $script:helpersPath\StartVM.ps1 -VMName $script:dcVMName -StartupDelay 30 -TimeoutSeconds $script:timeout
@@ -610,6 +702,78 @@ Task ApplyUpdates_DC -Depends GetCredential, StartVM_DC -PreCondition { -not $sc
     Write-Log 'Windows Updates completed for Domain Controller' -Level Success
 }
 
+Task SetSkipRearm_WebDebug -Depends GetCredential, StartVM_WebDebug -PreCondition { $script:webDebugVMName } {
+    Write-Log "Setting SkipRearm registry key on '$script:webDebugVMName'..."
+    $session = New-PSSession -VMName $script:webDebugVMName -Credential $script:credential -ErrorAction Stop
+    try
+    {
+        Invoke-Command -Session $session -ScriptBlock {
+            Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform' `
+                -Name 'SkipRearm' -Value 1 -Type DWord -Force
+        }
+        Write-Log "SkipRearm set on '$script:webDebugVMName'" -Level Success
+    }
+    finally
+    {
+        Remove-PSSession -Session $session -ErrorAction SilentlyContinue
+    }
+}
+
+Task ApplyUpdates_WebDebug -Depends SetSkipRearm_WebDebug -PreCondition { -not $script:skipWindowsUpdate -and $script:webDebugVMName } {
+    Write-Log 'Applying Windows Updates to WebDebug Server...'
+
+    $session = New-PSSession -VMName $script:webDebugVMName -Credential $script:credential -ErrorAction Stop
+    Write-Log 'Session established' -Level Success
+
+    try
+    {
+        $updateResult = & $script:helpersPath\Invoke-WindowsUpdateOnVM.ps1 `
+            -Session $session `
+            -Categories $script:config.WindowsUpdate.Categories `
+            -AutoReboot $script:config.WindowsUpdate.AutoReboot `
+            -TimeoutMinutes $script:config.WindowsUpdate.Timeout
+
+        if ($updateResult.RebootRequired -and $script:config.WindowsUpdate.AutoReboot)
+        {
+            Write-Log 'Rebooting WebDebug VM after updates...'
+            Remove-PSSession -Session $session -ErrorAction SilentlyContinue
+            $session = $null
+
+            Restart-VM -Name $script:webDebugVMName -Force
+            Start-Sleep -Seconds 30
+            & $script:helpersPath\WaitVMReady.ps1 -VMName $script:webDebugVMName -TimeoutSeconds 900
+
+            Write-Log 'Reconnecting after reboot...'
+            $session = New-PSSession -VMName $script:webDebugVMName -Credential $script:credential -ErrorAction Stop
+
+            $secondPass = & $script:helpersPath\Invoke-WindowsUpdateOnVM.ps1 `
+                -Session $session `
+                -Categories $script:config.WindowsUpdate.Categories `
+                -AutoReboot $script:config.WindowsUpdate.AutoReboot `
+                -TimeoutMinutes $script:config.WindowsUpdate.Timeout
+
+            if ($secondPass.RebootRequired -and $script:config.WindowsUpdate.AutoReboot)
+            {
+                Write-Log 'Additional reboot required after second update pass...'
+                Remove-PSSession -Session $session -ErrorAction SilentlyContinue
+                $session = $null
+
+                Restart-VM -Name $script:webDebugVMName -Force
+                Start-Sleep -Seconds 30
+                & $script:helpersPath\WaitVMReady.ps1 -VMName $script:webDebugVMName -TimeoutSeconds 900
+            }
+        }
+    }
+    finally
+    {
+        if ($session)
+        {
+            Remove-PSSession -Session $session -ErrorAction SilentlyContinue
+        }
+    }
+    Write-Log 'Windows Updates completed for WebDebug Server' -Level Success
+}
+
 Task AddSnapshot_Web -Depends ApplyUpdates_Web, ShutdownVM_Web {
     Write-Log 'Creating new snapshot...'
 
@@ -640,7 +804,7 @@ Task RevertVMs -Depends RevertSnapshot_Web {
     Write-Log "VMs reverted to baseline snapshot '$script:snapshotName'" -Level Success
 }
 
-Task SnapshotMaintenance -Depends ApplyUpdates_DC, ReplaceSnapshotBaseline {
+Task SnapshotMaintenance -Depends ApplyUpdates_DC, ApplyUpdates_WebDebug, ReplaceSnapshotBaseline {
     Write-Log 'VM snapshot maintenance completed successfully!' -Level Success
     Write-Log "Baseline snapshot '$script:snapshotName' has been updated with latest Windows Updates."
 }
